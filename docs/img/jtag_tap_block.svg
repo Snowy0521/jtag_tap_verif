@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 730" width="1200" height="730" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .rise { fill:#dbeafe; stroke:#1d4ed8; stroke-width:1.6; }
+      .fall { fill:#ffedd5; stroke:#c2410c; stroke-width:1.6; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:12px; font-family:Menlo, Consolas, monospace; }
+      .t    { fill:#111827; }
+      .b    { fill:#111827; font-weight:bold; }
+      .s    { fill:#4b5563; font-size:11px; }
+      .sig  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:12px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:13px; font-weight:bold; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="730" fill="#ffffff"/>
+
+  <!-- ===================== legend ===================== -->
+  <rect x="730" y="18" width="18" height="14" class="rise"/>
+  <text x="756" y="30" class="t">rising-edge register (state, shift registers, MBIST)</text>
+  <rect x="730" y="40" width="18" height="14" class="fall"/>
+  <text x="756" y="52" class="t">falling-edge register (instruction, DFT outputs, TDO)</text>
+  <rect x="730" y="62" width="18" height="14" class="comb"/>
+  <text x="756" y="74" class="t">combinational logic</text>
+
+  <!-- clock / reset note -->
+  <text x="20" y="30" class="pin">tck</text>
+  <text x="20" y="50" class="pin">trst_n</text>
+  <text x="80" y="40" class="s">→ every register (not drawn): tck clocks all of them,</text>
+  <text x="80" y="54" class="s">   trst_n resets all of them asynchronously</text>
+
+  <!-- ===================== jtag_tap_fsm ===================== -->
+  <rect x="140" y="70" width="250" height="90" rx="8" class="mod"/>
+  <text x="148" y="84" class="modl">jtag_tap_fsm</text>
+  <rect x="155" y="92" width="115" height="55" class="comb"/>
+  <text x="212" y="115" class="b" text-anchor="middle">next-state</text>
+  <text x="212" y="132" class="s" text-anchor="middle">16-state table (R1)</text>
+  <rect x="285" y="92" width="90" height="55" class="rise"/>
+  <text x="330" y="115" class="b" text-anchor="middle">state ↑</text>
+  <text x="330" y="132" class="s" text-anchor="middle">4 bit</text>
+  <path d="M270,119 H285" class="w" marker-end="url(#arr)"/>
+
+  <text x="20" y="124" class="pin">tms</text>
+  <path d="M55,119 H155" class="w" marker-end="url(#arr)"/>
+
+  <!-- state bus: to IR, DR and TDO stage -->
+  <path d="M375,119 H985 V200" class="bus" marker-end="url(#arr)"/>
+  <text x="560" y="112" class="sig">state</text>
+  <path d="M430,119 V188" class="bus" marker-end="url(#arr)"/>
+  <path d="M700,119 V338" class="bus" marker-end="url(#arr)"/>
+
+  <!-- ===================== jtag_ir ===================== -->
+  <rect x="140" y="190" width="520" height="122" rx="8" class="mod"/>
+  <text x="148" y="204" class="modl">jtag_ir</text>
+  <rect x="165" y="215" width="160" height="80" class="rise"/>
+  <text x="245" y="236" class="b" text-anchor="middle">IR shift reg ↑</text>
+  <text x="245" y="252" class="s" text-anchor="middle">4 bit</text>
+  <text x="245" y="268" class="s" text-anchor="middle">Capture-IR: load 0001</text>
+  <text x="245" y="284" class="s" text-anchor="middle">Shift-IR: shift right</text>
+  <rect x="360" y="215" width="160" height="80" class="fall"/>
+  <text x="440" y="236" class="b" text-anchor="middle">instruction ↓</text>
+  <text x="440" y="252" class="s" text-anchor="middle">4 bit</text>
+  <text x="440" y="268" class="s" text-anchor="middle">Update-IR: load</text>
+  <text x="440" y="284" class="s" text-anchor="middle">Test-Logic-Reset: IDCODE</text>
+  <path d="M325,250 H360" class="w" marker-end="url(#arr)"/>
+  <rect x="540" y="222" width="112" height="56" class="comb"/>
+  <text x="596" y="244" class="b" text-anchor="middle">decode</text>
+  <text x="596" y="262" class="s" text-anchor="middle">unused → BYPASS</text>
+  <path d="M520,250 H540" class="w" marker-end="url(#arr)"/>
+
+  <!-- dr_sel down to DR mux -->
+  <path d="M595,275 V368" class="w" marker-end="url(#arr)"/>
+  <text x="602" y="331" class="sig">dr_sel</text>
+
+  <!-- ir_sr[0] to TDO stage -->
+  <path d="M245,215 V172 H870 V232 H900" class="w" marker-end="url(#arr)"/>
+  <text x="760" y="166" class="sig">ir_sr[0]</text>
+
+  <!-- ===================== tdi bus ===================== -->
+  <text x="20" y="255" class="pin">tdi</text>
+  <path d="M55,250 H165" class="w" marker-end="url(#arr)"/>
+  <path d="M110,250 V492" class="w"/>
+  <circle cx="110" cy="250" r="3.5" fill="#374151"/>
+  <path d="M110,377 H165" class="w" marker-end="url(#arr)"/>
+  <path d="M110,432 H165" class="w" marker-end="url(#arr)"/>
+  <path d="M110,492 H165" class="w" marker-end="url(#arr)"/>
+  <circle cx="110" cy="377" r="3.5" fill="#374151"/>
+  <circle cx="110" cy="432" r="3.5" fill="#374151"/>
+
+  <!-- ===================== jtag_dr ===================== -->
+  <rect x="140" y="340" width="640" height="265" rx="8" class="mod"/>
+  <text x="148" y="354" class="modl">jtag_dr</text>
+
+  <rect x="165" y="360" width="190" height="40" class="rise"/>
+  <text x="175" y="377" class="b">BYPASS ↑</text>
+  <text x="175" y="392" class="s">1 bit · captures 0</text>
+  <rect x="165" y="412" width="190" height="40" class="rise"/>
+  <text x="175" y="429" class="b">IDCODE ↑</text>
+  <text x="175" y="444" class="s">32 bit · captures 0x11149FFF</text>
+  <rect x="165" y="464" width="190" height="56" class="rise"/>
+  <text x="175" y="481" class="b">DFT_CTRL shift reg ↑</text>
+  <text x="175" y="496" class="s">8 bit · captures read-back</text>
+  <text x="175" y="511" class="s">{000, pass, done, start, se, tm}</text>
+
+  <!-- DR mux -->
+  <path d="M560,368 L600,382 L600,458 L560,472 Z" class="comb"/>
+  <text x="580" y="424" class="s" text-anchor="middle">mux</text>
+  <path d="M355,380 H560" class="w" marker-end="url(#arr)"/>
+  <path d="M355,432 H560" class="w" marker-end="url(#arr)"/>
+  <path d="M355,470 H560" class="w" marker-end="url(#arr)"/>
+  <text x="372" y="375" class="sig">[0]</text>
+  <text x="372" y="427" class="sig">[0]</text>
+  <text x="372" y="465" class="sig">[0]</text>
+
+  <!-- dr_tdo to TDO stage -->
+  <path d="M600,420 H850 V272 H900" class="w" marker-end="url(#arr)"/>
+  <text x="640" y="413" class="sig">dr_tdo</text>
+
+  <!-- DFT update registers -->
+  <path d="M355,505 H400" class="w" marker-end="url(#arr)"/>
+  <text x="358" y="499" class="sig">[2:0]</text>
+  <rect x="400" y="488" width="220" height="74" class="fall"/>
+  <text x="510" y="507" class="b" text-anchor="middle">DFT update regs ↓</text>
+  <text x="510" y="523" class="s" text-anchor="middle">Update-DR + DFT_CTRL: load</text>
+  <text x="510" y="538" class="s" text-anchor="middle">Test-Logic-Reset: clear to 0</text>
+  <text x="510" y="553" class="s" text-anchor="middle">scan_en ← sr[1] &amp; sr[0]</text>
+
+  <!-- DFT outputs -->
+  <path d="M620,500 H1095" class="w" marker-end="url(#arr)"/>
+  <path d="M620,522 H1095" class="w" marker-end="url(#arr)"/>
+  <path d="M620,544 H1095" class="w" marker-end="url(#arr)"/>
+  <text x="1100" y="504" class="pin">test_mode</text>
+  <text x="1100" y="526" class="pin">scan_en</text>
+  <text x="1100" y="548" class="pin">mbist_start</text>
+
+  <!-- read-back of update regs into DFT shift reg -->
+  <path d="M510,562 V582 H300 V520" class="w" marker-end="url(#arr)"/>
+  <text x="312" y="597" class="s">read-back of test_mode, scan_en, mbist_start (Capture-DR)</text>
+
+  <!-- ===================== mbist_stub ===================== -->
+  <rect x="810" y="622" width="232" height="80" rx="8" class="mod"/>
+  <text x="1034" y="636" class="modl" text-anchor="end">mbist_stub</text>
+  <rect x="822" y="642" width="206" height="50" class="rise"/>
+  <text x="925" y="662" class="b" text-anchor="middle">counter + status ↑</text>
+  <text x="925" y="680" class="s" text-anchor="middle">done after MBIST_CYCLES edges</text>
+
+  <path d="M880,544 V642" class="w" marker-end="url(#arr)"/>
+  <circle cx="880" cy="544" r="3.5" fill="#374151"/>
+
+  <text x="20" y="677" class="pin">mbist_fail_i</text>
+  <path d="M125,672 H822" class="w" marker-end="url(#arr)"/>
+
+  <path d="M1028,655 H1095" class="w" marker-end="url(#arr)"/>
+  <path d="M1028,680 H1095" class="w" marker-end="url(#arr)"/>
+  <text x="1100" y="659" class="pin">mbist_done</text>
+  <text x="1100" y="684" class="pin">mbist_pass</text>
+
+  <!-- done / pass captured into the DFT shift register -->
+  <path d="M1075,680 V715 H190 V520" class="w" marker-end="url(#arr)"/>
+  <path d="M1060,655 V715" class="w"/>
+  <circle cx="1060" cy="715" r="3.5" fill="#374151"/>
+  <circle cx="1060" cy="655" r="3.5" fill="#374151"/>
+  <circle cx="1075" cy="680" r="3.5" fill="#374151"/>
+  <text x="420" y="709" class="s">mbist_done, mbist_pass (captured in Capture-DR)</text>
+
+  <!-- ===================== TDO stage ===================== -->
+  <rect x="890" y="200" width="190" height="110" rx="8" class="mod"/>
+  <text x="898" y="214" class="modl">jtag_tap_top</text>
+  <path d="M900,220 L935,232 L935,276 L900,288 Z" class="comb"/>
+  <text x="917" y="258" class="s" text-anchor="middle">mux</text>
+  <rect x="955" y="225" width="110" height="58" class="fall"/>
+  <text x="1010" y="246" class="b" text-anchor="middle">tdo, tdo_en ↓</text>
+  <text x="1010" y="262" class="s" text-anchor="middle">enabled only in</text>
+  <text x="1010" y="276" class="s" text-anchor="middle">Shift-IR / Shift-DR</text>
+  <path d="M935,254 H955" class="w" marker-end="url(#arr)"/>
+  <path d="M1065,240 H1095" class="w" marker-end="url(#arr)"/>
+  <path d="M1065,270 H1095" class="w" marker-end="url(#arr)"/>
+  <text x="1100" y="244" class="pin">tdo</text>
+  <text x="1100" y="274" class="pin">tdo_en</text>
+</svg>

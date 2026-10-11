@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" width="960" height="400" font-family="Helvetica, Arial, sans-serif" font-size="13">
+<style>
+.tr{stroke:#1f2937;stroke-width:2;fill:none}
+.bus{stroke:#1f2937;stroke-width:1.6;fill:#f3f4f6}
+.busn{stroke:#c2410c;stroke-width:1.6;fill:#ffedd5}
+.lab{fill:#111827;font-family:Menlo,Consolas,monospace;font-size:13px;font-weight:bold}
+.v{fill:#111827;font-family:Menlo,Consolas,monospace;font-size:12px}
+.s{fill:#4b5563;font-size:12px}
+.edge{fill:#111827;font-size:12px;font-weight:bold}
+.mark{stroke:#1d4ed8;stroke-width:1.4;stroke-dasharray:5 4}
+.markf{stroke:#c2410c;stroke-width:1.4;stroke-dasharray:5 4}
+.box{fill:#eff6ff;stroke:#1d4ed8;stroke-width:1.2}
+</style>
+<rect width="960" height="400" fill="#ffffff"/>
+<line class="mark" x1="330" y1="40" x2="330" y2="290"/>
+<line class="markf" x1="470" y1="40" x2="470" y2="290"/>
+<line class="mark" x1="610" y1="40" x2="610" y2="290"/>
+<text x="330" y="32" class="edge" text-anchor="middle">rise A</text>
+<text x="470" y="32" class="edge" text-anchor="middle" fill="#c2410c">fall A</text>
+<text x="610" y="32" class="edge" text-anchor="middle">rise B</text>
+<text x="20" y="85" class="lab">tck</text>
+<text x="20" y="145" class="lab">state</text>
+<text x="20" y="205" class="lab">dft_sr</text>
+<text x="20" y="265" class="lab">test_mode</text>
+<polyline class="tr" points="200,94 330,94 330,66 470,66 470,94 610,94 610,66 750,66 750,94 900,94"/>
+<polygon class="bus" points="200,140 200,126 323,126 330,140 323,154 200,154"/>
+<text x="265.0" y="144" class="v" text-anchor="middle">EXIT1_DR</text>
+<polygon class="bus" points="330,140 337,126 603,126 610,140 603,154 337,154"/>
+<text x="470.0" y="144" class="v" text-anchor="middle">UPDATE_DR</text>
+<polygon class="bus" points="610,140 617,126 900,126 900,140 900,154 617,154"/>
+<text x="755.0" y="144" class="v" text-anchor="middle">RUN_TEST_IDLE</text>
+<polygon class="bus" points="200,200 200,186 900,186 900,200 900,214 200,214"/>
+<text x="550.0" y="204" class="v" text-anchor="middle">sr[0] = 1   (value shifted in, stable since Exit1-DR)</text>
+<polygon class="bus" points="200,260 200,246 463,246 470,260 463,274 200,274"/>
+<text x="335.0" y="264" class="v" text-anchor="middle">0  (old)</text>
+<polygon class="busn" points="470,260 477,246 900,246 900,260 900,274 477,274"/>
+<text x="685.0" y="264" class="v" text-anchor="middle">1  (new)</text>
+<text x="476" y="238" class="s" fill="#c2410c">update register loads</text>
+<rect class="box" x="195.0" y="302" width="230" height="66" rx="5"/>
+<text x="205.0" y="322" class="v">sampled at rise A:</text>
+<text x="205.0" y="340" class="v">state     == EXIT1_DR</text>
+<text x="205.0" y="358" class="v">test_mode == 0</text>
+<rect class="box" x="500.0" y="302" width="340" height="66" rx="5"/>
+<text x="510.0" y="322" class="v">sampled at rise B:</text>
+<text x="510.0" y="340" class="v">state     == UPDATE_DR</text>
+<text x="510.0" y="358" class="v">test_mode == 1,  $past(test_mode) == 0</text>
+<text x="20" y="390" class="s">@(posedge tck) properties sample just before each rising edge (preponed region).</text>
+</svg>

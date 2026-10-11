@@ -1,0 +1,53 @@
+# QuestaSim (vlib/vlog/vopt/vsim) outputs -- list taken from axi4lite_uvm_questa
+questa_work/
+formal_work/
+work/
+*_opt
+transcript
+*.wlf
+modelsim.ini
+*.ses
+tr_db.log
+vsim.dbg
+vish_stacktrace.vstf
+
+# Questa Formal (qverify / PropCheck) outputs
+.qverify/
+propcheck.db/
+*.rpt
+formal_report*.txt
+qverify_cmds.tcl
+qverify_ui_cmds.tcl
+
+# Coverage (vcover merge)
+*.ucdb
+cov_ucdb/
+
+# Questa Visualizer / startup scratch
+*.qwdb
+qwave.db
+.visualizer/
+sysinfo.log
+etch[0-9]*
+
+# Regression / mutation run directories
+regress_out/
+mutation_out/
+
+# Local open-source lint / smoke (verilator, iverilog)
+obj_dir/
+*.vvp
+*.vcd
+*.fst
+*.log
+
+# Python / editor / OS
+__pycache__/
+*.pyc
+.vscode/
+.DS_Store
+*.swp
+*.swo
+
+# Questa libraries and run outputs (all flows run from the repo root)
+build/
