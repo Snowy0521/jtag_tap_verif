@@ -26,7 +26,7 @@ Aim for the same sign-off as the AXI4-Lite project: **every assertion a full pro
 
 **Checker conventions (apply to every file in `formal/`):**
 - Every checker register (shadow registers, counters, reference state) has `trst_n` as its asynchronous reset and resets to the value the **spec** defines, never to whatever the RTL does.
-- Every concurrent property has `disable iff (!trst_n)`, except the async-reset checks themselves (2.1), which are written as deferred immediate assertions.
+- Every checker module starts with `` `include "jtag_checker_defaults.svh" ``: `default clocking cb @(posedge tck)` and `default disable iff (!trst_n || trst_seen)`, so no property can forget its reset. `trst_seen` stays 1 from any `trst_n` assertion until the next rising edge, so a reset pulse that starts and ends between two rising edges still disables the attempts it interrupts. A property on another edge names its clock explicitly (e.g. `@(negedge tck)`); the default `disable iff` still applies. The async-reset checks (2.1) are deferred immediate assertions, which the defaults do not affect.
 - Checker counters are wide enough to saturate at their limit (e.g. `$clog2(MBIST_CYCLES + 1)` bits) and stop there.
 
 These matter because the sign-off run leaves `trst_n` free (`-auto_constraint_off`, 2.5): a mid-scan or mid-MBIST reset clears the DUT, and a checker that kept its state would fail falsely.
@@ -98,7 +98,7 @@ In `formal/jtag_dft_props.sv`.
 
 In `formal/jtag_covers.sv`.
 
-- Every one of the 16 states reached; every one of the 32 arcs taken (arc covers generated, see 2.1).
+- Every one of the 16 states reached; every one of the 32 arcs taken (state and arc covers generated, see 2.1).
 - A full IR scan followed by a full 32-bit IDCODE read.
 - A scan that goes through Pause-DR and Exit2-DR back into Shift-DR.
 - DFT sequence: write `test_mode=1, mbist_start=1`, wait for `mbist_done`, read back pass.
@@ -106,6 +106,8 @@ In `formal/jtag_covers.sv`.
 ### 2.5 Questa Verify flow
 
 `formal/formal_top.sv` instantiates the DUT and binds the checkers; `formal/formal.f` lists the files; `formal/run_formal.tcl` runs the flow.
+
+Before each Questa run, `make props-sim` runs the same checkers in a random Verilator simulation (`formal/props_sim.sv`). It is not a proof, but it catches compile errors and wrong properties locally. Verilator treats `assert final` as a plain immediate assertion, so the async-reset checks have a simulation-only variant under `ifdef VERILATOR`.
 
 Based on the known-working `axi4lite_uvm_questa/sim/formal_questa.do`, which uses no `netlist` commands:
 

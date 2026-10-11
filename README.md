@@ -48,9 +48,12 @@ All targets run from the repository root; outputs go to `build/`.
 |---|---|---|
 | `make lint` | Verilator, slang | Lint the RTL (`rtl/rtl.f`) |
 | `make smoke` | Icarus Verilog | Directed smoke test `tb/tb_smoke.sv`: reset, IDCODE, BYPASS, unused opcode, DFT writes, MBIST pass / fail / restart, TMS reset, mid-scan `trst_n` |
+| `make gen` | Python | Regenerate the per-arc state-machine checks from the spec's state table |
+| `make props-sim` | Verilator | Run the formal properties in a random simulation (local sanity check, not a proof) |
+| `make formal` | Questa Formal | Prove all properties (`formal/run_formal.tcl`) |
 | `make clean` | | Remove `build/` |
 
-Questa targets (`formal`, `sim`, `regress`, `mutate`, `cov`) will be added with the formal and UVM code. The open-source tools are only for lint and the smoke test: they cannot run the concurrent SVA proofs or UVM.
+Questa targets for UVM (`sim`, `regress`, `cov`) and mutations (`mutate`) will follow. The open-source tools cannot run the formal proofs or UVM.
 
 ## Results
 
@@ -93,11 +96,14 @@ jtag_tap_verif/
 │   ├── jtag_dr.sv           BYPASS, IDCODE, DFT_CTRL registers
 │   ├── mbist_stub.sv        MBIST stand-in
 │   └── jtag_tap_top.sv      top level, TDO stage
+├── formal/                  formal harness, checkers, Questa run script
+├── scripts/
+│   └── gen_fsm_props.py     spec state table → per-arc checks
 └── tb/
     └── tb_smoke.sv          directed smoke test (no UVM)
 ```
 
-Planned: `formal/`, the UVM files in `tb/`, `mutations/` and `scripts/`, each named in [docs/plan.md](docs/plan.md) where it is introduced.
+Planned: the UVM files in `tb/` and `mutations/`, each named in [docs/plan.md](docs/plan.md) where it is introduced.
 
 ## References
 
