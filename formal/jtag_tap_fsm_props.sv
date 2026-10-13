@@ -57,20 +57,8 @@ module jtag_tap_fsm_props
   c_tms5_from_pause_ir: cover property (
     (state == PAUSE_IR) ##0 tms [*5] ##1 (state == TEST_LOGIC_RESET));
 
-  // R3: asynchronous reset. Cannot sit under disable iff (!trst_n), so it is a
-  // deferred immediate assertion, checked whenever its inputs change.
-`ifdef VERILATOR
-  // In Verilator, `assert final` acts like a plain immediate assertion, i.e. it fires
-  // before the reset flops update, so the local simulation checks 1 ps later.
-  always @(trst_n or state) begin
-    #1ps;
-    a_trst_state: assert (trst_n || state == TEST_LOGIC_RESET);
-  end
-`else
-  always_comb begin
-    a_trst_state: assert final (trst_n || state == TEST_LOGIC_RESET);
-  end
-`endif
+  // R3: asynchronous reset (see ASSERT_TRST in jtag_checker_defaults.svh)
+  `ASSERT_TRST(a_trst_state, state == TEST_LOGIC_RESET)
 
   // R4: all 16 codes are states, so this cannot fail by construction. It
   // still catches X on the state register and a future encoding change.

@@ -144,21 +144,21 @@ Filled in as the checks are written. Planned names from [plan.md](plan.md) §2�
 |---|---|---|---|
 | R1 | `a_next_state`, `a_arc_*`, `c_arc_*` | monitor state model, coverage state × TMS | M1 |
 | R2 | `a_tms5_reset` | `jtag_reset_test` | M2 |
-| R3 | async-reset `assert final` | `jtag_reset_test` | |
+| R3 | `a_trst_state` | `jtag_reset_test` | |
 | R4 | legal encoding (cannot fail by construction; kept) | FSM `default` excluded from code coverage | |
-| R5 | `a_tdo_en`, `tdo_en` shadow | monitor protocol + edge check | M15 |
-| R6 | `tdo` shadow (`a_tdo_no_rise_change`), IDCODE / BYPASS end-to-end | monitor edge check, scoreboard | M4 |
+| R5 | `a_tdo_en`, `a_tdo_en_no_rise_change` | monitor protocol + edge check | M15 |
+| R6 | `a_tdo_idle_zero`, `a_tdo_no_rise_change`, `a_scan_data` | monitor edge check, scoreboard | M4 |
 | R7 | `a_capture_ir_01` | scoreboard (IR scan TDO) | M3 |
-| R8 | IR scan end-to-end | scoreboard | |
-| R9 | `a_ir_stable`, `a_reset_idcode`, IR shadow | `jtag_idcode_test` | M5, M6, M16 |
-| R10 | `a_unused_is_bypass` | `jtag_unused_opcode_test` | M7 |
-| R11 | IDCODE / BYPASS / DFT end-to-end | scoreboard | M10 |
-| R12 | BYPASS end-to-end | `jtag_bypass_test` | M11 |
-| R13 | symbolic-`k` IDCODE check | `jtag_idcode_test` | M12 |
-| R14 | `a_dft_update_only`, `a_dft_reset_functional`, DFT shadows | DFT monitor + scoreboard, edge check | M9, M13, M17 |
-| R15, R16 | `a_scan_en_safe` | coverage illegal bin (check) | M8 |
-| R17 | `a_mbist_done_capture`, `a_reserved_zero` | `jtag_dft_test` | M14 |
-| R18 | `tdo` / `tdo_en` shadow reset | `jtag_reset_test` | |
-| R19–R21 | `a_mbist_done_exact`, `a_mbist_clear`, `a_mbist_hold`, `a_mbist_pass_value` | `jtag_dft_test`, MBIST coverage, smoke exact-count check | M18, M19, M20 |
+| R8 | `a_scan_data`, `a_scan_delay` | scoreboard | |
+| R9 | `a_ir_stable`, `a_ir_update`, `a_reset_idcode`, `a_trst_ir`, `a_ir_no_rise_change` | `jtag_idcode_test` | M5, M6, M16 |
+| R10 | `a_decode_idcode`, `a_decode_dft`, `a_unused_is_bypass` | `jtag_unused_opcode_test` | M7 |
+| R11 | `a_scan_data`, `a_scan_delay` | scoreboard | M10 |
+| R12 | `a_scan_data`, `a_scan_delay` | `jtag_bypass_test` | M11 |
+| R13 | `a_scan_data` (symbolic `k`), `a_scan_delay` | `jtag_idcode_test` | M12 |
+| R14 | `a_dft_update_only`, `a_dft_reset_functional`, `a_trst_dft`, `a_dft_no_rise_change` | DFT monitor + scoreboard, edge check | M9, M13, M17 |
+| R15, R16 | `a_dft_write`, `a_scan_en_safe` | coverage illegal bin (check) | M8 |
+| R17 | `a_scan_data` | `jtag_dft_test` | M14 |
+| R18 | `a_trst_tdo`, edge-check shadow resets | `jtag_reset_test` | |
+| R19–R21 | `a_mbist_done_exact`, `a_mbist_clear`, `a_mbist_hold`, `a_mbist_pass_value`, `a_mbist_pass_needs_done` | `jtag_dft_test`, MBIST coverage, smoke exact-count check | M18, M19, M20 |
 | R22 | | `TCK_STOP` items | |
 | R23 | `a_reset_idcode`, `a_dft_reset_functional` | `jtag_reset_test` | |

@@ -10,6 +10,7 @@ module props_sim;
   localparam int CYCLES = 200000;
 
   logic tck = 1'b0;
+  int   hold0 = 0;
   logic tms, tdi, trst_n, mbist_fail_i;
   logic tdo, tdo_en, test_mode, scan_en, mbist_start, mbist_done, mbist_pass;
 
@@ -27,10 +28,18 @@ module props_sim;
     trst_n = 1'b1;
     for (int i = 0; i < CYCLES; i++) begin
       @(negedge tck);
-      // TMS biased towards 0 so long scans happen; rare full-cycle trst_n resets
-      tms          = ($urandom_range(99) < 35);
+      // TMS biased towards 0, plus occasional runs of TMS = 0 up to 80 cycles
+      // so that full-length scans (32-bit IDCODE and beyond) happen too.
+      if (hold0 == 0 && $urandom_range(49) == 0) hold0 = $urandom_range(80, 1);
+      if (hold0 != 0) begin
+        tms   = 1'b0;
+        hold0 = hold0 - 1;
+      end else begin
+        tms = ($urandom_range(99) < 35);
+      end
       tdi          = 1'($urandom);
       mbist_fail_i = ($urandom_range(9) == 0);
+      // Rare full-cycle trst_n resets
       trst_n       = ($urandom_range(999) != 0);
       // Short trst_n pulses that start and end between two rising edges: one in
       // the low phase (1-3 ns after this falling edge), one in the high phase
