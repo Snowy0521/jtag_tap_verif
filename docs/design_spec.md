@@ -147,7 +147,7 @@ Filled in as the checks are written. Planned names from [plan.md](plan.md) ยง2โ€
 | R3 | `a_trst_state` | `jtag_reset_test` | |
 | R4 | legal encoding (cannot fail by construction; kept) | FSM `default` excluded from code coverage | |
 | R5 | `a_tdo_en`, `a_tdo_en_no_rise_change` | monitor protocol + edge check | M15 |
-| R6 | `a_tdo_idle_zero`, `a_tdo_no_rise_change`, `a_scan_data` | monitor edge check, scoreboard | M4 |
+| R6 | `a_tdo_idle_zero`, `a_tdo_no_rise_change`, `a_scan_data` | monitor edge check, scoreboard | M4, M21 |
 | R7 | `a_capture_ir_01` | scoreboard (IR scan TDO) | M3 |
 | R8 | `a_scan_data`, `a_scan_delay` | scoreboard | |
 | R9 | `a_ir_stable`, `a_ir_update`, `a_reset_idcode`, `a_trst_ir`, `a_ir_no_rise_change` | `jtag_idcode_test` | M5, M6, M16 |

@@ -82,7 +82,7 @@ module jtag_dft_props
   logic [2:0] dft_at_rise;
   always_ff @(posedge tck or negedge trst_n) begin
     if (!trst_n) dft_at_rise <= 3'b000;                  // R14 (c) reset value
-    else         dft_at_rise <= {test_mode, scan_en, mbist_start};
+    else         dft_at_rise <= $sampled({test_mode, scan_en, mbist_start});   // pre-edge value, see jtag_reg_props
   end
 
   a_dft_no_rise_change: assert property (@(negedge tck)

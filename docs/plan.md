@@ -59,7 +59,7 @@ In `formal/jtag_reg_props.sv`.
 
   `k` (5 bits) and `j` (6 bits) are registers that hold their value and have no reset under `QUESTA_FORMAL`, so formal picks any initial value: the same mechanism as `sym_idx` in the AXI project, and no range assumption is needed. In simulation they get new random values at every capture (constant within a scan), or are pinned with `+scan_k=` / `+scan_j=`.
   Covers `c_scan_data_last_*` and `c_scan_delay_*`, one per register (IR, BYPASS, IDCODE, DFT_CTRL), show that both properties are actually exercised for every register, not passing vacuously.
-- **Edge checks (shadow registers):** `a_tdo_no_rise_change`, `a_tdo_en_no_rise_change`, `a_ir_no_rise_change`. Each falling-edge signal is copied at the rising edge, and a `@(negedge tck)` assertion checks it has not moved since. The shadows reset to the spec reset values, so a wrong reset value is caught rather than copied. TDO is sampled at the rising edge (section 1), so a data check alone cannot see on which edge TDO changed.
+- **Edge checks (shadow registers):** `a_tdo_no_rise_change`, `a_tdo_en_no_rise_change`, `a_ir_no_rise_change`. Each falling-edge signal is copied at the rising edge (`$sampled`, so simulation also takes the pre-edge value), and a `@(negedge tck)` assertion checks it has not moved since. The shadows reset to the spec reset values, so a wrong reset value is caught rather than copied. TDO is sampled at the rising edge (section 1), so a data check alone cannot see on which edge TDO changed.
 
 ### 2.3 DFT and MBIST checks
 
@@ -111,7 +111,7 @@ exit
 
 ### 3.1 Transactions
 
-All UVM files live in `tb/`; `tb/tb.f` lists them.
+All UVM files live in `tb/`; `tb/tb.f` lists them. Development runs locally under Verilator with UVM 1800.2-2020 (`make uvm TEST=… SEED=…`); the regression and coverage sign-off run on Questa.
 
 Stimulus and observation are separate classes: the driver never fills in results, and the scoreboard never sees a driver object.
 
@@ -120,7 +120,8 @@ Stimulus and observation are separate classes: the driver never fills in results
 class jtag_seq_item extends uvm_sequence_item;
   typedef enum {IR_SCAN, DR_SCAN, RESET_TMS, RESET_TRST, IDLE, TCK_STOP} kind_e;
   rand kind_e        kind;
-  rand bit           tdi_q[$];     // shifted in, LSB first; length = number of bits shifted (no 64-bit limit)
+  rand int unsigned  len;          // random length; after randomize(), len == tdi_q.size()
+       bit           tdi_q[$];     // shifted in, LSB first, what the driver uses (no 64-bit limit)
   rand bit           use_pause;    // go through Pause-xR mid-shift
   rand int unsigned  pause_at;     // shift index where the pause happens
   rand int unsigned  idle_cycles;  // also TCK-stopped cycles for TCK_STOP
@@ -139,12 +140,15 @@ class jtag_scan_txn extends uvm_sequence_item;
 endclass
 ```
 
+`len` exists only because random queue sizes are poorly supported by some simulators: `len` is randomized, `post_randomize` fills `tdi_q`, and if a sequence pre-filled `tdi_q`, its size wins. A pause that does not fit the scan is a fatal error, in `post_randomize` and in the driver, so it can never be skipped silently.
+
 ### 3.2 Components
 
 - **TCK source:** a free-running clock in `tb_top`, gated by `tck_en` in `jtag_if`. The driver drops `tck_en` (only while TCK is low, so no glitch) for `TCK_STOP` items. A stopped TCK is legal JTAG; the monitor checks that the TAP state, `tdo` and the DFT outputs do not change while TCK is stopped, and the scoreboard checks that the next scan after the stop is still correct.
 - **Driver:** tracks the TAP state itself and generates the TMS path for each item, e.g. IR_SCAN from Run-Test/Idle = `1,1,0,0` → shift `tdi_q.size()` bits (TMS = 1 on the last bit) → `1` (Update-IR) → `0` (Run-Test/Idle). Drive TMS/TDI on the falling edge so they are stable at the rising edge.
+- **Sampling:** both monitors read pins through clocking blocks with `#1step` input skew, so they see the values just before the rising edge in every simulator, even for an output that changes in the edge's own time step.
 - **JTAG monitor:** reconstructs the TAP state **independently** from TMS (its own copy of the spec's state table, not the driver's), collects TDI/TDO bits during Shift states and publishes `jtag_scan_txn`s. Flag a protocol error if `tdo_en` is high outside Shift states, or if `tdo` / `tdo_en` change while `tck` is high (i.e. not at a falling edge; changes caused by `trst_n` are ignored). On `trst_n` low mid-scan, it publishes the partial scan with `aborted = 1` and resets its state. (Only `trst_n` can abort a scan: via TMS, every path out of Shift-xR / Pause-xR passes Exit → Update before Test-Logic-Reset, so the scan always completes first.)
-- **DFT monitor:** a passive monitor on `dft_if` that publishes every change of `test_mode` / `scan_en` / `mbist_start` / `mbist_done` / `mbist_pass` with a timestamp. It flags an error if `test_mode` / `scan_en` / `mbist_start` change while `tck` is high (ignoring `trst_n` clears), the simulation counterpart of the formal edge-only properties.
+- **DFT monitor:** a passive monitor on `dft_if` that samples the DFT pins at every rising edge of TCK and publishes them stamped with the edge number. Both monitors count TCK edges the same way, so the scoreboard lines up their messages by cycle, not by arrival order (they fire on the same edge). It flags an error if `test_mode` / `scan_en` / `mbist_start` change while `tck` is high (ignoring `trst_n` clears), the simulation counterpart of the formal edge-only properties.
 - **Reference model:** predicts the active instruction, BYPASS / IDCODE / DFT_CTRL contents, TDO streams and DFT output changes, including the "unused opcode = BYPASS" and "reset = IDCODE" rules. It is fed **only by the monitors, never by the driver** (stated in the code comments too): this is why a driver bug cannot hide a DUT bug.
 - **Scoreboard:** compares every observed TDO stream and every DFT output change against the model. In `check_phase`, report any scan that started but never completed; scans that ended with `aborted = 1` count as complete, so a mid-scan `trst_n` in `jtag_random_test` does not false-fail.
 - **Timeouts:** fail fast if a sequence hangs, as in the AXI project.
@@ -200,13 +204,14 @@ One patch per bug in `mutations/`. Run each against formal and UVM, then record 
 | M13 | DFT update fires with any instruction active | `a_dft_update_only`; DFT monitor + scoreboard |
 | M14 | Reserved bits 7:5 writable (read back what was written) | `a_scan_data`, `a_dft_write`; dft test |
 | M15 | `tdo_en` also high in Exit1-xR | `a_tdo_en`; monitor protocol check |
-| M16 | `trst_n` does not reset the IR (only the TLR falling-edge clear does) | `a_trst_ir`, IR shadow register (need `-auto_constraint_off`); simulation may miss it |
+| M16 | `trst_n` does not reset the IR (only the TLR falling-edge clear does) | `a_trst_ir`, IR shadow register (need `-auto_constraint_off`); reset test: short `trst_n` pulse with TMS = 0, so no falling edge happens in Test-Logic-Reset |
 | M17 | Update registers clocked on the rising edge | edge checks (2.2, 2.3), `a_dft_write`; DFT monitor edge check |
 | M18 | `mbist_done` one edge early (`MBIST_CYCLES - 2` in the compare) | `a_mbist_done_exact`; exact-count check in dft test / smoke |
 | M19 | `mbist_done` is a pulse, not held while `mbist_start` = 1 | `a_mbist_hold`; dft test |
 | M20 | `mbist_pass` re-sampled from `mbist_fail_i` after done | `a_mbist_hold`; dft test |
+| M21 | TDO returns to zero while TCK is high (combinational; correct at every rising-edge sample) | `a_tdo_no_rise_change`; JTAG monitor edge check. No data check can see it |
 
-M1–M9 are mostly control / FSM bugs; M10–M17 cover the data path and the edge timing; M18–M20 cover the MBIST stub. The goal is a table in README.md showing which flow caught each of the **20 mutations**. M16 is expected to be a formal-only catch, which is a result worth reporting, not a gap to hide. Any other miss points to a missing check, so add it.
+M1–M9 are mostly control / FSM bugs; M10–M17 and M21 cover the data path and the edge timing; M18–M20 cover the MBIST stub. The goal is a table in README.md showing which flow caught each of the **21 mutations**. M16 needs a specific stimulus in simulation (a short `trst_n` pulse followed directly by TMS = 0); a result worth reporting either way. Any other miss points to a missing check, so add it.
 
 **Mutant sanity check (`run_mutations.py`):** before scoring, confirm that each mutant applies cleanly, compiles, and actually changes behaviour (e.g. a short directed run whose trace differs from the clean RTL, or at least one formal assertion that differs). An equivalent mutant would otherwise show up as falsely "missed". Patches are applied and reverted with `git apply` / `git apply -R`.
 
@@ -229,4 +234,4 @@ M1–M9 are mostly control / FSM bugs; M10–M17 cover the data path and the edg
 | Phase 1 | Specification (`design_spec.md`), RTL, lint, directed smoke test | Lint clean, smoke test passing |
 | Phase 2 | Formal: FSM, register, DFT and MBIST properties, covers, Questa flow | Every assertion proven, every cover reached |
 | Phase 3 | UVM: agent, monitors, reference model, scoreboard, coverage, tests, regression | 20/20 seeds pass, 100 % merged functional coverage, code coverage reviewed |
-| Phase 4 | Mutation testing, results tables in README.md | All 20 mutations scored per flow, README results complete |
+| Phase 4 | Mutation testing, results tables in README.md | All 21 mutations scored per flow, README results complete |

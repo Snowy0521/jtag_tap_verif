@@ -4,7 +4,7 @@ An IEEE 1149.1 test access port (TAP) with a private DFT control register, writt
 
 1. **Formal (Questa PropCheck), in progress:** aims at full (unbounded) proofs of the TAP state machine, the IR / DR protocol, the DFT register and the MBIST timing, with covers for every state and transition. No assumptions: every input is free, and `trst_n` can assert at any cycle.
 2. **UVM (QuestaSim), planned:** a JTAG agent whose monitor rebuilds the TAP state from the pins on its own and feeds a reference-model scoreboard, so a driver bug cannot hide a DUT bug. Directed tests plus a random test with TCK stops and mid-scan `trst_n`, to be signed off on merged coverage over 20 seeds.
-3. **Mutation testing, planned:** 20 injected bugs, each to be recorded as caught by formal, by simulation, or both.
+3. **Mutation testing, planned:** 21 injected bugs, each to be recorded as caught by formal, by simulation, or both.
 
 The full plan is in [docs/plan.md](docs/plan.md), the design rules in [docs/design_spec.md](docs/design_spec.md).
 
@@ -21,7 +21,7 @@ Work in progress.
 | Lint (verilator `-Wall`, slang) | clean |
 | Directed smoke test (iverilog) | passing |
 | Formal properties and proofs (`formal/`) | in progress |
-| UVM environment and regression (`tb/`) | planned |
+| UVM environment and regression (`tb/`) | in progress |
 | Mutation testing (`mutations/`) | planned |
 
 ## Design
@@ -51,9 +51,10 @@ All targets run from the repository root; outputs go to `build/`.
 | `make gen` | Python | Regenerate the per-arc state-machine checks from the spec's state table |
 | `make props-sim` | Verilator | Run the formal properties in a random simulation (local sanity check, not a proof) |
 | `make formal` | Questa Formal | Prove all properties (`formal/run_formal.tcl`) |
+| `make uvm TEST=<test> SEED=<n>` | Verilator + UVM 1800.2 | Run a UVM test locally (development; sign-off runs on Questa) |
 | `make clean` | | Remove `build/` |
 
-Questa targets for UVM (`sim`, `regress`, `cov`) and mutations (`mutate`) will follow. The open-source tools cannot run the formal proofs or UVM.
+Questa targets for UVM (`sim`, `regress`, `cov`) and mutations (`mutate`) will follow. The open-source tools cannot run the formal proofs, and Verilator's functional coverage support is limited, so coverage sign-off runs on Questa.
 
 ## Results
 
@@ -75,7 +76,7 @@ To be filled in as each flow is completed.
 
 | Mutations | Caught by formal | Caught by simulation | Caught by both | Missed |
 |---|---|---|---|---|
-| 20 | – | – | – | – |
+| 21 | – | – | – | – |
 
 ## Repository layout
 
@@ -99,11 +100,10 @@ jtag_tap_verif/
 ├── formal/                  formal harness, checkers, Questa run script
 ├── scripts/
 │   └── gen_fsm_props.py     spec state table → per-arc checks
-└── tb/
-    └── tb_smoke.sv          directed smoke test (no UVM)
+└── tb/                      UVM testbench (agent, monitor, sequences, tests), tb_smoke.sv directed smoke test
 ```
 
-Planned: the UVM files in `tb/` and `mutations/`, each named in [docs/plan.md](docs/plan.md) where it is introduced.
+Planned: `mutations/`, named in [docs/plan.md](docs/plan.md) where it is introduced.
 
 ## References
 
