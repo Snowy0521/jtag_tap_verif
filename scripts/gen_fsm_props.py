@@ -28,7 +28,7 @@ def die(msg):
 
 def parse_spec():
     """Return [(state, code, next_tms0, next_tms1)] from the spec's state table."""
-    rows = [m.groups() for line in SPEC.read_text().splitlines() if (m := ROW.match(line))]
+    rows = [m.groups() for m in map(ROW.match, SPEC.read_text(encoding="utf-8").splitlines()) if m]
     if len(rows) != 16:
         die(f"expected 16 rows in the state table of {SPEC}, found {len(rows)}")
     states = [r[0] for r in rows]
@@ -45,7 +45,7 @@ def parse_spec():
 
 def check_codes(rows):
     """The spec's codes must match tap_state_e in the RTL package."""
-    pkg = {m.group(1): m.group(2) for line in PKG.read_text().splitlines() if (m := ENUM.match(line))}
+    pkg = {m.group(1): m.group(2) for m in map(ENUM.match, PKG.read_text(encoding="utf-8").splitlines()) if m}
     for state, code, _, _ in rows:
         if pkg.get(state) != code:
             die(f"{state}: spec code {code}, jtag_pkg.sv code {pkg.get(state)}")
@@ -81,11 +81,11 @@ def main():
     check_codes(rows)
     text = render(rows)
     if "--check" in sys.argv[1:]:
-        if not OUT.exists() or OUT.read_text() != text:
+        if not OUT.exists() or OUT.read_text(encoding="utf-8") != text:
             die(f"{OUT} is stale: run python3 scripts/gen_fsm_props.py")
         return
     OUT.parent.mkdir(exist_ok=True)
-    OUT.write_text(text)
+    OUT.write_text(text, encoding="utf-8")
     print(f"wrote {OUT}: 32 arc assertions, 32 arc covers, 16 state covers")
 
 
