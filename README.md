@@ -52,9 +52,11 @@ All targets run from the repository root; outputs go to `build/`.
 | `make props-sim` | Verilator | Run the formal properties in a random simulation (local sanity check, not a proof) |
 | `make formal` | Questa Formal | Prove all properties (`formal/run_formal.tcl`) |
 | `make uvm TEST=<test> SEED=<n>` | Verilator + UVM 1800.2 | Run a UVM test locally (development; sign-off runs on Questa) |
+| `make sim TEST=<test> SEED=<n>` | QuestaSim + UVM 1.2 | Run a UVM test with functional and DUT code coverage (`build/cov/<test>_<seed>.ucdb`) |
+| `make sim-directed` | QuestaSim + UVM 1.2 | Run every directed test once (one build) |
 | `make clean` | | Remove `build/` |
 
-Questa targets for UVM (`sim`, `regress`, `cov`) and mutations (`mutate`) will follow. The open-source tools cannot run the formal proofs, and Verilator's functional coverage support is limited, so coverage sign-off runs on Questa.
+Questa targets for the regression (`regress`, `cov`) and mutations (`mutate`) will follow. The open-source tools cannot run the formal proofs, and Verilator's functional coverage support is limited, so coverage sign-off runs on Questa.
 
 ## Results
 

@@ -37,7 +37,8 @@ module tb_top;
   );
 
   initial begin
-    string test = "jtag_idcode_test";
+    string test;
+    test = "jtag_idcode_test";
     dif.mbist_fail_i = 1'b0;
     uvm_config_db #(virtual jtag_if)::set(null, "*", "jtag_vif", jif);
     uvm_config_db #(virtual dft_if)::set(null, "*", "dft_vif", dif);
