@@ -3,7 +3,7 @@
 An IEEE 1149.1 test access port (TAP) with a private DFT control register, written in SystemVerilog and verified three ways:
 
 1. **Formal (Questa PropCheck), done:** full (unbounded) proofs of the TAP state machine, the IR / DR protocol, the DFT register and the MBIST timing, with covers for every state and transition. No assumptions: every input is free, and `trst_n` can assert at any cycle. 63/63 assertions proven, 67/67 covers reached.
-2. **UVM (QuestaSim), planned:** a JTAG agent whose monitor rebuilds the TAP state from the pins on its own and feeds a reference-model scoreboard, so a driver bug cannot hide a DUT bug. Directed tests plus a random test with TCK stops and mid-scan `trst_n`, to be signed off on merged coverage over 20 seeds.
+2. **UVM (QuestaSim), in progress:** a JTAG agent whose monitor rebuilds the TAP state from the pins on its own and feeds a reference-model scoreboard, so a driver bug cannot hide a DUT bug. Directed tests plus a random test with TCK stops and mid-scan `trst_n`, to be signed off on merged coverage over 20 seeds.
 3. **Mutation testing, planned:** 21 injected bugs, each to be recorded as caught by formal, by simulation, or both.
 
 The full plan is in [docs/plan.md](docs/plan.md), the design rules in [docs/design_spec.md](docs/design_spec.md).
@@ -51,12 +51,12 @@ All targets run from the repository root; outputs go to `build/`.
 | `make gen` | Python | Regenerate the per-arc state-machine checks from the spec's state table |
 | `make props-sim` | Verilator | Run the formal properties in a random simulation (local sanity check, not a proof) |
 | `make formal` | Questa Formal | Prove all properties (`formal/run_formal.tcl`) |
-| `make uvm TEST=<test> SEED=<n>` | Verilator + UVM 1800.2 | Run a UVM test locally (development; sign-off runs on Questa) |
+| `make uvm TEST=<test> SEED=<n>` | Verilator + UVM 1800.2-2020 | Run a UVM test locally (development; sign-off runs on Questa) |
 | `make sim TEST=<test> SEED=<n>` | QuestaSim + UVM 1.2 | Run a UVM test with functional and DUT code coverage (`build/cov/<test>_<seed>.ucdb`) |
 | `make sim-directed` | QuestaSim + UVM 1.2 | Run every directed test once (one build) |
 | `make clean` | | Remove `build/` |
 
-Questa targets for the regression (`regress`, `cov`) and mutations (`mutate`) will follow. The open-source tools cannot run the formal proofs, and Verilator's functional coverage support is limited, so coverage sign-off runs on Questa.
+The UVM bench runs unchanged on UVM 1.2 (QuestaSim) and UVM 1800.2-2020 (Verilator), and both simulation flows also run the formal checkers, bound into the DUT. Questa targets for the regression (`regress`, `cov`) and mutations (`mutate`) will follow. The open-source tools cannot run the formal proofs, and Verilator's functional coverage support is limited, so coverage sign-off runs on Questa.
 
 ## Results
 

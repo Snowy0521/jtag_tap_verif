@@ -29,5 +29,6 @@ package jtag_tb_pkg;
   `include "jtag_reset_test.sv"
   `include "jtag_dft_test.sv"
   `include "jtag_pause_test.sv"
+  `include "jtag_random_test.sv"
 
 endpackage

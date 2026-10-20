@@ -90,9 +90,12 @@ class jtag_driver extends uvm_driver #(jtag_seq_item);
     n_tms_paths++;
   endtask
 
-  // Stop TCK while it is low (glitch-free), then restart it
+  // Stop TCK while it is low (glitch-free), then restart it. The gate drops
+  // 1 ns after the falling edge, so "stopped" never shares a time step with the
+  // DUT's falling-edge updates (the monitors flag any change while stopped).
   task tck_stop(int unsigned cycles);
     @(negedge vif.tck);
+    #(1ns);
     vif.tck_en <= 1'b0;
     #(cycles * TCK_PERIOD_NS * 1ns);
     vif.tck_en <= 1'b1;

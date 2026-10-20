@@ -26,7 +26,7 @@ Aim for the same sign-off as the AXI4-Lite project: **every assertion a full pro
 
 **Checker conventions (apply to every file in `formal/`):**
 - Every checker register (shadow registers, counters, reference state) has `trst_n` as its asynchronous reset and resets to the value the **spec** defines, never to whatever the RTL does.
-- Every checker module starts with `` `include "jtag_checker_defaults.svh" ``: `default clocking cb @(posedge tck)` and `default disable iff (!trst_n || trst_seen)`, so no property can forget its reset. `trst_seen` stays 1 from any `trst_n` assertion until the next rising edge, so a reset pulse that starts and ends between two rising edges still disables the attempts it interrupts. A property on another edge names its clock explicitly (e.g. `@(negedge tck)`); the default `disable iff` still applies. The async-reset checks (2.1) are deferred immediate assertions, which the defaults do not affect.
+- Every checker module starts with `` `include "jtag_checker_defaults.svh" ``: `default clocking cb @(posedge tck)` and an X-safe `default disable iff (trst_n !== 1'b1 || trst_seen !== 1'b0 || rst_seen !== 1'b1)`, so no property can forget its reset. `rst_seen` keeps every property off until `trst_n` has been asserted once (before that, a 4-state simulator has X everywhere); in formal it is the constant 1, and a simulation that never asserts `trst_n` ends with an error. `trst_seen` stays 1 from any `trst_n` assertion until the next rising edge, so a reset pulse that starts and ends between two rising edges still disables the attempts it interrupts. A property on another edge names its clock explicitly (e.g. `@(negedge tck)`); the default `disable iff` still applies. The async-reset checks (2.1) are deferred immediate assertions, which the defaults do not affect.
 - Checker counters are wide enough to saturate at their limit (e.g. `$clog2(MBIST_CYCLES + 1)` bits) and stop there.
 
 These matter because the sign-off run leaves `trst_n` free (`-auto_constraint_off`, 2.5): a mid-scan or mid-MBIST reset clears the DUT, and a checker that kept its state would fail falsely.
@@ -80,7 +80,7 @@ Generated: all 16 states and all 32 arcs (2.1). In `formal/jtag_covers.sv`:
 
 ### 2.5 Questa Verify flow
 
-`formal/formal_top.sv` instantiates the DUT and binds the checkers; `formal/formal.f` lists the files; `formal/run_formal.tcl` runs the flow.
+`formal/formal_top.sv` instantiates the DUT and binds the checkers (`formal/jtag_binds.svh`, shared with the UVM bench); `formal/formal.f` lists the files; `formal/run_formal.tcl` runs the flow.
 
 Before each Questa run, `make props-sim` runs the same checkers in a random Verilator simulation (`formal/props_sim.sv`). It is not a proof, but it catches compile errors and wrong properties locally. Verilator treats `assert final` as a plain immediate assertion, so the async-reset checks have a simulation-only variant under `ifdef VERILATOR`.
 
@@ -146,6 +146,7 @@ endclass
 
 - **TCK source:** a free-running clock in `tb_top`, gated by `tck_en` in `jtag_if`. The driver drops `tck_en` (only while TCK is low, so no glitch) for `TCK_STOP` items. A stopped TCK is legal JTAG; the monitor checks that the TAP state, `tdo` and the DFT outputs do not change while TCK is stopped, and the scoreboard checks that the next scan after the stop is still correct.
 - **Driver:** tracks the TAP state itself and generates the TMS path for each item, e.g. IR_SCAN from Run-Test/Idle = `1,1,0,0` → shift `tdi_q.size()` bits (TMS = 1 on the last bit) → `1` (Update-IR) → `0` (Run-Test/Idle). Drive TMS/TDI on the falling edge so they are stable at the rising edge.
+- **Formal checkers in simulation:** both simulation flows bind the formal checker modules into the DUT (same binds as `formal_top.sv`), so the UVM stimulus also drives every property, including the white-box ones. A failing property fails the run.
 - **Sampling:** both monitors read pins through clocking blocks with `#1step` input skew, so they see the values just before the rising edge in every simulator, even for an output that changes in the edge's own time step.
 - **JTAG monitor:** reconstructs the TAP state **independently** from TMS (its own copy of the spec's state table, not the driver's), collects TDI/TDO bits during Shift states and publishes `jtag_scan_txn`s. Flag a protocol error if `tdo_en` is high outside Shift states, or if `tdo` / `tdo_en` change while `tck` is high (i.e. not at a falling edge; changes caused by `trst_n` are ignored). On `trst_n` low mid-scan, it publishes the partial scan with `aborted = 1` and resets its state. (Only `trst_n` can abort a scan: via TMS, every path out of Shift-xR / Pause-xR passes Exit → Update before Test-Logic-Reset, so the scan always completes first.)
 - **DFT monitor:** a passive monitor on `dft_if` that samples the DFT pins at every rising edge of TCK and publishes them stamped with the edge number. Both monitors count TCK edges the same way, so the scoreboard lines up their messages by cycle, not by arrival order (they fire on the same edge). It flags an error if `test_mode` / `scan_en` / `mbist_start` change while `tck` is high (ignoring `trst_n` clears), the simulation counterpart of the formal edge-only properties.
@@ -193,7 +194,7 @@ One patch per bug in `mutations/`. Run each against formal and UVM, then record 
 | M2 | Select-IR-Scan with TMS = 1 goes to Run-Test/Idle instead of Test-Logic-Reset | `a_tms5_reset` |
 | M3 | Capture-IR loads `2'b00` | `a_capture_ir_01`; scoreboard |
 | M4 | TDO updated on the rising edge | `a_tdo_no_rise_change`; JTAG monitor edge check |
-| M5 | IR updates during Shift-IR | `a_ir_stable`; scoreboard |
+| M5 | IR updates during Shift-IR | `a_ir_stable` (formal, and in simulation with the checkers bound into the DUT). Not visible at the pins in this design (every exit from Shift-IR passes Update-IR, and no output depends on the instruction outside DR scans), so no black-box check can see it; with boundary scan (EXTEST driving pins) it would be |
 | M6 | Reset leaves BYPASS active instead of IDCODE | `a_reset_idcode`; idcode test |
 | M7 | Unused opcode selects IDCODE | `a_unused_is_bypass`; unused opcode test |
 | M8 | `scan_en` not gated by `test_mode` | `a_scan_en_safe` |

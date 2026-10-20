@@ -36,6 +36,13 @@ module tb_top;
     .mbist_pass   (dif.mbist_pass)
   );
 
+  // The formal checkers, bound into the DUT with the same binds as formal_top.sv:
+  // the random UVM stimulus then also drives every property, including the
+  // white-box ones no pin-level check can replace (e.g. a_ir_stable).
+`ifdef JTAG_SIM_CHECKERS
+  `include "jtag_binds.svh"
+`endif
+
   initial begin
     string test;
     test = "jtag_idcode_test";

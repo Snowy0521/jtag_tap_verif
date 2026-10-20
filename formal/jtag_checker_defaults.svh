@@ -13,11 +13,33 @@ always_ff @(posedge tck or negedge trst_n) begin
   else         trst_seen <= 1'b0;
 end
 
-// Every concurrent property: sampled on the rising edge, off during reset
+// rst_seen: trst_n has been asserted at least once. Before that, in a 4-state
+// simulator, the DUT state is X, so nothing is checked yet. In formal it is the
+// constant 1: the tool's reset init sequence plays that role, and the disable
+// condition stays exactly the one that was proven.
+logic rst_seen;
+`ifdef QUESTA_FORMAL
+assign rst_seen = 1'b1;
+`else
+always_ff @(posedge tck or negedge trst_n) begin
+  if (!trst_n) rst_seen <= 1'b1;
+  else         rst_seen <= rst_seen;
+end
+// The checkers must not stay switched off for a whole simulation
+final begin
+  if (rst_seen !== 1'b1)
+    $error("%m: trst_n was never asserted, so the checkers checked nothing");
+end
+`endif
+
+// Every concurrent property: sampled on the rising edge, off during reset.
+// X-safe: an unknown trst_n / trst_seen / rst_seen keeps the properties off (an
+// X disable condition would not disable them, and an X expression fails).
 default clocking cb @(posedge tck); endclocking
-default disable iff (!trst_n || trst_seen);
+default disable iff (trst_n !== 1'b1 || trst_seen !== 1'b0 || rst_seen !== 1'b1);
 
 // ASSERT_TRST(name, cond): cond must hold whenever trst_n is low (async reset).
+// Only while trst_n is really 0: before the first reset it is X in simulation.
 // Not under disable iff: a deferred immediate assertion, checked whenever its
 // inputs change, so it also sees resets between clock edges and with TCK stopped.
 // In Verilator, `assert final` acts like a plain immediate assertion and fires
@@ -26,9 +48,9 @@ default disable iff (!trst_n || trst_seen);
 `define JTAG_ASSERT_TRST
 `ifdef VERILATOR
 `define ASSERT_TRST(name, cond) \
-  always @(trst_n or (cond)) begin #1ps; name: assert (trst_n || (cond)); end
+  always @(trst_n or (cond)) begin #1ps; name: assert ((trst_n !== 1'b0) || (cond)); end
 `else
 `define ASSERT_TRST(name, cond) \
-  always_comb begin name: assert final (trst_n || (cond)); end
+  always_comb begin name: assert final ((trst_n !== 1'b0) || (cond)); end
 `endif
 `endif

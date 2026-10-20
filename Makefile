@@ -34,13 +34,16 @@ TEST     ?= jtag_idcode_test
 SEED     ?= 1
 
 # QuestaSim: UVM 1.2 shipped with Questa (no 1800.2 in the install; the
-# testbench only uses API common to both). Code coverage on the RTL only.
+# testbench only uses API common to both, so it runs on UVM 1.2 here and on
+# 1800.2-2020 under Verilator). Code coverage on the RTL only.
+# QUESTA_HOME: the questasim directory; taken from the vsim on PATH if not set.
 VLIB      ?= vlib
 VMAP      ?= vmap
 VLOG      ?= vlog
 VOPT      ?= vopt
 VSIM      ?= vsim
-QUESTA_UVM_HOME ?= /eda/Siemens/2024-25/RHELx86/QUESTA-CORE-PRIME_2024.3/questasim/verilog_src/uvm-1.2/src
+QUESTA_HOME     ?= $(abspath $(dir $(shell which vsim 2>/dev/null))/..)
+QUESTA_UVM_HOME ?= $(QUESTA_HOME)/verilog_src/uvm-1.2/src
 CODE_COV  ?= bcesf
 UVM_VERBOSITY ?= UVM_LOW
 SIM_COV_DIR := $(BUILD)/cov
@@ -48,7 +51,11 @@ DIRECTED  := jtag_reset_test jtag_idcode_test jtag_bypass_test jtag_unused_opcod
              jtag_dft_test jtag_pause_test
 
 FORMAL_F    := formal/formal.f
-FORMAL_SRCS := $(shell grep -v '^+' $(FORMAL_F)) formal/jtag_fsm_arcs.svh formal/jtag_checker_defaults.svh
+FORMAL_SRCS := $(shell grep -v '^+' $(FORMAL_F)) formal/jtag_fsm_arcs.svh formal/jtag_checker_defaults.svh formal/jtag_binds.svh
+# The checker modules alone (formal.f without the formal harness), bound into
+# the UVM DUT by tb_top.sv when JTAG_SIM_CHECKERS is defined
+CHECKER_SRCS := $(filter-out formal/formal_top.sv,$(shell grep -v '^+' $(FORMAL_F)))
+CHECKERS     := +incdir+formal +define+JTAG_SIM_CHECKERS $(CHECKER_SRCS)
 
 export MODELSIM := $(CURDIR)/$(BUILD)/modelsim.ini
 
@@ -90,20 +97,26 @@ formal: gen-check
 # Verilator is 2-state: --x-initial unique + rand reset start every flop at a
 # random value, the closest stand-in for X, so code that depends on
 # uninitialised state fails here instead of first on Questa.
-$(BUILD)/uvm/Vtb_top: $(RTL_SRCS) $(TB_SRCS) $(TB_F)
+# The formal checkers are bound in too (--assert): a failing property stops
+# the simulation, so the UVM summary is missing and the run counts as failed.
+$(BUILD)/uvm/Vtb_top: $(RTL_SRCS) $(TB_SRCS) $(TB_F) $(FORMAL_SRCS)
 	mkdir -p $(BUILD)
-	$(VERILATOR) --binary --timing --timescale 1ns/1ps -j 0 -Wno-fatal -Wno-lint -Wno-style \
+	$(VERILATOR) --binary --timing --assert --timescale 1ns/1ps -j 0 -Wno-fatal -Wno-lint -Wno-style \
 	    -Wno-SYMRSVDWORD --x-initial unique +define+UVM_NO_DPI +incdir+$(UVM_HOME) \
-	    --top-module tb_top -Mdir $(BUILD)/uvm $(UVM_HOME)/uvm_pkg.sv -f $(RTL_F) -f $(TB_F) \
+	    --top-module tb_top -Mdir $(BUILD)/uvm $(UVM_HOME)/uvm_pkg.sv -f $(RTL_F) $(CHECKERS) -f $(TB_F) \
 	    > $(BUILD)/uvm_build.log 2>&1 || (tail -30 $(BUILD)/uvm_build.log; exit 1)
 
 uvm: $(BUILD)/uvm/Vtb_top
 	$(BUILD)/uvm/Vtb_top +UVM_TESTNAME=$(TEST) +verilator+seed+$(SEED) +verilator+rand+reset+2 | tee $(BUILD)/uvm_$(TEST)_$(SEED).log
 	@grep -qE "UVM_ERROR :\s+0" $(BUILD)/uvm_$(TEST)_$(SEED).log && grep -qE "UVM_FATAL :\s+0" $(BUILD)/uvm_$(TEST)_$(SEED).log \
+	    && ! grep -q "%Error" $(BUILD)/uvm_$(TEST)_$(SEED).log \
 	    || (echo "TEST FAILED: $(TEST) seed $(SEED)"; exit 1)
 
 # UVM under QuestaSim. Three vlog calls: the UVM library, the RTL with +cover
-# (so code coverage is collected on the DUT only), then the testbench.
+# (so code coverage is collected on the DUT only), then the formal checkers and
+# the testbench. UVM_NO_DPI is not needed on Questa (it has DPI); it is kept so
+# both simulators run the same UVM configuration (the test name is read with
+# $value$plusargs in tb_top either way).
 sim-build:
 	mkdir -p $(BUILD)
 	$(VLIB) $(BUILD)/questa_work
@@ -111,17 +124,19 @@ sim-build:
 	$(VLOG) -sv -timescale 1ns/1ps +incdir+$(QUESTA_UVM_HOME) +define+UVM_NO_DPI \
 	    $(QUESTA_UVM_HOME)/uvm_pkg.sv
 	$(VLOG) -sv -timescale 1ns/1ps +cover=$(CODE_COV) -f $(RTL_F)
-	$(VLOG) -sv -timescale 1ns/1ps +incdir+$(QUESTA_UVM_HOME) +define+UVM_NO_DPI -f $(TB_F)
+	$(VLOG) -sv -timescale 1ns/1ps +incdir+$(QUESTA_UVM_HOME) +define+UVM_NO_DPI $(CHECKERS) -f $(TB_F)
 	$(VOPT) +acc tb_top -o tb_top_opt
 
 # One run: -onfinish stop returns to the do script after run_test's $finish,
 # so the coverage of the run is saved to build/cov/<test>_<seed>.ucdb.
-# Pass/fail from the UVM report summary.
+# Pass/fail from the UVM report summary, and no simulator error: a failing
+# bound property reports "** Error" (not UVM_ERROR) on Questa.
 SIM_RUN = mkdir -p $(SIM_COV_DIR); \
 	$(VSIM) -c -coverage tb_top_opt +UVM_TESTNAME=$$t -sv_seed $$s +UVM_VERBOSITY=$(UVM_VERBOSITY) \
 	    -onfinish stop -l $(BUILD)/sim_$${t}_$$s.log \
 	    -do "run -all; coverage save $(SIM_COV_DIR)/$${t}_$$s.ucdb; quit -f" > /dev/null 2>&1; \
-	if grep -qE "UVM_ERROR :\s+0" $(BUILD)/sim_$${t}_$$s.log && grep -qE "UVM_FATAL :\s+0" $(BUILD)/sim_$${t}_$$s.log; \
+	if grep -qE "UVM_ERROR :\s+0" $(BUILD)/sim_$${t}_$$s.log && grep -qE "UVM_FATAL :\s+0" $(BUILD)/sim_$${t}_$$s.log \
+	    && ! grep -qE "\*\* (Error|Fatal)" $(BUILD)/sim_$${t}_$$s.log; \
 	then echo "PASS: $$t seed $$s"; \
 	else echo "FAIL: $$t seed $$s (see $(BUILD)/sim_$${t}_$$s.log)"; fail=1; fi
 
