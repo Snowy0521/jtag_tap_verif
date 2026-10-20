@@ -2,7 +2,7 @@
 
 An IEEE 1149.1 test access port (TAP) with a private DFT control register, written in SystemVerilog and verified three ways:
 
-1. **Formal (Questa PropCheck), in progress:** aims at full (unbounded) proofs of the TAP state machine, the IR / DR protocol, the DFT register and the MBIST timing, with covers for every state and transition. No assumptions: every input is free, and `trst_n` can assert at any cycle.
+1. **Formal (Questa PropCheck), done:** full (unbounded) proofs of the TAP state machine, the IR / DR protocol, the DFT register and the MBIST timing, with covers for every state and transition. No assumptions: every input is free, and `trst_n` can assert at any cycle. 63/63 assertions proven, 67/67 covers reached.
 2. **UVM (QuestaSim), planned:** a JTAG agent whose monitor rebuilds the TAP state from the pins on its own and feeds a reference-model scoreboard, so a driver bug cannot hide a DUT bug. Directed tests plus a random test with TCK stops and mid-scan `trst_n`, to be signed off on merged coverage over 20 seeds.
 3. **Mutation testing, planned:** 20 injected bugs, each to be recorded as caught by formal, by simulation, or both.
 
@@ -20,7 +20,7 @@ Work in progress.
 | RTL (`rtl/`) | done |
 | Lint (verilator `-Wall`, slang) | clean |
 | Directed smoke test (iverilog) | passing |
-| Formal properties and proofs (`formal/`) | in progress |
+| Formal properties and proofs (`formal/`) | done |
 | UVM environment and regression (`tb/`) | planned |
 | Mutation testing (`mutations/`) | planned |
 
@@ -48,9 +48,12 @@ All targets run from the repository root; outputs go to `build/`.
 |---|---|---|
 | `make lint` | Verilator, slang | Lint the RTL (`rtl/rtl.f`) |
 | `make smoke` | Icarus Verilog | Directed smoke test `tb/tb_smoke.sv`: reset, IDCODE, BYPASS, unused opcode, DFT writes, MBIST pass / fail / restart, TMS reset, mid-scan `trst_n` |
+| `make gen` | Python | Regenerate the per-arc state-machine checks from the spec's state table |
+| `make props-sim` | Verilator | Run the formal properties in a random simulation (local sanity check, not a proof) |
+| `make formal` | Questa Formal | Prove all properties (`formal/run_formal.tcl`) |
 | `make clean` | | Remove `build/` |
 
-Questa targets (`formal`, `sim`, `regress`, `mutate`, `cov`) will be added with the formal and UVM code. The open-source tools are only for lint and the smoke test: they cannot run the concurrent SVA proofs or UVM.
+Questa targets for UVM (`sim`, `regress`, `cov`) and mutations (`mutate`) will follow. The open-source tools cannot run the formal proofs or UVM.
 
 ## Results
 
@@ -58,9 +61,9 @@ To be filled in as each flow is completed.
 
 **Formal (Questa PropCheck)**
 
-| Assertions proven | Covers reached | Max proof depth | Run time |
+| Assertions proven | Covers reached | Proof depth | Run time |
 |---|---|---|---|
-| – | – | – | – |
+| 63 / 63 | 67 / 67 | full proof (unbounded) | 595 s (4 engines, Questa 2024.3) |
 
 **UVM regression (QuestaSim)**
 
@@ -93,11 +96,14 @@ jtag_tap_verif/
 │   ├── jtag_dr.sv           BYPASS, IDCODE, DFT_CTRL registers
 │   ├── mbist_stub.sv        MBIST stand-in
 │   └── jtag_tap_top.sv      top level, TDO stage
+├── formal/                  formal harness, checkers, Questa run script
+├── scripts/
+│   └── gen_fsm_props.py     spec state table → per-arc checks
 └── tb/
     └── tb_smoke.sv          directed smoke test (no UVM)
 ```
 
-Planned: `formal/`, the UVM files in `tb/`, `mutations/` and `scripts/`, each named in [docs/plan.md](docs/plan.md) where it is introduced.
+Planned: the UVM files in `tb/` and `mutations/`, each named in [docs/plan.md](docs/plan.md) where it is introduced.
 
 ## References
 

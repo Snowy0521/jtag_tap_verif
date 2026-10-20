@@ -26,7 +26,7 @@ Aim for the same sign-off as the AXI4-Lite project: **every assertion a full pro
 
 **Checker conventions (apply to every file in `formal/`):**
 - Every checker register (shadow registers, counters, reference state) has `trst_n` as its asynchronous reset and resets to the value the **spec** defines, never to whatever the RTL does.
-- Every concurrent property has `disable iff (!trst_n)`, except the async-reset checks themselves (2.1), which are written as deferred immediate assertions.
+- Every checker module starts with `` `include "jtag_checker_defaults.svh" ``: `default clocking cb @(posedge tck)` and `default disable iff (!trst_n || trst_seen)`, so no property can forget its reset. `trst_seen` stays 1 from any `trst_n` assertion until the next rising edge, so a reset pulse that starts and ends between two rising edges still disables the attempts it interrupts. A property on another edge names its clock explicitly (e.g. `@(negedge tck)`); the default `disable iff` still applies. The async-reset checks (2.1) are deferred immediate assertions, which the defaults do not affect.
 - Checker counters are wide enough to saturate at their limit (e.g. `$clog2(MBIST_CYCLES + 1)` bits) and stop there.
 
 These matter because the sign-off run leaves `trst_n` free (`-auto_constraint_off`, 2.5): a mid-scan or mid-MBIST reset clears the DUT, and a checker that kept its state would fail falsely.
@@ -49,63 +49,40 @@ In `formal/jtag_tap_fsm_props.sv`, plus `formal/jtag_fsm_arcs.svh`, which `scrip
 
 In `formal/jtag_reg_props.sv`.
 
-- `a_capture_ir_01`: after Capture-IR, `ir_sr[1:0] == 2'b01`.
-- `a_ir_stable`: the active instruction changes only after Update-IR (falling edge) or in Test-Logic-Reset.
-- `a_reset_idcode`: in Test-Logic-Reset, the active instruction is IDCODE.
-- `a_tdo_en`: `tdo_en` is high only in Shift-IR / Shift-DR.
-- `a_unused_is_bypass`: any opcode not in the table selects BYPASS.
-- **End-to-end IDCODE check:** a small checker counts shift cycles since Capture-DR with IDCODE active and asserts `tdo == IDCODE_VAL[k]` at the shift where `cnt == k`. Use a **symbolic bit index** so one proof covers all 32 bits, with the same mechanism as the AXI project's `sym_idx` (free initial value in formal, constant by construction; random per seed in simulation):
-  ```systemverilog
-  logic [4:0] k;                                   // 5 bits: range is exactly 0..31, no k < 32 assumption
-  `ifdef QUESTA_FORMAL
-    always_ff @(posedge tck) k <= k;               // no reset: formal picks any initial value
-  `else
-    initial k = 5'($urandom_range(31, 0));
-  `endif
-  ```
-  The `ifdef` is required: writing `k` from both `always_ff` and `initial` is a compile error.
-- **End-to-end BYPASS check:** in Shift-DR with BYPASS active, the first bit out is 0 and each later bit equals TDI from the previous shift.
+- **IR:** `a_capture_ir_01` (Capture-IR loads `0001`), `a_ir_stable` (the instruction changes only in Update-IR or Test-Logic-Reset), `a_ir_update` (Update-IR loads the shifted value), `a_reset_idcode`.
+- **Decode:** `a_decode_idcode`, `a_decode_dft`, `a_unused_is_bypass`, written independently of the RTL's decode function.
+- **TDO:** `a_tdo_en` (`tdo_en` exactly in Shift-xR), `a_tdo_idle_zero`.
+- **Async reset:** `a_trst_ir`, `a_trst_tdo` (deferred immediate assertions, see 2.1).
+- **End-to-end scan model:** at each Capture-xR the checker records the register length and the value the **spec** says is captured (IR `0001`, IDCODE `0x11149FFF`, BYPASS 0, DFT_CTRL read-back with reserved bits 0). The expected values are written in the checker, not taken from the RTL package, so a wrong package constant cannot hide. Two **symbolic indices** make one proof cover every bit position:
+  - `a_scan_data`: the TDO bit at shift `k` equals captured bit `k` (`k < length`). Covers IR capture, shift order (LSB first), IDCODE value, BYPASS 0, DFT read-back.
+  - `a_scan_delay`: the TDO bit at shift `j + length` equals the TDI bit at shift `j`. Covers BYPASS (one-shift delay), IDCODE over-length scans and IR pass-through.
 
-TDO is sampled at the rising edge (section 1). A rising-edge data check cannot see *when* within the cycle TDO changed, so the edges get their own properties:
-
-- **Edge-only properties (shadow registers):** each falling-edge signal gets a checker shadow copy taken at the rising edge, and a falling-edge assertion checks that the signal has not moved since:
-  ```systemverilog
-  logic tdo_at_rise;
-  always_ff @(posedge tck or negedge trst_n)
-    if (!trst_n) tdo_at_rise <= 1'b0;                       // spec reset value of tdo (R18), not the RTL's
-    else         tdo_at_rise <= tdo;                        // value held at the rising edge (changes only at the falling edge in correct RTL)
-  a_tdo_no_rise_change: assert property (@(negedge tck) disable iff (!trst_n) tdo == tdo_at_rise);
-  ```
-  Correct RTL keeps the signal stable from rise to fall, so this holds; a signal that moves on the rising edge breaks it (M4, M17). The shadow resets to the value the **spec** defines (`tdo` and `tdo_en` → 0, IR → IDCODE, DFT → 0; spec R9, R14, R18), so a mutant with a wrong reset value is caught rather than copied. The shadow's own async reset is the `trst_n` escape term: an async clear between rise and fall clears DUT and shadow alike, so the free-reset run (`-auto_constraint_off`) gives no false fail. Each property uses a single clock, and nothing depends on `$global_clock` support.
-  Applied to: `tdo`, `tdo_en`, the IR update register, and the DFT update registers `test_mode`, `scan_en`, `mbist_start`. **Not** to `mbist_done` / `mbist_pass`: the MBIST stub runs on the rising edge (spec §2), so these change on the rising edge in correct RTL.
+  `k` (5 bits) and `j` (6 bits) are registers that hold their value and have no reset under `QUESTA_FORMAL`, so formal picks any initial value: the same mechanism as `sym_idx` in the AXI project, and no range assumption is needed. In simulation they get new random values at every capture (constant within a scan), or are pinned with `+scan_k=` / `+scan_j=`.
+  Covers `c_scan_data_last_*` and `c_scan_delay_*`, one per register (IR, BYPASS, IDCODE, DFT_CTRL), show that both properties are actually exercised for every register, not passing vacuously.
+- **Edge checks (shadow registers):** `a_tdo_no_rise_change`, `a_tdo_en_no_rise_change`, `a_ir_no_rise_change`. Each falling-edge signal is copied at the rising edge, and a `@(negedge tck)` assertion checks it has not moved since. The shadows reset to the spec reset values, so a wrong reset value is caught rather than copied. TDO is sampled at the rising edge (section 1), so a data check alone cannot see on which edge TDO changed.
 
 ### 2.3 DFT and MBIST checks
 
-In `formal/jtag_dft_props.sv`.
+In `formal/jtag_dft_props.sv`, with its own model of the DFT_CTRL shift register.
 
-- `a_dft_update_only`: `test_mode`, `scan_en`, `mbist_start` change only after Update-DR with DFT_CTRL active, or on reset.
-- `a_dft_reset_functional`: Test-Logic-Reset → all DFT outputs are 0.
-- `a_scan_en_safe`: `scan_en |-> test_mode`.
-- `a_mbist_done_capture`: in Capture-DR with DFT_CTRL active, bits 3/4 of the shift register equal `mbist_done` / `mbist_pass`.
-- `a_reserved_zero`: bits 7:5 always capture 0 and have no effect.
-- **MBIST stub (R19–R21)**, with `MBIST_CYCLES = 4` set from `formal_top`:
-  - `a_mbist_done_exact`: a checker counter (`$clog2(MBIST_CYCLES + 1)` bits, async reset on `trst_n`, per the checker conventions above) counts rising edges that sample `mbist_start = 1`, clears when `mbist_start = 0`, and saturates at `MBIST_CYCLES`; `mbist_done == (cnt >= MBIST_CYCLES)` at every rising edge. This pins the exact cycle count (catches M18).
-  - `a_mbist_clear`: `!mbist_start |=> !mbist_done && !mbist_pass`.
-  - `a_mbist_hold`: `mbist_done && mbist_start |=> $stable({mbist_done, mbist_pass})` (catches M19, M20).
-  - `a_mbist_pass_value`: `$rose(mbist_done) |-> mbist_pass == !$past(mbist_fail_i)`.
+- **DFT register:** `a_dft_update_only` (outputs change only in a DFT_CTRL Update-DR or Test-Logic-Reset), `a_dft_write` (the value written, with `scan_en` gated by `test_mode`), `a_dft_reset_functional`, `a_trst_dft`, `a_scan_en_safe`. Read-back of the MBIST status and the reserved bits is checked by `a_scan_data` (2.2).
+- **MBIST stub**, with `MBIST_CYCLES = 4` set from `formal_top`: `a_mbist_done_exact` (a checker counter of rising edges that sample `mbist_start = 1`; `mbist_done` exactly when it reaches `MBIST_CYCLES`), `a_mbist_clear`, `a_mbist_hold`, `a_mbist_pass_value`, `a_mbist_pass_needs_done`.
+- **Edge check:** `a_dft_no_rise_change` for `test_mode`, `scan_en`, `mbist_start`. Not for `mbist_done` / `mbist_pass`: the stub runs on the rising edge.
 
 ### 2.4 Covers
 
-In `formal/jtag_covers.sv`.
+Generated: all 16 states and all 32 arcs (2.1). In `formal/jtag_covers.sv`:
 
-- Every one of the 16 states reached; every one of the 32 arcs taken (arc covers generated, see 2.1).
-- A full IR scan followed by a full 32-bit IDCODE read.
-- A scan that goes through Pause-DR and Exit2-DR back into Shift-DR.
-- DFT sequence: write `test_mode=1, mbist_start=1`, wait for `mbist_done`, read back pass.
+- `c_ir_scan_then_idcode_read`: an IR scan that loads IDCODE, then a full 32-bit read.
+- `c_pause_dr`, `c_pause_ir`: a scan that pauses and returns to shifting.
+- `c_scan_mode`, `c_mbist_pass_readback`, `c_mbist_fail`, `c_mbist_restart`, `c_tms_reset_from_test_mode`.
+- `c_trst_mid_scan`: `trst_n` during a DR scan. It opts out of the default `disable iff`, which would otherwise switch it off exactly when it happens.
 
 ### 2.5 Questa Verify flow
 
 `formal/formal_top.sv` instantiates the DUT and binds the checkers; `formal/formal.f` lists the files; `formal/run_formal.tcl` runs the flow.
+
+Before each Questa run, `make props-sim` runs the same checkers in a random Verilator simulation (`formal/props_sim.sv`). It is not a proof, but it catches compile errors and wrong properties locally. Verilator treats `assert final` as a plain immediate assertion, so the async-reset checks have a simulation-only variant under `ifdef VERILATOR`.
 
 Based on the known-working `axi4lite_uvm_questa/sim/formal_questa.do`, which uses no `netlist` commands:
 
@@ -217,14 +194,14 @@ One patch per bug in `mutations/`. Run each against formal and UVM, then record 
 | M7 | Unused opcode selects IDCODE | `a_unused_is_bypass`; unused opcode test |
 | M8 | `scan_en` not gated by `test_mode` | `a_scan_en_safe` |
 | M9 | DFT outputs not cleared in Test-Logic-Reset | `a_dft_reset_functional`; dft test |
-| M10 | DR shift direction reversed (MSB first) | IDCODE end-to-end check; idcode test |
-| M11 | BYPASS captures 1 | BYPASS end-to-end check; bypass test |
-| M12 | One wrong IDCODE bit (e.g. bit 17) | symbolic-`k` IDCODE check; idcode test |
+| M10 | DR shift direction reversed (MSB first) | `a_scan_data`; idcode test |
+| M11 | BYPASS captures 1 | `a_scan_data`; bypass test |
+| M12 | One wrong IDCODE bit (e.g. bit 17) | `a_scan_data` (symbolic `k`); idcode test |
 | M13 | DFT update fires with any instruction active | `a_dft_update_only`; DFT monitor + scoreboard |
-| M14 | Reserved bits 7:5 writable (read back what was written) | `a_reserved_zero`; dft test |
+| M14 | Reserved bits 7:5 writable (read back what was written) | `a_scan_data`, `a_dft_write`; dft test |
 | M15 | `tdo_en` also high in Exit1-xR | `a_tdo_en`; monitor protocol check |
-| M16 | `trst_n` does not reset the IR (only the TLR falling-edge clear does) | async-reset property and IR shadow register (need `-auto_constraint_off`); simulation may miss it |
-| M17 | Update registers clocked on the rising edge | edge-only properties (2.2); DFT monitor edge check |
+| M16 | `trst_n` does not reset the IR (only the TLR falling-edge clear does) | `a_trst_ir`, IR shadow register (need `-auto_constraint_off`); simulation may miss it |
+| M17 | Update registers clocked on the rising edge | edge checks (2.2, 2.3), `a_dft_write`; DFT monitor edge check |
 | M18 | `mbist_done` one edge early (`MBIST_CYCLES - 2` in the compare) | `a_mbist_done_exact`; exact-count check in dft test / smoke |
 | M19 | `mbist_done` is a pulse, not held while `mbist_start` = 1 | `a_mbist_hold`; dft test |
 | M20 | `mbist_pass` re-sampled from `mbist_fail_i` after done | `a_mbist_hold`; dft test |
