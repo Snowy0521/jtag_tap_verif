@@ -2,7 +2,7 @@
 
 An IEEE 1149.1 test access port (TAP) with a private DFT control register, written in SystemVerilog and verified three ways:
 
-1. **Formal (Questa PropCheck), in progress:** aims at full (unbounded) proofs of the TAP state machine, the IR / DR protocol, the DFT register and the MBIST timing, with covers for every state and transition. No assumptions: every input is free, and `trst_n` can assert at any cycle.
+1. **Formal (Questa PropCheck), done:** full (unbounded) proofs of the TAP state machine, the IR / DR protocol, the DFT register and the MBIST timing, with covers for every state and transition. No assumptions: every input is free, and `trst_n` can assert at any cycle. 63/63 assertions proven, 67/67 covers reached.
 2. **UVM (QuestaSim), planned:** a JTAG agent whose monitor rebuilds the TAP state from the pins on its own and feeds a reference-model scoreboard, so a driver bug cannot hide a DUT bug. Directed tests plus a random test with TCK stops and mid-scan `trst_n`, to be signed off on merged coverage over 20 seeds.
 3. **Mutation testing, planned:** 21 injected bugs, each to be recorded as caught by formal, by simulation, or both.
 
@@ -20,7 +20,7 @@ Work in progress.
 | RTL (`rtl/`) | done |
 | Lint (verilator `-Wall`, slang) | clean |
 | Directed smoke test (iverilog) | passing |
-| Formal properties and proofs (`formal/`) | in progress |
+| Formal properties and proofs (`formal/`) | done |
 | UVM environment and regression (`tb/`) | in progress |
 | Mutation testing (`mutations/`) | planned |
 
@@ -62,9 +62,9 @@ To be filled in as each flow is completed.
 
 **Formal (Questa PropCheck)**
 
-| Assertions proven | Covers reached | Max proof depth | Run time |
+| Assertions proven | Covers reached | Proof depth | Run time |
 |---|---|---|---|
-| – | – | – | – |
+| 63 / 63 | 67 / 67 | full proof (unbounded) | 595 s (4 engines, Questa 2024.3) |
 
 **UVM regression (QuestaSim)**
 
