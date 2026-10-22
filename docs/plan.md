@@ -89,19 +89,21 @@ Based on the known-working `axi4lite_uvm_questa/sim/formal_questa.do`, which use
 ```tcl
 onerror {exit 1}
 vlib build/formal_work                ;# own library, separate from the simulation flow (vlog-13233)
-vmap work build/formal_work
+vmap work [pwd]/build/formal_work     ;# absolute, so it resolves from any directory
 vlog -sv -timescale 1ns/1ps +define+QUESTA_FORMAL -f rtl/rtl.f -f formal/formal.f   ;# run from the repo root, see below
 formal compile -d formal_top
 formal verify -auto_constraint_off    ;# see below
-formal generate report build/formal_report.txt
+formal generate report [pwd]/build/formal/formal_report.txt
 exit
 ```
+
+The Makefile starts it as `qverify -c -od build/formal -do formal/run_formal.tcl`.
 
 **Reset:** by default qverify pins the reset inactive after its init sequence, which makes every `!trst_n |-> ...` property vacuous and never exercises mid-scan `trst_n` (confirmed in the AXI project's script comments). `-auto_constraint_off` makes `trst_n` a free input after init, so reset can hit at any cycle. This is the single sign-off run; the `disable iff (!trst_n)` properties still prove, and the async-reset properties become non-vacuous. Check the vacuity / cover results for the reset properties in the report.
 
 **No no-assumption run:** the AXI project needed `formal-verify-noassume` because its environment had `assume property` constraints on the master. This environment has none (see the sign-off rule above), so that run would be identical to the main one and is dropped.
 
-**File lists and run directory:** with `vlog -f` (and `verilator -f`, `iverilog -c`), relative paths inside a `.f` file resolve against the **current directory**, not the `.f` file's location. So every `.f` entry is written relative to the **repo root** (e.g. `rtl/jtag_pkg.sv`), and every flow (Makefile targets, `run_formal.tcl`, `regress.py`, `run_mutations.py`) runs with the repo root as its working directory. Libraries (`build/formal_work`, `build/questa_work`) and reports (`build/formal_report.txt`) go to `build/`. The Makefile exports `MODELSIM=$(CURDIR)/build/modelsim.ini`, as the AXI Makefile does, so `vmap` writes `modelsim.ini` there too. Tool scratch files that Questa always writes to the working directory (`transcript`, `.qverify/`, `propcheck.db/`) stay in the repo root; all are git-ignored. This works the same for all three tools, unlike `-F`, which iverilog does not offer in the same form.
+**File lists and run directory:** with `vlog -f` (and `verilator -f`, `iverilog -c`), relative paths inside a `.f` file resolve against the **current directory**, not the `.f` file's location. So every `.f` entry is written relative to the **repo root** (e.g. `rtl/jtag_pkg.sv`), and every flow (Makefile targets, `run_formal.tcl`, `regress.py`, `run_mutations.py`) runs with the repo root as its working directory. Every tool output goes to `build/`, nothing to the repo root: libraries (`build/formal_work`, `build/questa_work`, mapped with absolute paths), all qverify outputs (`-od build/formal`: logs, `.rpt` files, `formal_report.txt`, `propcheck.db/`, `.qverify/`, `qverify_cmds.tcl`), simulation logs and vsim scratch files (`build/sim/`: vsim runs inside it) and coverage databases (`build/cov/`). The Makefile exports `MODELSIM=$(CURDIR)/build/modelsim.ini`, as the AXI Makefile does, so `vmap` writes `modelsim.ini` there too. `build/` is git-ignored, and `.gitignore` still lists the Questa scratch files as a fallback for a tool started by hand from the repo root. This works the same for all three tools, unlike `-F`, which iverilog does not offer in the same form.
 
 **Results table in README.md:** number of assertions proven / total, covers reached / total, max proof depth, run time.
 

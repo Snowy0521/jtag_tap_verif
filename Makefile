@@ -14,6 +14,14 @@
 #
 # Every Questa target starts with `mkdir -p build`; run_formal.tcl stops if
 # MODELSIM is not set (i.e. when started outside make).
+#
+# Questa outputs, all under build/ (nothing is written to the repo root):
+#   build/modelsim.ini, build/questa_work/, build/formal_work/   libraries
+#   build/formal/   qverify -od: qverify.log, formal_*.rpt / *.log,
+#                   formal_report.txt, propcheck.db/, .qverify/, qverify_cmds.tcl
+#   build/sim/      vlog / vopt logs, <test>_<seed>.log, summary.log, tr_db.log
+#                   (vsim runs inside build/sim/ so its scratch files stay there)
+#   build/cov/      <test>_<seed>.ucdb
 # ============================================================================
 
 BUILD    := build
@@ -46,6 +54,8 @@ QUESTA_HOME     ?= $(abspath $(dir $(shell which vsim 2>/dev/null))/..)
 QUESTA_UVM_HOME ?= $(QUESTA_HOME)/verilog_src/uvm-1.2/src
 CODE_COV  ?= bcesf
 UVM_VERBOSITY ?= UVM_LOW
+FORMAL_DIR  := $(BUILD)/formal
+SIM_DIR     := $(BUILD)/sim
 SIM_COV_DIR := $(BUILD)/cov
 DIRECTED  := jtag_reset_test jtag_idcode_test jtag_bypass_test jtag_unused_opcode_test \
              jtag_dft_test jtag_pause_test
@@ -89,8 +99,8 @@ props-sim: gen-check $(RTL_SRCS) $(FORMAL_SRCS) formal/props_sim.sv
 	@grep -q "PROPS SIM DONE" $(BUILD)/props_sim.log
 
 formal: gen-check
-	mkdir -p $(BUILD)
-	$(QVERIFY) -c -do formal/run_formal.tcl
+	mkdir -p $(FORMAL_DIR)
+	$(QVERIFY) -c -od $(FORMAL_DIR) -do formal/run_formal.tcl
 
 # UVM under Verilator: rebuilt only when a source changes (the UVM library
 # takes about a minute to compile). UVM_NO_DPI: no C side needed.
@@ -117,28 +127,32 @@ uvm: $(BUILD)/uvm/Vtb_top
 # the testbench. UVM_NO_DPI is not needed on Questa (it has DPI); it is kept so
 # both simulators run the same UVM configuration (the test name is read with
 # $value$plusargs in tb_top either way).
+# The library is mapped with an absolute path, so vsim finds it from build/sim/.
 sim-build:
-	mkdir -p $(BUILD)
+	mkdir -p $(SIM_DIR)
 	$(VLIB) $(BUILD)/questa_work
-	$(VMAP) work $(BUILD)/questa_work
+	$(VMAP) work $(CURDIR)/$(BUILD)/questa_work
 	$(VLOG) -sv -timescale 1ns/1ps +incdir+$(QUESTA_UVM_HOME) +define+UVM_NO_DPI \
-	    $(QUESTA_UVM_HOME)/uvm_pkg.sv
-	$(VLOG) -sv -timescale 1ns/1ps +cover=$(CODE_COV) -f $(RTL_F)
-	$(VLOG) -sv -timescale 1ns/1ps +incdir+$(QUESTA_UVM_HOME) +define+UVM_NO_DPI $(CHECKERS) -f $(TB_F)
-	$(VOPT) +acc tb_top -o tb_top_opt
+	    -l $(SIM_DIR)/vlog_uvm.log $(QUESTA_UVM_HOME)/uvm_pkg.sv
+	$(VLOG) -sv -timescale 1ns/1ps +cover=$(CODE_COV) -l $(SIM_DIR)/vlog_rtl.log -f $(RTL_F)
+	$(VLOG) -sv -timescale 1ns/1ps +incdir+$(QUESTA_UVM_HOME) +define+UVM_NO_DPI \
+	    -l $(SIM_DIR)/vlog_tb.log $(CHECKERS) -f $(TB_F)
+	$(VOPT) +acc tb_top -o tb_top_opt -l $(SIM_DIR)/vopt.log
 
-# One run: -onfinish stop returns to the do script after run_test's $finish,
-# so the coverage of the run is saved to build/cov/<test>_<seed>.ucdb.
-# Pass/fail from the UVM report summary, and no simulator error: a failing
-# bound property reports "** Error" (not UVM_ERROR) on Questa.
-SIM_RUN = mkdir -p $(SIM_COV_DIR); \
-	$(VSIM) -c -coverage tb_top_opt +UVM_TESTNAME=$$t -sv_seed $$s +UVM_VERBOSITY=$(UVM_VERBOSITY) \
-	    -onfinish stop -l $(BUILD)/sim_$${t}_$$s.log \
-	    -do "run -all; coverage save $(SIM_COV_DIR)/$${t}_$$s.ucdb; quit -f" > /dev/null 2>&1; \
-	if grep -qE "UVM_ERROR :\s+0" $(BUILD)/sim_$${t}_$$s.log && grep -qE "UVM_FATAL :\s+0" $(BUILD)/sim_$${t}_$$s.log \
-	    && ! grep -qE "\*\* (Error|Fatal)" $(BUILD)/sim_$${t}_$$s.log; \
-	then echo "PASS: $$t seed $$s"; \
-	else echo "FAIL: $$t seed $$s (see $(BUILD)/sim_$${t}_$$s.log)"; fail=1; fi
+# One run, inside build/sim/ (vsim writes scratch files such as tr_db.log to
+# its working directory): -onfinish stop returns to the do script after
+# run_test's $finish, so the coverage of the run is saved to
+# build/cov/<test>_<seed>.ucdb. Pass/fail from the UVM report summary, and no
+# simulator error: a failing bound property reports "** Error" (not UVM_ERROR)
+# on Questa. Each result is also appended to build/sim/summary.log.
+SIM_RUN = mkdir -p $(SIM_COV_DIR); log=$(SIM_DIR)/$${t}_$$s.log; \
+	(cd $(SIM_DIR) && $(VSIM) -c -coverage tb_top_opt +UVM_TESTNAME=$$t -sv_seed $$s +UVM_VERBOSITY=$(UVM_VERBOSITY) \
+	    -onfinish stop -l $(CURDIR)/$$log \
+	    -do "run -all; coverage save $(CURDIR)/$(SIM_COV_DIR)/$${t}_$$s.ucdb; quit -f") > /dev/null 2>&1; \
+	if grep -qE "UVM_ERROR :\s+0" $$log && grep -qE "UVM_FATAL :\s+0" $$log \
+	    && ! grep -qE "\*\* (Error|Fatal)" $$log; \
+	then echo "PASS: $$t seed $$s" | tee -a $(SIM_DIR)/summary.log; \
+	else echo "FAIL: $$t seed $$s (see $$log)" | tee -a $(SIM_DIR)/summary.log; fail=1; fi
 
 sim: sim-build
 	@fail=0; t=$(TEST); s=$(SEED); $(SIM_RUN); exit $$fail

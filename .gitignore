@@ -1,3 +1,8 @@
+# Every flow writes its outputs to build/ (libraries, build/formal/,
+# build/sim/, build/cov/; see the Makefile header). Everything below build/ is
+# a fallback for a Questa tool started by hand from the repo root.
+build/
+
 # QuestaSim (vlib/vlog/vopt/vsim) outputs -- list taken from axi4lite_uvm_questa
 questa_work/
 formal_work/
@@ -48,6 +53,3 @@ __pycache__/
 .DS_Store
 *.swp
 *.swo
-
-# Questa libraries and run outputs (all flows run from the repo root)
-build/
