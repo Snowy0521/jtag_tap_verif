@@ -13,6 +13,7 @@ class jtag_scan_txn extends uvm_sequence_item;
   bit         tdo_q[$];  // bits shifted out, LSB first
   bit         aborted;   // ended by trst_n before Update-xR
   bit         trst;      // RESET: caused by trst_n (not by TMS)
+  tap_state_e from_state; // RESET: the state the TAP was in when the reset hit
   // Cycle stamps (rising edges of TCK, same count as dft_monitor):
   int unsigned cap_cycle; // edge that captured (the DFT sample with this number holds the captured status)
   int unsigned cycle;     // first DFT sample that shows the effect of this scan's Update / of this reset
@@ -38,4 +39,14 @@ class jtag_scan_txn extends uvm_sequence_item;
                      ab, bits(tdi_q, 64), bits(tdo_q, 64));
   endfunction
 
+endclass
+
+// One rising edge of TCK, as seen by the monitor (for arc coverage)
+class jtag_edge_txn extends uvm_sequence_item;
+  tap_state_e state;     // state before the edge
+  bit         tms;       // TMS sampled at the edge
+  `uvm_object_utils(jtag_edge_txn)
+  function new(string name = "jtag_edge_txn");
+    super.new(name);
+  endfunction
 endclass

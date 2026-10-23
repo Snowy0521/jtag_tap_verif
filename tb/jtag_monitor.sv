@@ -12,6 +12,7 @@ class jtag_monitor extends uvm_monitor;
 
   virtual jtag_if vif;
   uvm_analysis_port #(jtag_scan_txn) ap;
+  uvm_analysis_port #(jtag_edge_txn) edge_ap;   // every rising edge once in sync (coverage)
 
   // Before the first reset the TAP state is unknown (X in a 4-state simulator),
   // so the monitor only checks and reports once it is in sync: after trst_n, or
@@ -25,7 +26,8 @@ class jtag_monitor extends uvm_monitor;
 
   function new(string name, uvm_component parent);
     super.new(name, parent);
-    ap = new("ap", this);
+    ap      = new("ap", this);
+    edge_ap = new("edge_ap", this);
   endfunction
 
   function void build_phase(uvm_phase phase);
@@ -62,7 +64,7 @@ class jtag_monitor extends uvm_monitor;
       forever begin
         @(negedge vif.trst_n);
         abort_scan();
-        publish_reset(1'b1);
+        publish_reset(1'b1, state);
         state  = TEST_LOGIC_RESET;                // R3
         synced = 1'b1;
       end
@@ -76,7 +78,7 @@ class jtag_monitor extends uvm_monitor;
           if (tms_ones == 5) begin
             state  = TEST_LOGIC_RESET;
             synced = 1'b1;
-            publish_reset(1'b0);
+            publish_reset(1'b0, TEST_LOGIC_RESET);
           end
         end else begin
           sample();
@@ -123,18 +125,23 @@ class jtag_monitor extends uvm_monitor;
 
     begin
       tap_state_e prev = state;
+      jtag_edge_txn e  = jtag_edge_txn::type_id::create("e");
+      e.state = state;
+      e.tms   = vif.mon_cb.tms;
+      edge_ap.write(e);
       state = next_state(state, vif.mon_cb.tms);
-      if (state == TEST_LOGIC_RESET && prev != TEST_LOGIC_RESET) publish_reset(1'b0);
+      if (state == TEST_LOGIC_RESET && prev != TEST_LOGIC_RESET) publish_reset(1'b0, prev);
     end
   endfunction
 
   // The TAP entered Test-Logic-Reset: the instruction and DFT outputs reset.
   // Via TMS they clear at the next falling edge, via trst_n at once; either way
   // the next rising edge's sample is the first to show it.
-  function void publish_reset(bit by_trst);
+  function void publish_reset(bit by_trst, tap_state_e from_state);
     jtag_scan_txn r = jtag_scan_txn::type_id::create("reset");
-    r.scan  = jtag_scan_txn::RESET;
-    r.trst  = by_trst;
+    r.scan       = jtag_scan_txn::RESET;
+    r.trst       = by_trst;
+    r.from_state = from_state;
     r.cycle = cycle + 1;
     ap.write(r);
   endfunction

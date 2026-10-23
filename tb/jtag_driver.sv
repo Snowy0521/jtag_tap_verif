@@ -108,6 +108,8 @@ class jtag_driver extends uvm_driver #(jtag_seq_item);
     // happen would silently test nothing
     if (it.use_pause && !(n >= 2 && it.pause_at < n - 1))
       `uvm_fatal("DRV", $sformatf("pause_at=%0d does not fit a %0d-bit scan", it.pause_at, n))
+    if (it.use_pause2 && !(it.use_pause && it.pause_at2 > it.pause_at && it.pause_at2 < n - 1))
+      `uvm_fatal("DRV", $sformatf("pause_at2=%0d does not fit (pause_at=%0d, %0d bits)", it.pause_at2, it.pause_at, n))
     tick(1'b1);                                   // -> Select-DR-Scan
     if (is_ir) tick(1'b1);                        // -> Select-IR-Scan
     tick(1'b0);                                   // -> Capture-xR
@@ -118,7 +120,7 @@ class jtag_driver extends uvm_driver #(jtag_seq_item);
       for (int i = 0; i < n; i++) begin
         if (i == n - 1) begin
           tick(1'b1, it.tdi_q[i]);                // last bit, -> Exit1
-        end else if (it.use_pause && i == it.pause_at) begin
+        end else if ((it.use_pause && i == it.pause_at) || (it.use_pause2 && i == it.pause_at2)) begin
           tick(1'b1, it.tdi_q[i]);                // -> Exit1
           tick(1'b0);                             // -> Pause
           repeat (it.pause_cycles) tick(1'b0);    // stay in Pause

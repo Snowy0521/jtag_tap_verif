@@ -21,9 +21,12 @@ logic rst_seen;
 `ifdef QUESTA_FORMAL
 assign rst_seen = 1'b1;
 `else
-always_ff @(posedge tck or negedge trst_n) begin
+// Explicitly 0 at start: "not yet reset" must not be carried by X, which a
+// 2-state simulator turns into a random 0 / 1 (plain always + initial, since
+// an always_ff variable may not be written by another process)
+initial rst_seen = 1'b0;
+always @(posedge tck or negedge trst_n) begin
   if (!trst_n) rst_seen <= 1'b1;
-  else         rst_seen <= rst_seen;
 end
 // The checkers must not stay switched off for a whole simulation
 final begin

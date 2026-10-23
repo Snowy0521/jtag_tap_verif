@@ -8,6 +8,7 @@ class jtag_env extends uvm_env;
   jtag_agent      agent;
   dft_monitor     dft_mon;
   jtag_scoreboard sb;
+  jtag_coverage   cov;
 
   function new(string name, uvm_component parent);
     super.new(name, parent);
@@ -18,11 +19,15 @@ class jtag_env extends uvm_env;
     agent   = jtag_agent::type_id::create("agent", this);
     dft_mon = dft_monitor::type_id::create("dft_mon", this);
     sb      = jtag_scoreboard::type_id::create("sb", this);
+    cov     = jtag_coverage::type_id::create("cov", this);
   endfunction
 
   function void connect_phase(uvm_phase phase);
     agent.mon.ap.connect(sb.jtag_imp);
     dft_mon.ap.connect(sb.dft_imp);
+    agent.mon.ap.connect(cov.jtag_imp);
+    agent.mon.edge_ap.connect(cov.edge_imp);
+    dft_mon.ap.connect(cov.dft_imp);
   endfunction
 
   // Every scan the driver drove must have been observed (completed or aborted).

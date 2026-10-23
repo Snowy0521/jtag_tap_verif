@@ -20,6 +20,7 @@ package jtag_tb_pkg;
   `include "dft_monitor.sv"
   `include "jtag_ref_model.sv"
   `include "jtag_scoreboard.sv"
+  `include "jtag_coverage.sv"
   `include "jtag_env.sv"
   `include "jtag_base_seq.sv"
   `include "jtag_base_test.sv"

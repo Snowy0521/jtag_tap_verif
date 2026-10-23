@@ -170,13 +170,20 @@ endclass
 
 ### 3.4 Functional coverage
 
-- TAP state × TMS (= all 32 arcs), sampled in the monitor.
-- Opcode loaded: each defined instruction + "unused" bin.
-- DR scan length: `< length`, `== length`, `> length` for each selected register.
-- Pause usage: no pause, pause in IR, pause in DR, multiple pauses.
-- DFT: `test_mode` × `scan_en` × `mbist_start`. The `illegal_bins` for `scan_en && !test_mode` duplicates `a_scan_en_safe`: it is counted as a **check**, not as a coverage goal, and is excluded from the coverage percentage.
-- MBIST: run completed with pass, with fail, restart (write 0 then 1), redundant write of 1 while running.
-- Reset kind × state at reset time; mid-scan reset (aborted scans).
+In `tb/jtag_coverage.sv`, fed by the monitors only. Every event is first classified into small enums, and each bin is one enum value or combination, so the bins are defined in one place. 83 bins:
+
+| Group | Bins |
+|---|---|
+| Arcs | TAP state × TMS: all 32 transitions (from the monitor's per-edge port) |
+| Instruction | instruction loaded by a completed IR scan: IDCODE, BYPASS, DFT_CTRL, unused (4) |
+| DR length | selected register × length class (zero / shorter / exact / longer); BYPASS has no "shorter" (11) |
+| Pauses | IR / DR scan × none / one / several pauses (6) |
+| DFT | the 6 legal `test_mode` × `scan_en` × `mbist_start` combinations. `scan_en && !test_mode` is an `illegal_bins`: it duplicates `a_scan_en_safe`, so it counts as a **check**, not as a coverage goal |
+| MBIST | pass, fail, restart after a completed run, redundant write of `mbist_start = 1` (4) |
+| Reset | by TMS, by `trst_n`; `trst_n` × the state it hit (2 + 16) |
+| Aborted scans | IR / DR scan aborted by `trst_n` (2) |
+
+Two views of the same classification: **covergroups** (the sign-off numbers, in the QuestaSim UCDB, merged with `vcover`; coverpoints that only build a cross have `option.weight = 0`, so the percentage means the same 83 bins), and **TB counters** that count the same combinations and list the holes. Verilator parses covergroups but does not count them, so the counters are the local view; `+cov_dump` prints one line per bin so runs can be added up. The random stimulus weights scan lengths towards the register boundaries (0, 1, 8, 32 and neighbours) and can pause twice in one scan: both were added because coverage showed the holes.
 
 ### 3.5 Regression
 
