@@ -54,9 +54,11 @@ All targets run from the repository root; outputs go to `build/`.
 | `make uvm TEST=<test> SEED=<n>` | Verilator + UVM 1800.2-2020 | Run a UVM test locally (development; sign-off runs on Questa) |
 | `make sim TEST=<test> SEED=<n>` | QuestaSim + UVM 1.2 | Run a UVM test with functional and DUT code coverage (`build/cov/<test>_<seed>.ucdb`) |
 | `make sim-directed` | QuestaSim + UVM 1.2 | Run every directed test once (one build) |
+| `make regress SEEDS=<n>` | Verilator | Every directed test + the random test on seeds 1..n: pass / fail table, merged functional coverage (TB counters), seed check (`build/regress/summary.md`) |
+| `make regress-questa SEEDS=<n>` | QuestaSim | The same, plus `vcover merge` of all runs: covergroup and RTL code coverage (sign-off) |
 | `make clean` | | Remove `build/` |
 
-The UVM bench runs unchanged on UVM 1.2 (QuestaSim) and UVM 1800.2-2020 (Verilator), and both simulation flows also run the formal checkers, bound into the DUT. Questa targets for the regression (`regress`, `cov`) and mutations (`mutate`) will follow. The open-source tools cannot run the formal proofs, and Verilator's functional coverage support is limited, so coverage sign-off runs on Questa.
+The UVM bench runs unchanged on UVM 1.2 (QuestaSim) and UVM 1800.2-2020 (Verilator), and both simulation flows also run the formal checkers, bound into the DUT. A mutation target (`mutate`) will follow. The open-source tools cannot run the formal proofs, and Verilator's functional coverage support is limited, so coverage sign-off runs on Questa.
 
 ## Results
 

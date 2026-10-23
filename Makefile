@@ -10,6 +10,8 @@
 #   make uvm        UVM test under Verilator (local): make uvm TEST=jtag_idcode_test SEED=1
 #   make sim        UVM test under QuestaSim: make sim TEST=jtag_idcode_test SEED=1
 #   make sim-directed  every directed test once under QuestaSim (one build)
+#   make regress    directed tests + random test on SEEDS seeds, Verilator, merged TB coverage
+#   make regress-questa  the same on QuestaSim, plus vcover merge (sign-off)
 #   make clean
 #
 # Every Questa target starts with `mkdir -p build`; run_formal.tcl stops if
@@ -40,6 +42,8 @@ TB_SRCS  := $(wildcard tb/*.sv tb/sequences/*.sv tb/tests/*.sv)
 UVM_HOME ?= $(HOME)/tools/uvm-kit/1800.2-2020.3.1/src
 TEST     ?= jtag_idcode_test
 SEED     ?= 1
+SEEDS    ?= 20
+PLUSARGS ?=
 
 # QuestaSim: UVM 1.2 shipped with Questa (no 1800.2 in the install; the
 # testbench only uses API common to both, so it runs on UVM 1.2 here and on
@@ -69,7 +73,7 @@ CHECKERS     := +incdir+formal +define+JTAG_SIM_CHECKERS $(CHECKER_SRCS)
 
 export MODELSIM := $(CURDIR)/$(BUILD)/modelsim.ini
 
-.PHONY: lint lint-verilator lint-slang smoke gen gen-check props-sim formal uvm sim-build sim sim-directed clean
+.PHONY: lint lint-verilator lint-slang smoke gen gen-check props-sim formal uvm uvm-build sim-build sim sim-run sim-directed regress regress-questa clean
 
 lint: lint-verilator lint-slang
 
@@ -116,8 +120,10 @@ $(BUILD)/uvm/Vtb_top: $(RTL_SRCS) $(TB_SRCS) $(TB_F) $(FORMAL_SRCS)
 	    --top-module tb_top -Mdir $(BUILD)/uvm $(UVM_HOME)/uvm_pkg.sv -f $(RTL_F) $(CHECKERS) -f $(TB_F) \
 	    > $(BUILD)/uvm_build.log 2>&1 || (tail -30 $(BUILD)/uvm_build.log; exit 1)
 
+uvm-build: $(BUILD)/uvm/Vtb_top
+
 uvm: $(BUILD)/uvm/Vtb_top
-	$(BUILD)/uvm/Vtb_top +UVM_TESTNAME=$(TEST) +verilator+seed+$(SEED) +verilator+rand+reset+2 | tee $(BUILD)/uvm_$(TEST)_$(SEED).log
+	$(BUILD)/uvm/Vtb_top +UVM_TESTNAME=$(TEST) +verilator+seed+$(SEED) +verilator+rand+reset+2 $(PLUSARGS) | tee $(BUILD)/uvm_$(TEST)_$(SEED).log
 	@grep -qE "UVM_ERROR :\s+0" $(BUILD)/uvm_$(TEST)_$(SEED).log && grep -qE "UVM_FATAL :\s+0" $(BUILD)/uvm_$(TEST)_$(SEED).log \
 	    && ! grep -q "%Error" $(BUILD)/uvm_$(TEST)_$(SEED).log \
 	    || (echo "TEST FAILED: $(TEST) seed $(SEED)"; exit 1)
@@ -146,7 +152,7 @@ sim-build:
 # simulator error: a failing bound property reports "** Error" (not UVM_ERROR)
 # on Questa. Each result is also appended to build/sim/summary.log.
 SIM_RUN = mkdir -p $(SIM_COV_DIR); log=$(SIM_DIR)/$${t}_$$s.log; \
-	(cd $(SIM_DIR) && $(VSIM) -c -coverage tb_top_opt +UVM_TESTNAME=$$t -sv_seed $$s +UVM_VERBOSITY=$(UVM_VERBOSITY) \
+	(cd $(SIM_DIR) && $(VSIM) -c -coverage tb_top_opt +UVM_TESTNAME=$$t -sv_seed $$s +UVM_VERBOSITY=$(UVM_VERBOSITY) $(PLUSARGS) \
 	    -onfinish stop -l $(CURDIR)/$$log \
 	    -do "run -all; coverage save $(CURDIR)/$(SIM_COV_DIR)/$${t}_$$s.ucdb; quit -f") > /dev/null 2>&1; \
 	if grep -qE "UVM_ERROR :\s+0" $$log && grep -qE "UVM_FATAL :\s+0" $$log \
@@ -159,6 +165,16 @@ sim: sim-build
 
 sim-directed: sim-build
 	@fail=0; s=$(SEED); for t in $(DIRECTED); do $(SIM_RUN); done; exit $$fail
+
+# One run without rebuilding (after sim-build); used by scripts/regress.py
+sim-run:
+	@fail=0; t=$(TEST); s=$(SEED); $(SIM_RUN); exit $$fail
+
+regress: gen-check
+	$(PYTHON) scripts/regress.py --sim verilator --seeds $(SEEDS)
+
+regress-questa:
+	$(PYTHON) scripts/regress.py --sim questa --seeds $(SEEDS)
 
 clean:
 	rm -rf $(BUILD) obj_dir

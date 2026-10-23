@@ -187,8 +187,9 @@ Two views of the same classification: **covergroups** (the sign-off numbers, in 
 
 ### 3.5 Regression
 
-- `scripts/regress.py`: 20 seeds × `jtag_random_test`, plus every directed test once. Merge coverage with `vcover merge` and sign off on **merged** coverage (same rule as the AXI project).
-- Check that the seed is really applied: merged coverage should differ from each per-seed result. The AXI project found that bug the hard way.
+- `scripts/regress.py` (`make regress` / `make regress-questa`): 20 seeds × `jtag_random_test`, plus every directed test once, one build. Sign off on **merged** coverage (same rule as the AXI project): `vcover merge` of all UCDBs on Questa; the TB counters are merged under both simulators.
+- A run passes only with a complete UVM summary, no UVM error and no simulator error (a failing bound property is not a UVM error). Coverage is merged from **passing runs only**.
+- Seed check: the random seeds merged must hit more bins than the best single seed (evaluated with at least two passing seeds). The AXI project found the "seed not applied" bug the hard way.
 - Collect DUT code coverage (statements, branches, conditions, FSM states/transitions). Treat any gap as a hole in the verification plan, and close unreachable terms with formal covers. Known exclusion: the FSM `default` branch in `jtag_tap_fsm.sv` is unreachable by R4 (all 16 codes are states) and is wrapped in `// coverage off` / `// coverage on`; every exclusion is listed here with its reason.
 
 ---
