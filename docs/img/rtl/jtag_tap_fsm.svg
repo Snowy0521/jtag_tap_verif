@@ -1,0 +1,190 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1140 1100" width="1140" height="1100" font-family="Helvetica, Arial, sans-serif" font-size="15">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:14px; font-family:Menlo, Consolas, monospace; }
+      .b    { fill:#111827; font-weight:bold; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .enc  { fill:#1d4ed8; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .sig  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:15px; font-weight:bold; }
+      .tms  { fill:#b91c1c; font-family:Menlo, Consolas, monospace; font-size:14px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1140" height="1100" fill="#ffffff"/>
+
+  <rect x="110" y="30" width="890" height="255" rx="8" class="mod"/>
+  <text x="118" y="46" class="modl">jtag_tap_fsm</text>
+
+  <!-- next-state logic -->
+  <rect x="300" y="95" width="220" height="90" class="comb"/>
+  <text x="410" y="117" class="b" text-anchor="middle">next-state logic</text>
+  <text x="410" y="135" class="code" text-anchor="middle">always_comb</text>
+  <text x="410" y="151" class="code" text-anchor="middle">unique case (state)</text>
+  <text x="410" y="167" class="code" text-anchor="middle">default: TEST_LOGIC_RESET</text>
+  <text x="306" y="144" class="port">tms</text>
+
+  <text x="-15" y="144" class="pin">tms</text>
+  <path d="M60,140 H300" class="w" marker-end="url(#arr)"/>
+
+  <!-- state_next -->
+  <path d="M520,140 H640" class="bus" marker-end="url(#arrb)"/>
+  <text x="530" y="132" class="sig">state_next</text>
+
+  <!-- state register -->
+  <rect x="640" y="95" width="140" height="110" class="inst"/>
+  <text x="710" y="116" class="b" text-anchor="middle">state [3:0]</text>
+  <text x="710" y="137" class="code" text-anchor="middle">posedge tck</text>
+  <text x="710" y="176" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="646" y="144" class="port">D</text>
+  <text x="774" y="144" class="port" text-anchor="end">Q</text>
+  <path d="M640,186 L652,193 L640,200" fill="none" stroke="#334155" stroke-width="1.6"/>
+
+  <!-- tck -->
+  <text x="-15" y="239" class="pin">tck</text>
+  <path d="M60,235 H600 V193 H640" class="w" marker-end="url(#arr)"/>
+
+  <!-- trst_n (active low, async) -->
+  <text x="-15" y="266" class="pin">trst_n</text>
+  <path d="M75,262 H710 V215" class="w"/>
+  <circle cx="710" cy="210" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <text x="720" y="240" class="code">reset value 4'hF = TEST_LOGIC_RESET</text>
+
+  <!-- Q: output + feedback -->
+  <path d="M780,140 H1000" class="bus" marker-end="url(#arrb)"/>
+  <circle cx="830" cy="140" r="4" fill="#374151"/>
+  <path d="M830,140 V65 H410 V95" class="bus" marker-end="url(#arrb)"/>
+  <text x="560" y="59" class="sig">state (feedback)</text>
+  <text x="1008" y="144" class="pin">state</text>
+  <text x="1008" y="160" class="code">[3:0]</text>
+  <text x="1008" y="174" class="code">tap_state_e</text>
+
+
+  <!-- ===================== state diagram (arc label = tms) ===================== -->
+  <text x="240" y="318" class="b">state_next</text>
+  <text x="240" y="334" class="code">arc label = tms</text>
+  <rect x="55" y="348" width="170" height="44" rx="10" class="inst"/>
+  <text x="140" y="367" class="bm" text-anchor="middle">TEST_LOGIC_RESET</text>
+  <text x="140" y="383" class="enc" text-anchor="middle">4'hF</text>
+  <rect x="55" y="448" width="170" height="44" rx="10" class="inst"/>
+  <text x="140" y="467" class="bm" text-anchor="middle">RUN_TEST_IDLE</text>
+  <text x="140" y="483" class="enc" text-anchor="middle">4'hC</text>
+  <rect x="395" y="448" width="170" height="44" rx="10" class="inst"/>
+  <text x="480" y="467" class="bm" text-anchor="middle">SELECT_DR_SCAN</text>
+  <text x="480" y="483" class="enc" text-anchor="middle">4'h7</text>
+  <rect x="395" y="538" width="170" height="44" rx="10" class="inst"/>
+  <text x="480" y="557" class="bm" text-anchor="middle">CAPTURE_DR</text>
+  <text x="480" y="573" class="enc" text-anchor="middle">4'h6</text>
+  <rect x="395" y="628" width="170" height="44" rx="10" class="inst"/>
+  <text x="480" y="647" class="bm" text-anchor="middle">SHIFT_DR</text>
+  <text x="480" y="663" class="enc" text-anchor="middle">4'h2</text>
+  <rect x="395" y="718" width="170" height="44" rx="10" class="inst"/>
+  <text x="480" y="737" class="bm" text-anchor="middle">EXIT1_DR</text>
+  <text x="480" y="753" class="enc" text-anchor="middle">4'h1</text>
+  <rect x="395" y="808" width="170" height="44" rx="10" class="inst"/>
+  <text x="480" y="827" class="bm" text-anchor="middle">PAUSE_DR</text>
+  <text x="480" y="843" class="enc" text-anchor="middle">4'h3</text>
+  <rect x="395" y="898" width="170" height="44" rx="10" class="inst"/>
+  <text x="480" y="917" class="bm" text-anchor="middle">EXIT2_DR</text>
+  <text x="480" y="933" class="enc" text-anchor="middle">4'h0</text>
+  <rect x="395" y="988" width="170" height="44" rx="10" class="inst"/>
+  <text x="480" y="1007" class="bm" text-anchor="middle">UPDATE_DR</text>
+  <text x="480" y="1023" class="enc" text-anchor="middle">4'h5</text>
+  <rect x="735" y="448" width="170" height="44" rx="10" class="inst"/>
+  <text x="820" y="467" class="bm" text-anchor="middle">SELECT_IR_SCAN</text>
+  <text x="820" y="483" class="enc" text-anchor="middle">4'h4</text>
+  <rect x="735" y="538" width="170" height="44" rx="10" class="inst"/>
+  <text x="820" y="557" class="bm" text-anchor="middle">CAPTURE_IR</text>
+  <text x="820" y="573" class="enc" text-anchor="middle">4'hE</text>
+  <rect x="735" y="628" width="170" height="44" rx="10" class="inst"/>
+  <text x="820" y="647" class="bm" text-anchor="middle">SHIFT_IR</text>
+  <text x="820" y="663" class="enc" text-anchor="middle">4'hA</text>
+  <rect x="735" y="718" width="170" height="44" rx="10" class="inst"/>
+  <text x="820" y="737" class="bm" text-anchor="middle">EXIT1_IR</text>
+  <text x="820" y="753" class="enc" text-anchor="middle">4'h9</text>
+  <rect x="735" y="808" width="170" height="44" rx="10" class="inst"/>
+  <text x="820" y="827" class="bm" text-anchor="middle">PAUSE_IR</text>
+  <text x="820" y="843" class="enc" text-anchor="middle">4'hB</text>
+  <rect x="735" y="898" width="170" height="44" rx="10" class="inst"/>
+  <text x="820" y="917" class="bm" text-anchor="middle">EXIT2_IR</text>
+  <text x="820" y="933" class="enc" text-anchor="middle">4'h8</text>
+  <rect x="735" y="988" width="170" height="44" rx="10" class="inst"/>
+  <text x="820" y="1007" class="bm" text-anchor="middle">UPDATE_IR</text>
+  <text x="820" y="1023" class="enc" text-anchor="middle">4'hD</text>
+  <path d="M110,348 C110,314 170,314 170,348" class="w" marker-end="url(#arr)"/>
+  <text x="136" y="318" class="tms">1</text>
+  <path d="M140,392 V448" class="w" marker-end="url(#arr)"/>
+  <text x="146" y="425" class="tms">0</text>
+  <path d="M55,462 C21,456 21,484 55,478" class="w" marker-end="url(#arr)"/>
+  <text x="17" y="474" class="tms">0</text>
+  <path d="M225,462 H395" class="w" marker-end="url(#arr)"/>
+  <text x="310" y="456" class="tms">1</text>
+  <path d="M565,462 H735" class="w" marker-end="url(#arr)"/>
+  <text x="650" y="456" class="tms">1</text>
+  <path d="M480,492 V538" class="w" marker-end="url(#arr)"/>
+  <text x="486" y="520" class="tms">0</text>
+  <path d="M820,492 V538" class="w" marker-end="url(#arr)"/>
+  <text x="826" y="520" class="tms">0</text>
+  <path d="M820,448 V370 H225" class="w" marker-end="url(#arr)"/>
+  <text x="826" y="388" class="tms">1</text>
+  <path d="M480,582 V628" class="w" marker-end="url(#arr)"/>
+  <text x="486" y="610" class="tms">0</text>
+  <path d="M565,560 H595 V732 H565" class="w" marker-end="url(#arr)"/>
+  <text x="600" y="630" class="tms">1</text>
+  <path d="M395,642 C361,636 361,664 395,658" class="w" marker-end="url(#arr)"/>
+  <text x="357" y="654" class="tms">0</text>
+  <path d="M480,672 V718" class="w" marker-end="url(#arr)"/>
+  <text x="486" y="700" class="tms">1</text>
+  <path d="M480,762 V808" class="w" marker-end="url(#arr)"/>
+  <text x="486" y="790" class="tms">0</text>
+  <path d="M565,748 H595 V1002 H565" class="w" marker-end="url(#arr)"/>
+  <text x="600" y="875" class="tms">1</text>
+  <path d="M395,822 C361,816 361,844 395,838" class="w" marker-end="url(#arr)"/>
+  <text x="357" y="834" class="tms">0</text>
+  <path d="M480,852 V898" class="w" marker-end="url(#arr)"/>
+  <text x="486" y="880" class="tms">1</text>
+  <path d="M395,920 H350 V662 H395" class="w" marker-end="url(#arr)"/>
+  <text x="336" y="815" class="tms">0</text>
+  <path d="M480,942 V988" class="w" marker-end="url(#arr)"/>
+  <text x="486" y="970" class="tms">1</text>
+  <path d="M820,582 V628" class="w" marker-end="url(#arr)"/>
+  <text x="826" y="610" class="tms">0</text>
+  <path d="M905,560 H935 V732 H905" class="w" marker-end="url(#arr)"/>
+  <text x="940" y="630" class="tms">1</text>
+  <path d="M735,642 C701,636 701,664 735,658" class="w" marker-end="url(#arr)"/>
+  <text x="697" y="654" class="tms">0</text>
+  <path d="M820,672 V718" class="w" marker-end="url(#arr)"/>
+  <text x="826" y="700" class="tms">1</text>
+  <path d="M820,762 V808" class="w" marker-end="url(#arr)"/>
+  <text x="826" y="790" class="tms">0</text>
+  <path d="M905,748 H935 V1002 H905" class="w" marker-end="url(#arr)"/>
+  <text x="940" y="875" class="tms">1</text>
+  <path d="M735,822 C701,816 701,844 735,838" class="w" marker-end="url(#arr)"/>
+  <text x="697" y="834" class="tms">0</text>
+  <path d="M820,852 V898" class="w" marker-end="url(#arr)"/>
+  <text x="826" y="880" class="tms">1</text>
+  <path d="M735,920 H690 V662 H735" class="w" marker-end="url(#arr)"/>
+  <text x="676" y="815" class="tms">0</text>
+  <path d="M820,942 V988" class="w" marker-end="url(#arr)"/>
+  <text x="826" y="970" class="tms">1</text>
+  <path d="M395,1010 H160 V492" class="w" marker-end="url(#arr)"/>
+  <text x="166" y="1004" class="tms">0</text>
+  <path d="M565,1018 H620 V478 H565" class="w" marker-end="url(#arr)"/>
+  <text x="625" y="980" class="tms">1</text>
+  <path d="M820,1032 V1060 H120 V492" class="w" marker-end="url(#arr)"/>
+  <text x="826" y="1052" class="tms">0</text>
+  <path d="M905,1018 H960 V415 H826 a6,6 0 0 0 -12,0 H520 V448" class="w" marker-end="url(#arr)"/>
+  <text x="965" y="980" class="tms">1</text>
+</svg>

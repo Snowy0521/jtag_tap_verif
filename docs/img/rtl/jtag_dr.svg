@@ -1,0 +1,275 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1490 1180" width="1490" height="1180" font-family="Helvetica, Arial, sans-serif" font-size="15">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:14px; font-family:Menlo, Consolas, monospace; }
+      .b    { fill:#111827; font-weight:bold; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .cell { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:12px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .sig  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:15px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1490" height="1180" fill="#ffffff"/>
+  <rect x="110" y="30" width="1190" height="1130" rx="8" class="mod"/>
+  <text x="118" y="46" class="modl">jtag_dr</text>
+  <text x="-15" y="109" class="pin">state</text>
+  <path d="M65,105 H200" class="bus"/>
+  <circle cx="200" cy="105" r="4" fill="#374151"/>
+  <path d="M200,105 V80 H230" class="bus" marker-end="url(#arrb)"/>
+  <path d="M200,105 V130 H230" class="bus" marker-end="url(#arrb)"/>
+  <rect x="230" y="62" width="190" height="36" class="comb"/>
+  <text x="325" y="84" class="bm" text-anchor="middle">state == CAPTURE_DR</text>
+  <path d="M420,80 H470" class="w"/>
+  <text x="476" y="84" class="net">capture</text>
+  <rect x="230" y="112" width="190" height="36" class="comb"/>
+  <text x="325" y="134" class="bm" text-anchor="middle">state == SHIFT_DR</text>
+  <path d="M420,130 H470" class="w"/>
+  <text x="476" y="134" class="net">shift</text>
+  <text x="560" y="84" class="code">(wire capture)</text>
+  <text x="560" y="134" class="code">(wire shift)</text>
+  <text x="-15" y="184" class="pin">dr_sel</text>
+  <path d="M110,180 H130" class="w"/>
+  <text x="136" y="184" class="net">dr_sel [1:0]</text>
+  <text x="-15" y="206" class="pin">tck</text>
+  <path d="M110,202 H130" class="w"/>
+  <text x="136" y="206" class="net">tck</text>
+  <text x="-15" y="228" class="pin">trst_n</text>
+  <path d="M110,224 H130" class="w"/>
+  <text x="136" y="228" class="net">trst_n</text>
+  <text x="-15" y="250" class="pin">mbist_done</text>
+  <path d="M110,246 H130" class="w"/>
+  <text x="136" y="250" class="net">mbist_done</text>
+  <text x="-15" y="272" class="pin">mbist_pass</text>
+  <path d="M110,268 H130" class="w"/>
+  <text x="136" y="272" class="net">mbist_pass</text>
+  <text x="-15" y="404" class="pin">tdi</text>
+  <path d="M55,400 H470" class="w" marker-end="url(#arr)"/>
+  <circle cx="145" cy="400" r="4" fill="#374151"/>
+  <path d="M145,400 V814" class="w"/>
+  <path d="M145,604 H200" class="w" marker-end="url(#arr)"/>
+  <path d="M145,814 H200" class="w" marker-end="url(#arr)"/>
+  <circle cx="145" cy="604" r="4" fill="#374151"/>
+  <path d="M470,330 L500,342 L500,418 L470,430 Z" class="comb"/>
+  <text x="475" y="359" class="port">0</text>
+  <text x="475" y="404" class="port">1</text>
+  <path d="M485,440 V424" class="w" marker-end="url(#arr)"/>
+  <text x="485" y="454" class="net" text-anchor="middle">dr_sel ==</text>
+  <text x="485" y="468" class="net" text-anchor="middle">DR_BYPASS</text>
+  <text x="485" y="482" class="net" text-anchor="middle">&amp;&amp; shift</text>
+  <path d="M500,380 H790" class="w" marker-end="url(#arr)"/>
+  <path d="M790,340 L820,352 L820,428 L790,440 Z" class="comb"/>
+  <text x="795" y="384" class="port">0</text>
+  <text x="795" y="424" class="port">1</text>
+  <path d="M805,450 V434" class="w" marker-end="url(#arr)"/>
+  <text x="805" y="464" class="net" text-anchor="middle">dr_sel ==</text>
+  <text x="805" y="478" class="net" text-anchor="middle">DR_BYPASS</text>
+  <text x="805" y="492" class="net" text-anchor="middle">&amp;&amp; capture</text>
+  <path d="M575,420 H790" class="w" marker-end="url(#arr)"/>
+  <text x="578" y="414" class="code">1'b0</text>
+  <path d="M820,400 H880" class="w" marker-end="url(#arr)"/>
+  <rect x="880" y="345" width="140" height="110" class="inst"/>
+  <text x="950" y="363" class="bm" text-anchor="middle">bypass_sr</text>
+  <text x="950" y="425" class="code" text-anchor="middle">posedge tck</text>
+  <text x="950" y="441" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="886" y="404" class="port">D</text>
+  <text x="1014" y="404" class="port" text-anchor="end">Q</text>
+  <path d="M880,427 L892,434 L880,441" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M858,434 H880" class="w"/>
+  <text x="855" y="438" class="net" text-anchor="end">tck</text>
+  <circle cx="950" cy="460" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M950,465 V475" class="w"/>
+  <text x="950" y="488" class="net" text-anchor="middle">trst_n</text>
+  <text x="962" y="473" class="code">reset 1'b0</text>
+  <circle cx="1040" cy="400" r="4" fill="#374151"/>
+  <path d="M1040,400 V300 H445" class="w"/>
+  <path d="M445,300 V355 H470" class="w" marker-end="url(#arr)"/>
+  <rect x="180" y="555" width="240" height="75" class="comb"/>
+  <text x="300" y="571" class="code" text-anchor="middle">{tdi, dft_sr[7:1]}</text>
+  <rect x="200" y="590" width="50" height="28" fill="#ffffff" stroke="#6b7280" stroke-width="1"/>
+  <text x="225" y="608" class="cell" text-anchor="middle">tdi</text>
+  <text x="225" y="586" class="cell" text-anchor="middle">[7]</text>
+  <rect x="250" y="590" width="50" height="28" fill="#ffffff" stroke="#6b7280" stroke-width="1"/>
+  <text x="275" y="608" class="cell" text-anchor="middle">sr[7]</text>
+  <text x="275" y="586" class="cell" text-anchor="middle">[6]</text>
+  <rect x="300" y="590" width="50" height="28" fill="#ffffff" stroke="#6b7280" stroke-width="1"/>
+  <text x="325" y="608" class="cell" text-anchor="middle">…</text>
+  <text x="325" y="586" class="cell" text-anchor="middle"></text>
+  <rect x="350" y="590" width="50" height="28" fill="#ffffff" stroke="#6b7280" stroke-width="1"/>
+  <text x="375" y="608" class="cell" text-anchor="middle">sr[1]</text>
+  <text x="375" y="586" class="cell" text-anchor="middle">[0]</text>
+  <path d="M420,610 H470" class="bus" marker-end="url(#arrb)"/>
+  <path d="M470,540 L500,552 L500,628 L470,640 Z" class="comb"/>
+  <text x="475" y="569" class="port">0</text>
+  <text x="475" y="614" class="port">1</text>
+  <path d="M485,650 V634" class="w" marker-end="url(#arr)"/>
+  <text x="485" y="664" class="net" text-anchor="middle">dr_sel ==</text>
+  <text x="485" y="678" class="net" text-anchor="middle">DR_DFT_CTRL</text>
+  <text x="485" y="692" class="net" text-anchor="middle">&amp;&amp; shift</text>
+  <path d="M500,590 H790" class="bus" marker-end="url(#arrb)"/>
+  <path d="M790,550 L820,562 L820,638 L790,650 Z" class="comb"/>
+  <text x="795" y="594" class="port">0</text>
+  <text x="795" y="634" class="port">1</text>
+  <path d="M805,660 V644" class="w" marker-end="url(#arr)"/>
+  <text x="805" y="674" class="net" text-anchor="middle">dr_sel ==</text>
+  <text x="805" y="688" class="net" text-anchor="middle">DR_DFT_CTRL</text>
+  <text x="805" y="702" class="net" text-anchor="middle">&amp;&amp; capture</text>
+  <path d="M575,630 H790" class="bus" marker-end="url(#arrb)"/>
+  <text x="578" y="624" class="code">{3'b000, mbist_pass,</text>
+  <text x="578" y="646" class="code"> mbist_done, mbist_start,</text>
+  <text x="578" y="660" class="code"> scan_en, test_mode}</text>
+  <path d="M820,610 H880" class="bus" marker-end="url(#arrb)"/>
+  <rect x="880" y="555" width="140" height="110" class="inst"/>
+  <text x="950" y="573" class="bm" text-anchor="middle">dft_sr [7:0]</text>
+  <text x="950" y="635" class="code" text-anchor="middle">posedge tck</text>
+  <text x="950" y="651" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="886" y="614" class="port">D</text>
+  <text x="1014" y="614" class="port" text-anchor="end">Q</text>
+  <path d="M880,637 L892,644 L880,651" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M858,644 H880" class="w"/>
+  <text x="855" y="648" class="net" text-anchor="end">tck</text>
+  <circle cx="950" cy="670" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M950,675 V685" class="w"/>
+  <text x="950" y="698" class="net" text-anchor="middle">trst_n</text>
+  <text x="962" y="683" class="code">reset 8'h00</text>
+  <circle cx="1040" cy="610" r="4" fill="#374151"/>
+  <path d="M1040,610 V510 H300 V555" class="bus" marker-end="url(#arrb)"/>
+  <circle cx="445" cy="510" r="4" fill="#374151"/>
+  <text x="306" y="504" class="sig">dft_sr[7:1]</text>
+  <path d="M445,510 V565 H470" class="bus" marker-end="url(#arrb)"/>
+  <rect x="180" y="765" width="240" height="75" class="comb"/>
+  <text x="300" y="781" class="code" text-anchor="middle">{tdi, idcode_sr[31:1]}</text>
+  <rect x="200" y="800" width="50" height="28" fill="#ffffff" stroke="#6b7280" stroke-width="1"/>
+  <text x="225" y="818" class="cell" text-anchor="middle">tdi</text>
+  <text x="225" y="796" class="cell" text-anchor="middle">[31]</text>
+  <rect x="250" y="800" width="50" height="28" fill="#ffffff" stroke="#6b7280" stroke-width="1"/>
+  <text x="275" y="818" class="cell" text-anchor="middle">sr[31]</text>
+  <text x="275" y="796" class="cell" text-anchor="middle">[30]</text>
+  <rect x="300" y="800" width="50" height="28" fill="#ffffff" stroke="#6b7280" stroke-width="1"/>
+  <text x="325" y="818" class="cell" text-anchor="middle">…</text>
+  <text x="325" y="796" class="cell" text-anchor="middle"></text>
+  <rect x="350" y="800" width="50" height="28" fill="#ffffff" stroke="#6b7280" stroke-width="1"/>
+  <text x="375" y="818" class="cell" text-anchor="middle">sr[1]</text>
+  <text x="375" y="796" class="cell" text-anchor="middle">[0]</text>
+  <path d="M420,820 H470" class="bus" marker-end="url(#arrb)"/>
+  <path d="M470,750 L500,762 L500,838 L470,850 Z" class="comb"/>
+  <text x="475" y="779" class="port">0</text>
+  <text x="475" y="824" class="port">1</text>
+  <path d="M485,860 V844" class="w" marker-end="url(#arr)"/>
+  <text x="485" y="874" class="net" text-anchor="middle">dr_sel ==</text>
+  <text x="485" y="888" class="net" text-anchor="middle">DR_IDCODE</text>
+  <text x="485" y="902" class="net" text-anchor="middle">&amp;&amp; shift</text>
+  <path d="M500,800 H790" class="bus" marker-end="url(#arrb)"/>
+  <path d="M790,760 L820,772 L820,848 L790,860 Z" class="comb"/>
+  <text x="795" y="804" class="port">0</text>
+  <text x="795" y="844" class="port">1</text>
+  <path d="M805,870 V854" class="w" marker-end="url(#arr)"/>
+  <text x="805" y="884" class="net" text-anchor="middle">dr_sel ==</text>
+  <text x="805" y="898" class="net" text-anchor="middle">DR_IDCODE</text>
+  <text x="805" y="912" class="net" text-anchor="middle">&amp;&amp; capture</text>
+  <path d="M575,840 H790" class="bus" marker-end="url(#arrb)"/>
+  <text x="578" y="834" class="code">IDCODE_VAL</text>
+  <text x="578" y="856" class="code">32'h1114_9FFF</text>
+  <path d="M820,820 H880" class="bus" marker-end="url(#arrb)"/>
+  <rect x="880" y="765" width="140" height="110" class="inst"/>
+  <text x="950" y="783" class="bm" text-anchor="middle">idcode_sr [31:0]</text>
+  <text x="950" y="845" class="code" text-anchor="middle">posedge tck</text>
+  <text x="950" y="861" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="886" y="824" class="port">D</text>
+  <text x="1014" y="824" class="port" text-anchor="end">Q</text>
+  <path d="M880,847 L892,854 L880,861" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M858,854 H880" class="w"/>
+  <text x="855" y="858" class="net" text-anchor="end">tck</text>
+  <circle cx="950" cy="880" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M950,885 V895" class="w"/>
+  <text x="950" y="908" class="net" text-anchor="middle">trst_n</text>
+  <text x="962" y="893" class="code">reset IDCODE_VAL</text>
+  <circle cx="1040" cy="820" r="4" fill="#374151"/>
+  <path d="M1040,820 V720 H300 V765" class="bus" marker-end="url(#arrb)"/>
+  <circle cx="445" cy="720" r="4" fill="#374151"/>
+  <text x="306" y="714" class="sig">idcode_sr[31:1]</text>
+  <path d="M445,720 V775 H470" class="bus" marker-end="url(#arrb)"/>
+  <path d="M1020,400 H1065 V565 H1080" class="w" marker-end="url(#arr)"/>
+  <path d="M1020,610 H1080" class="bus" marker-end="url(#arrb)"/>
+  <text x="1040" y="626" class="port">[0]</text>
+  <path d="M1080,540 L1110,552 L1110,628 L1080,640 Z" class="comb"/>
+  <text x="1085" y="569" class="port">0</text>
+  <text x="1085" y="614" class="port">1</text>
+  <path d="M1095,650 V634" class="w" marker-end="url(#arr)"/>
+  <text x="1095" y="664" class="net" text-anchor="middle">dr_sel ==</text>
+  <text x="1095" y="678" class="net" text-anchor="middle">DR_DFT_CTRL</text>
+  <path d="M1110,590 H1190" class="w" marker-end="url(#arr)"/>
+  <path d="M1020,820 H1160 V635 H1190" class="w" marker-end="url(#arr)"/>
+  <text x="1166" y="629" class="port">[0]</text>
+  <path d="M1190,565 L1220,577 L1220,653 L1190,665 Z" class="comb"/>
+  <text x="1195" y="594" class="port">0</text>
+  <text x="1195" y="639" class="port">1</text>
+  <path d="M1205,675 V659" class="w" marker-end="url(#arr)"/>
+  <text x="1205" y="689" class="net" text-anchor="middle">dr_sel ==</text>
+  <text x="1205" y="703" class="net" text-anchor="middle">DR_IDCODE</text>
+  <path d="M1220,615 H1300" class="w" marker-end="url(#arr)"/>
+  <text x="1310" y="619" class="pin">dr_tdo</text>
+  <rect x="180" y="975" width="260" height="75" class="comb"/>
+  <text x="192" y="998" class="code">[2] dft_sr[2]</text>
+  <text x="192" y="1018" class="code">[1] dft_sr[1] &amp; dft_sr[0]</text>
+  <text x="192" y="1038" class="code">[0] dft_sr[0]</text>
+  <path d="M440,1030 H470" class="bus" marker-end="url(#arrb)"/>
+  <path d="M470,960 L500,972 L500,1048 L470,1060 Z" class="comb"/>
+  <text x="475" y="989" class="port">0</text>
+  <text x="475" y="1034" class="port">1</text>
+  <path d="M485,1070 V1054" class="w" marker-end="url(#arr)"/>
+  <text x="485" y="1084" class="net" text-anchor="middle">state == UPDATE_DR</text>
+  <text x="485" y="1098" class="net" text-anchor="middle">&amp;&amp; dr_sel == DR_DFT_CTRL</text>
+  <path d="M500,1010 H790" class="bus" marker-end="url(#arrb)"/>
+  <path d="M790,970 L820,982 L820,1058 L790,1070 Z" class="comb"/>
+  <text x="795" y="1014" class="port">0</text>
+  <text x="795" y="1054" class="port">1</text>
+  <path d="M805,1080 V1064" class="w" marker-end="url(#arr)"/>
+  <text x="805" y="1094" class="net" text-anchor="middle">state ==</text>
+  <text x="805" y="1108" class="net" text-anchor="middle">TEST_LOGIC_RESET</text>
+  <path d="M575,1050 H790" class="bus" marker-end="url(#arrb)"/>
+  <text x="578" y="1044" class="code">3'b000</text>
+  <path d="M820,1030 H880" class="bus" marker-end="url(#arrb)"/>
+  <rect x="880" y="975" width="140" height="110" class="inst"/>
+  <text x="950" y="993" class="bm" text-anchor="middle">{mbist_start,</text>
+  <text x="950" y="1007" class="bm" text-anchor="middle">scan_en,</text>
+  <text x="950" y="1021" class="bm" text-anchor="middle">test_mode}</text>
+  <text x="950" y="1055" class="code" text-anchor="middle">negedge tck</text>
+  <text x="950" y="1071" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="886" y="1034" class="port">D</text>
+  <text x="1014" y="1034" class="port" text-anchor="end">Q</text>
+  <path d="M880,1057 L892,1064 L880,1071" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <circle cx="875" cy="1064" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M858,1064 H870" class="w"/>
+  <text x="855" y="1068" class="net" text-anchor="end">tck</text>
+  <circle cx="950" cy="1090" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M950,1095 V1105" class="w"/>
+  <text x="950" y="1118" class="net" text-anchor="middle">trst_n</text>
+  <text x="962" y="1103" class="code">reset 3'b000</text>
+  <circle cx="1040" cy="1030" r="4" fill="#374151"/>
+  <path d="M1040,1030 V930 H445 V985 H470" class="bus" marker-end="url(#arrb)"/>
+  <path d="M1020,1030 H1100" class="bus"/>
+  <path d="M1100,1000 V1060" class="bus"/>
+  <path d="M1100,1000 H1300" class="w" marker-end="url(#arr)"/>
+  <text x="1108" y="995" class="port">[2]</text>
+  <text x="1310" y="1004" class="pin">mbist_start</text>
+  <path d="M1100,1030 H1300" class="w" marker-end="url(#arr)"/>
+  <text x="1108" y="1025" class="port">[1]</text>
+  <text x="1310" y="1034" class="pin">scan_en</text>
+  <path d="M1100,1060 H1300" class="w" marker-end="url(#arr)"/>
+  <text x="1108" y="1055" class="port">[0]</text>
+  <text x="1310" y="1064" class="pin">test_mode</text>
+</svg>

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1470 920" width="1470" height="920" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .note { fill:#374151; font-size:16px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1470" height="920" fill="#ffffff"/>
+  <rect x="110" y="30" width="1280" height="870" rx="8" class="mod"/>
+  <text x="118" y="46" class="modl">jtag_checker_defaults.svh</text>
+  <text x="-15" y="76" class="pin">tck</text>
+  <path d="M110,72 H130" class="w"/>
+  <text x="136" y="76" class="net">tck</text>
+  <text x="-15" y="94" class="pin">trst_n</text>
+  <path d="M110,90 H130" class="w"/>
+  <text x="136" y="94" class="net">trst_n</text>
+  <rect x="150" y="110" width="1220" height="230" rx="6" class="mod"/>
+  <text x="158" y="126" class="modl">default clocking + default disable iff</text>
+  <rect x="220" y="140" width="160" height="124" class="inst"/>
+  <text x="300" y="164" class="bm" text-anchor="middle">trst_seen</text>
+  <text x="300" y="186" class="code" text-anchor="middle">posedge tck</text>
+  <text x="300" y="254" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="226" y="210" class="port">D</text>
+  <text x="374" y="210" class="port" text-anchor="end">Q</text>
+  <path d="M220,220 L232,227 L220,234" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M198,227 H220" class="w"/>
+  <text x="195" y="232" class="net" text-anchor="end">tck</text>
+  <circle cx="300" cy="269" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M300,274 V282" class="w"/>
+  <text x="300" y="298" class="net" text-anchor="middle">trst_n</text>
+  <text x="314" y="284" class="code">reset 1'b1</text>
+  <path d="M165,206 H220" class="w" marker-end="url(#arr)"/>
+  <text x="166" y="198" class="code">1'b0</text>
+  <path d="M380,206 H700" class="w" marker-end="url(#arr)"/>
+  <rect x="700" y="135" width="200" height="30" class="comb"/>
+  <text x="800" y="154" class="bm" text-anchor="middle">trst_n !== 1'b1</text>
+  <rect x="700" y="191" width="200" height="30" class="comb"/>
+  <text x="800" y="210" class="bm" text-anchor="middle">trst_seen !== 1'b0</text>
+  <rect x="700" y="250" width="200" height="30" class="comb"/>
+  <text x="800" y="269" class="bm" text-anchor="middle">rst_seen !== 1'b1</text>
+  <path d="M675,150 H700" class="w" marker-end="url(#arr)"/>
+  <text x="671" y="154" class="net" text-anchor="end">trst_n</text>
+  <path d="M675,265 H700" class="w" marker-end="url(#arr)"/>
+  <text x="671" y="269" class="net" text-anchor="end">rst_seen</text>
+  <path d="M900,150 H950" class="w" marker-end="url(#arr)"/>
+  <path d="M900,206 H958" class="w" marker-end="url(#arr)"/>
+  <path d="M900,265 H950" class="w" marker-end="url(#arr)"/>
+  <path d="M950,135 Q990,135 1015,207.5 Q990,280 950,280 Q964,207.5 950,135 Z" class="comb"/>
+  <path d="M1015,207.5 H1040" class="w" marker-end="url(#arr)"/>
+  <text x="1045" y="212.5" class="bm">default disable iff (...)</text>
+  <rect x="150" y="360" width="1220" height="80" rx="6" class="mod"/>
+  <text x="158" y="376" class="modl">`ifdef QUESTA_FORMAL</text>
+  <rect x="200" y="385" width="250" height="34" class="comb"/>
+  <text x="325" y="406" class="bm" text-anchor="middle">assign rst_seen = 1'b1</text>
+  <path d="M450,402 H500" class="w"/>
+  <text x="504" y="407" class="net">rst_seen</text>
+  <rect x="150" y="460" width="1220" height="250" rx="6" class="mod"/>
+  <text x="158" y="476" class="modl">`else  (simulation)</text>
+  <rect x="220" y="520" width="160" height="124" class="inst"/>
+  <text x="300" y="544" class="bm" text-anchor="middle">rst_seen</text>
+  <text x="300" y="566" class="code" text-anchor="middle">posedge tck</text>
+  <text x="300" y="634" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="226" y="590" class="port">D</text>
+  <text x="374" y="590" class="port" text-anchor="end">Q</text>
+  <path d="M220,600 L232,607 L220,614" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M198,607 H220" class="w"/>
+  <text x="195" y="612" class="net" text-anchor="end">tck</text>
+  <circle cx="300" cy="649" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M300,654 V662" class="w"/>
+  <text x="300" y="678" class="net" text-anchor="middle">trst_n</text>
+  <text x="314" y="664" class="code">reset 1'b1</text>
+  <text x="420" y="500" class="code">initial rst_seen = 1'b0;</text>
+  <circle cx="400" cy="586" r="4" fill="#374151"/>
+  <path d="M400,586 V506 H195 V586 H220" class="w" marker-end="url(#arr)"/>
+  <path d="M380,586 H490" class="w"/>
+  <text x="494" y="591" class="net">rst_seen</text>
+  <circle cx="450" cy="586" r="4" fill="#374151"/>
+  <path d="M450,586 V656 H520" class="w" marker-end="url(#arr)"/>
+  <rect x="520" y="634" width="330" height="44" class="comb"/>
+  <text x="685" y="652" class="bm" text-anchor="middle">final</text>
+  <text x="685" y="668" class="small" text-anchor="middle">if (rst_seen !== 1'b1) $error(...)</text>
+  <rect x="150" y="730" width="1220" height="150" rx="6" class="mod"/>
+  <text x="158" y="746" class="modl">`define ASSERT_TRST(name, cond)</text>
+  <rect x="260" y="765" width="180" height="30" class="comb"/>
+  <text x="350" y="784" class="bm" text-anchor="middle">trst_n !== 1'b0</text>
+  <path d="M235,780 H260" class="w" marker-end="url(#arr)"/>
+  <text x="231" y="784" class="net" text-anchor="end">trst_n</text>
+  <path d="M440,780 H560" class="w" marker-end="url(#arr)"/>
+  <path d="M235,830 H560" class="w" marker-end="url(#arr)"/>
+  <text x="231" y="835" class="net" text-anchor="end">cond</text>
+  <path d="M560,765 Q600,765 625,805.0 Q600,845 560,845 Q574,805.0 560,765 Z" class="comb"/>
+  <path d="M625,805.0 H680" class="w" marker-end="url(#arr)"/>
+  <rect x="680" y="777.0" width="220" height="56" rx="10" class="chk"/>
+  <text x="790" y="801.0" class="bm" text-anchor="middle">name</text>
+  <text x="790" y="821.0" class="small" text-anchor="middle">assert final</text>
+</svg>

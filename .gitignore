@@ -53,3 +53,6 @@ __pycache__/
 .DS_Store
 *.swp
 *.swo
+
+# Schematic generators for docs/img (kept local, not tracked)
+scripts/schematics/
