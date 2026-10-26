@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1800" width="1930" height="1800" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1800" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1750" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">sb : jtag_scoreboard (1/2): JTAG side</text>
+  <rect x="160" y="70" width="828" height="300" class="comb"/>
+  <text x="174" y="96" class="bm">class jtag_scoreboard extends uvm_scoreboard;</text>
+  <text x="174" y="118" class="code">`uvm_analysis_imp_decl(_jtag)        `uvm_analysis_imp_decl(_dft)</text>
+  <text x="174" y="140" class="code">uvm_analysis_imp_jtag #(jtag_scan_txn, jtag_scoreboard) jtag_imp;</text>
+  <text x="174" y="162" class="code">uvm_analysis_imp_dft  #(dft_txn,       jtag_scoreboard) dft_imp;</text>
+  <text x="174" y="184" class="code">jtag_ref_model model;</text>
+  <text x="174" y="206" class="code">int unsigned   mbist_cycles = 16;    build_phase: &lt;- config_db "mbist_cycles"</text>
+  <text x="174" y="228" class="code">typedef struct {int unsigned cycle; bit test_mode, scan_en, mbist_start, trst;} pred_t;</text>
+  <text x="174" y="250" class="code">pred_t         preds[$];</text>
+  <text x="174" y="272" class="code">dft_txn        samples[int unsigned];</text>
+  <text x="174" y="294" class="code">dft_txn        pending;</text>
+  <text x="174" y="316" class="code">bit            synced;    int unsigned sync_cycle;</text>
+  <text x="174" y="338" class="code">int unsigned   ms_run;    bit done_exp_prev, pass_latched;</text>
+  <text x="174" y="360" class="code">int unsigned   n_scans, n_bits, n_unknown, n_errors, n_dft_checked;</text>
+  <circle cx="110" cy="420" r="7" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="124" y="408" class="port">jtag_imp</text>
+  <path d="M117,420 H480 V460" class="w" marker-end="url(#arr)"/>
+  <text x="494" y="446" class="bm">function void write_jtag(jtag_scan_txn t);</text>
+  <path d="M320,460 H640 L670,490 L640,520 H320 L290,490 Z" class="comb"/>
+  <text x="480" y="495" class="code" text-anchor="middle">t.scan == RESET</text>
+  <path d="M670,490 H780" class="w" marker-end="url(#arr)"/>
+  <text x="725" y="480" class="net" text-anchor="middle">yes</text>
+  <rect x="780" y="470" width="386" height="140" rx="6" class="comb"/>
+  <text x="794" y="495" class="code">model.reset();</text>
+  <text x="794" y="515" class="code">push_pred(t.cycle, t.trst);</text>
+  <text x="794" y="535" class="code">if (!synced) begin</text>
+  <text x="794" y="555" class="code" xml:space="preserve">  synced = 1'b1;  sync_cycle = t.cycle;</text>
+  <text x="794" y="575" class="code">end</text>
+  <text x="794" y="595" class="code">return;</text>
+  <text x="490" y="538" class="net">no</text>
+  <path d="M480,520 V640" class="w" marker-end="url(#arr)"/>
+  <rect x="374" y="640" width="212" height="40" rx="6" class="comb"/>
+  <text x="388" y="665" class="code">instr = model.instr;</text>
+  <path d="M480,680 V710" class="w" marker-end="url(#arr)"/>
+  <rect x="260" y="710" width="441" height="40" rx="6" class="comb"/>
+  <text x="274" y="735" class="code">model.st_known = samples.exists(t.cap_cycle);</text>
+  <path d="M480,750 V780" class="w" marker-end="url(#arr)"/>
+  <path d="M320,780 H640 L670,810 L640,840 H320 L290,810 Z" class="comb"/>
+  <text x="480" y="815" class="code" text-anchor="middle">model.st_known</text>
+  <path d="M670,810 H780" class="w" marker-end="url(#arr)"/>
+  <text x="725" y="800" class="net" text-anchor="middle">yes</text>
+  <rect x="780" y="790" width="469" height="60" rx="6" class="comb"/>
+  <text x="794" y="815" class="code">model.st_done = samples[t.cap_cycle].mbist_done;</text>
+  <text x="794" y="835" class="code">model.st_pass = samples[t.cap_cycle].mbist_pass;</text>
+  <text x="490" y="858" class="net">no</text>
+  <path d="M820,850 V880 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="880" r="4" fill="#374151"/>
+  <path d="M480,840 V880" class="w"/>
+  <path d="M480,880 V910" class="w" marker-end="url(#arr)"/>
+  <rect x="315" y="910" width="331" height="40" rx="6" class="comb"/>
+  <text x="329" y="935" class="code">model.predict(t, exp, exp_known);</text>
+  <path d="M480,950 V980" class="w" marker-end="url(#arr)"/>
+  <path d="M360,1020 H600 L630,1050 L600,1080 H360 L330,1050 Z" class="comb"/>
+  <text x="480" y="1055" class="code" text-anchor="middle">!exp_known[i]</text>
+  <path d="M630,1050 H780" class="w" marker-end="url(#arr)"/>
+  <text x="695" y="1040" class="net" text-anchor="middle">yes</text>
+  <rect x="780" y="1030" width="138" height="40" rx="6" class="comb"/>
+  <text x="794" y="1055" class="code">n_unknown++;</text>
+  <path d="M480,1080 V1110" class="w" marker-end="url(#arr)"/>
+  <text x="490" y="1100" class="net">no</text>
+  <path d="M360,1110 H600 L630,1140 L600,1170 H360 L330,1140 Z" class="comb"/>
+  <text x="480" y="1145" class="code" text-anchor="middle">t.tdo_q[i] !== exp[i]</text>
+  <path d="M630,1140 H780" class="w" marker-end="url(#arr)"/>
+  <text x="695" y="1130" class="net" text-anchor="middle">yes</text>
+  <rect x="780" y="1120" width="487" height="40" rx="6" class="comb"/>
+  <text x="794" y="1145" class="code">error("... TDO bit %0d: got %b, expected %b ...");</text>
+  <path d="M480,1170 V1200" class="w" marker-end="url(#arr)"/>
+  <text x="490" y="1190" class="net">no</text>
+  <rect x="425" y="1200" width="110" height="40" rx="6" class="comb"/>
+  <text x="439" y="1225" class="code">n_bits++;</text>
+  <path d="M918,1050 H1287" class="w"/>
+  <path d="M1267,1140 H1287" class="w"/>
+  <circle cx="1287" cy="1140" r="4" fill="#374151"/>
+  <path d="M1287,1050 V1265 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="1265" r="4" fill="#374151"/>
+  <path d="M480,1240 V1265" class="w"/>
+  <rect x="180" y="980" width="1137" height="315" rx="6" class="mod"/>
+  <text x="188" y="998" class="modl">foreach (exp[i])</text>
+  <path d="M480,1265 V1325" class="w"/>
+  <path d="M480,1295 V1325" class="w" marker-end="url(#arr)"/>
+  <rect x="420" y="1325" width="120" height="40" rx="6" class="comb"/>
+  <text x="434" y="1350" class="code">n_scans++;</text>
+  <path d="M480,1365 V1395" class="w" marker-end="url(#arr)"/>
+  <path d="M320,1395 H640 L670,1445 L640,1495 H320 L290,1445 Z" class="comb"/>
+  <text x="480" y="1430" class="code" text-anchor="middle">t.scan == DR &amp;&amp;</text>
+  <text x="480" y="1450" class="code" text-anchor="middle">instr == OP_DFT_CTRL &amp;&amp;</text>
+  <text x="480" y="1470" class="code" text-anchor="middle">!t.aborted</text>
+  <path d="M670,1445 H780" class="w" marker-end="url(#arr)"/>
+  <text x="725" y="1435" class="net" text-anchor="middle">yes</text>
+  <rect x="780" y="1425" width="257" height="40" rx="6" class="comb"/>
+  <text x="794" y="1450" class="code">push_pred(t.cycle, 1'b0);</text>
+  <text x="490" y="1513" class="net">no</text>
+  <path d="M820,1465 V1525 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="1525" r="4" fill="#374151"/>
+  <path d="M480,1495 V1525" class="w"/>
+  <path d="M480,1525 V1555" class="w" marker-end="url(#arr)"/>
+  <rect x="342" y="1555" width="276" height="40" rx="6" class="comb"/>
+  <text x="356" y="1580" class="code">prune_samples(t.cap_cycle);</text>
+  <path d="M480,1595 V1625" class="w" marker-end="url(#arr)"/>
+  <text x="480" y="1645" class="bm" text-anchor="middle">return</text>
+  <rect x="1100" y="1340" width="662" height="212" class="comb"/>
+  <text x="1114" y="1366" class="bm">function void push_pred(int unsigned cycle, bit trst);</text>
+  <text x="1114" y="1388" class="code" xml:space="preserve">  if (!model.test_mode_k || !model.scan_en_k || !model.mbist_start_k)</text>
+  <text x="1114" y="1410" class="code" xml:space="preserve">    error("predicted DFT outputs not known ...");</text>
+  <text x="1114" y="1432" class="code" xml:space="preserve">  p.cycle       = cycle;</text>
+  <text x="1114" y="1454" class="code" xml:space="preserve">  p.test_mode   = model.test_mode;</text>
+  <text x="1114" y="1476" class="code" xml:space="preserve">  p.scan_en     = model.scan_en;</text>
+  <text x="1114" y="1498" class="code" xml:space="preserve">  p.mbist_start = model.mbist_start;</text>
+  <text x="1114" y="1520" class="code" xml:space="preserve">  p.trst        = trst;</text>
+  <text x="1114" y="1542" class="code" xml:space="preserve">  preds.push_back(p);</text>
+  <rect x="1100" y="1580" width="570" height="58" class="comb"/>
+  <text x="1114" y="1606" class="bm">function void prune_samples(int unsigned oldest);</text>
+  <text x="1114" y="1628" class="code" xml:space="preserve">  while (samples.first(c) &amp;&amp; c &lt; oldest) samples.delete(c);</text>
+  <rect x="1100" y="1670" width="322" height="80" class="comb"/>
+  <text x="1114" y="1696" class="bm">function void error(string msg);</text>
+  <text x="1114" y="1718" class="code" xml:space="preserve">  n_errors++;</text>
+  <text x="1114" y="1740" class="code" xml:space="preserve">  `uvm_error("SB", msg)</text>
+</svg>

@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1340" width="1930" height="1340" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1340" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1290" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">tests: uvm_test_top</text>
+  <rect x="160" y="70" width="828" height="322" class="comb"/>
+  <text x="174" y="96" class="bm">class jtag_base_test extends uvm_test;</text>
+  <text x="174" y="118" class="code">jtag_env       env;</text>
+  <text x="174" y="140" class="code">virtual dft_if dvif;</text>
+  <text x="174" y="162" class="code">function void build_phase(uvm_phase phase);</text>
+  <text x="174" y="184" class="code" xml:space="preserve">  env = jtag_env::type_id::create("env", this);</text>
+  <text x="174" y="206" class="code" xml:space="preserve">  if (!uvm_config_db #(virtual dft_if)::get(this, "", "dft_vif", dvif)) `uvm_fatal(...)</text>
+  <text x="174" y="228" class="code" xml:space="preserve">  uvm_top.set_timeout(10ms, 0);</text>
+  <text x="174" y="250" class="code">task run_phase(uvm_phase phase);</text>
+  <text x="174" y="272" class="code" xml:space="preserve">  phase.raise_objection(this);</text>
+  <text x="174" y="294" class="code" xml:space="preserve">  phase.get_objection().set_drain_time(this, 10 * TCK_PERIOD_NS * 1ns);</text>
+  <text x="174" y="316" class="code" xml:space="preserve">  run_stimulus();</text>
+  <text x="174" y="338" class="code" xml:space="preserve">  phase.drop_objection(this);</text>
+  <text x="174" y="360" class="code">virtual task run_stimulus();</text>
+  <text x="174" y="382" class="code">endtask</text>
+  <rect x="1100" y="120" width="230" height="40" class="comb"/>
+  <text x="1215" y="145" class="small" text-anchor="middle">raise_objection</text>
+  <rect x="1100" y="190" width="230" height="40" class="comb"/>
+  <text x="1215" y="215" class="small" text-anchor="middle">run_stimulus()</text>
+  <path d="M1215,160 V190" class="w" marker-end="url(#arr)"/>
+  <rect x="1100" y="260" width="230" height="40" class="comb"/>
+  <text x="1215" y="285" class="small" text-anchor="middle">drop_objection</text>
+  <path d="M1215,230 V260" class="w" marker-end="url(#arr)"/>
+  <rect x="1100" y="330" width="230" height="40" class="comb"/>
+  <text x="1215" y="355" class="small" text-anchor="middle">drain time</text>
+  <path d="M1215,300 V330" class="w" marker-end="url(#arr)"/>
+  <rect x="1100" y="400" width="230" height="40" class="comb"/>
+  <text x="1215" y="425" class="small" text-anchor="middle">run_phase ends</text>
+  <path d="M1215,370 V400" class="w" marker-end="url(#arr)"/>
+  <text x="1350" y="355" class="net">10 * TCK_PERIOD_NS</text>
+  <rect x="160" y="500" width="260" height="44" class="inst"/>
+  <text x="290" y="527" class="bm" text-anchor="middle">jtag_base_test</text>
+  <rect x="1350" y="500" width="300" height="44" class="inst"/>
+  <text x="1500" y="527" class="bm" text-anchor="middle">jtag_base_seq</text>
+  <path d="M200,544 L190,562 L210,562 Z" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <path d="M1500,544 L1490,562 L1510,562 Z" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <rect x="360" y="580" width="330" height="44" class="inst"/>
+  <text x="525" y="607" class="bm" text-anchor="middle">jtag_idcode_test</text>
+  <path d="M200,602 H360" class="w"/>
+  <rect x="1160" y="580" width="300" height="44" class="inst"/>
+  <text x="1310" y="607" class="small" text-anchor="middle">jtag_idcode_seq</text>
+  <path d="M1460,602 H1500" class="w"/>
+  <path d="M690,602 H1152" class="w" marker-end="url(#arr)"/>
+  <text x="850" y="594" class="small" text-anchor="middle">seq.start(env.agent.sqr)</text>
+  <rect x="360" y="680" width="330" height="44" class="inst"/>
+  <text x="525" y="707" class="bm" text-anchor="middle">jtag_bypass_test</text>
+  <path d="M200,702 H360" class="w"/>
+  <rect x="1160" y="680" width="300" height="44" class="inst"/>
+  <text x="1310" y="707" class="small" text-anchor="middle">jtag_bypass_seq</text>
+  <path d="M1460,702 H1500" class="w"/>
+  <path d="M690,702 H1152" class="w" marker-end="url(#arr)"/>
+  <text x="850" y="694" class="small" text-anchor="middle">seq.start(env.agent.sqr)</text>
+  <rect x="360" y="780" width="330" height="44" class="inst"/>
+  <text x="525" y="807" class="bm" text-anchor="middle">jtag_unused_opcode_test</text>
+  <path d="M200,802 H360" class="w"/>
+  <rect x="1160" y="780" width="300" height="44" class="inst"/>
+  <text x="1310" y="807" class="small" text-anchor="middle">jtag_unused_opcode_seq</text>
+  <path d="M1460,802 H1500" class="w"/>
+  <path d="M690,802 H1152" class="w" marker-end="url(#arr)"/>
+  <text x="850" y="794" class="small" text-anchor="middle">seq.start(env.agent.sqr)</text>
+  <rect x="360" y="880" width="330" height="44" class="inst"/>
+  <text x="525" y="907" class="bm" text-anchor="middle">jtag_pause_test</text>
+  <path d="M200,902 H360" class="w"/>
+  <rect x="1160" y="880" width="300" height="44" class="inst"/>
+  <text x="1310" y="907" class="small" text-anchor="middle">jtag_pause_seq</text>
+  <path d="M1460,902 H1500" class="w"/>
+  <path d="M690,902 H1152" class="w" marker-end="url(#arr)"/>
+  <text x="850" y="894" class="small" text-anchor="middle">seq.start(env.agent.sqr)</text>
+  <rect x="360" y="980" width="330" height="44" class="inst"/>
+  <text x="525" y="1007" class="bm" text-anchor="middle">jtag_reset_test</text>
+  <path d="M200,1002 H360" class="w"/>
+  <rect x="1160" y="980" width="300" height="44" class="inst"/>
+  <text x="1310" y="1007" class="small" text-anchor="middle">jtag_reset_seq</text>
+  <path d="M1460,1002 H1500" class="w"/>
+  <path d="M690,1002 H1152" class="w" marker-end="url(#arr)"/>
+  <text x="850" y="994" class="small" text-anchor="middle">seq.start(env.agent.sqr)</text>
+  <rect x="360" y="1080" width="330" height="44" class="inst"/>
+  <text x="525" y="1107" class="bm" text-anchor="middle">jtag_dft_test</text>
+  <path d="M200,1102 H360" class="w"/>
+  <rect x="1160" y="1080" width="300" height="44" class="inst"/>
+  <text x="1310" y="1107" class="small" text-anchor="middle">jtag_dft_seq</text>
+  <path d="M1460,1102 H1500" class="w"/>
+  <path d="M690,1102 H1152" class="w" marker-end="url(#arr)"/>
+  <rect x="1160" y="1132" width="300" height="44" class="inst"/>
+  <text x="1310" y="1159" class="small" text-anchor="middle">jtag_dft_fail_seq</text>
+  <path d="M1460,1154 H1500" class="w"/>
+  <path d="M690,1102 H760 V1154 H1152" class="w" marker-end="url(#arr)"/>
+  <text x="850" y="1094" class="small" text-anchor="middle">seq.start(env.agent.sqr)</text>
+  <rect x="360" y="1180" width="330" height="44" class="inst"/>
+  <text x="525" y="1207" class="bm" text-anchor="middle">jtag_random_test</text>
+  <path d="M200,1202 H360" class="w"/>
+  <rect x="1160" y="1180" width="300" height="44" class="inst"/>
+  <text x="1310" y="1207" class="small" text-anchor="middle">jtag_random_seq</text>
+  <path d="M1460,1202 H1500" class="w"/>
+  <path d="M690,1202 H1152" class="w" marker-end="url(#arr)"/>
+  <text x="850" y="1194" class="small" text-anchor="middle">seq.start(env.agent.sqr)</text>
+  <path d="M200,562 V1202" class="w"/>
+  <path d="M1500,562 V1202" class="w"/>
+  <text x="1520" y="1110" class="small">mbist_cycles = env.sb.mbist_cycles</text>
+  <text x="1520" y="1210" class="small">mbist_cycles = env.sb.mbist_cycles</text>
+</svg>

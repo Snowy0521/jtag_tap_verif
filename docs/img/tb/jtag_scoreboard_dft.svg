@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1620" width="1930" height="1620" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1620" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1570" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">sb : jtag_scoreboard (2/2): DFT side</text>
+  <circle cx="1880" cy="90" r="7" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="1866" y="78" class="port" text-anchor="end">dft_imp</text>
+  <path d="M1873,90 H1330 V130" class="w" marker-end="url(#arr)"/>
+  <text x="1316" y="116" class="bm" text-anchor="end">function void write_dft(dft_txn t);</text>
+  <rect x="1220" y="130" width="221" height="40" rx="6" class="comb"/>
+  <text x="1234" y="155" class="code">samples[t.cycle] = t;</text>
+  <path d="M1330,170 V200" class="w" marker-end="url(#arr)"/>
+  <path d="M1210,200 H1450 L1480,230 L1450,260 H1210 L1180,230 Z" class="comb"/>
+  <text x="1330" y="235" class="code" text-anchor="middle">pending != null</text>
+  <path d="M1480,230 H1600" class="w" marker-end="url(#arr)"/>
+  <text x="1540" y="220" class="net" text-anchor="middle">yes</text>
+  <rect x="1600" y="210" width="230" height="40" rx="6" class="comb"/>
+  <text x="1614" y="235" class="code">check_sample(pending);</text>
+  <text x="1340" y="278" class="net">no</text>
+  <path d="M1640,250 V290 H1336" class="w" marker-end="url(#arr)"/>
+  <circle cx="1330" cy="290" r="4" fill="#374151"/>
+  <path d="M1330,260 V290" class="w"/>
+  <path d="M1330,290 V320" class="w" marker-end="url(#arr)"/>
+  <rect x="1261" y="320" width="138" height="40" rx="6" class="comb"/>
+  <text x="1275" y="345" class="code">pending = t;</text>
+  <path d="M1330,360 V390" class="w" marker-end="url(#arr)"/>
+  <text x="1330" y="410" class="bm" text-anchor="middle">return</text>
+  <text x="160" y="80" class="bm">function void check_sample(dft_txn s);</text>
+  <path d="M520,90 V110" class="w" marker-end="url(#arr)"/>
+  <path d="M360,110 H680 L710,140 L680,170 H360 L330,140 Z" class="comb"/>
+  <text x="520" y="145" class="code" text-anchor="middle">!synced || s.cycle &lt; sync_cycle</text>
+  <path d="M710,140 H840" class="w" marker-end="url(#arr)"/>
+  <text x="775" y="130" class="net" text-anchor="middle">yes</text>
+  <rect x="840" y="120" width="92" height="40" rx="6" class="comb"/>
+  <text x="854" y="145" class="code">return;</text>
+  <text x="530" y="188" class="net">no</text>
+  <path d="M520,170 V210" class="w" marker-end="url(#arr)"/>
+  <path d="M360,250 H680 L710,280 L680,310 H360 L330,280 Z" class="comb"/>
+  <text x="520" y="285" class="code" text-anchor="middle">preds[i].cycle &gt; s.cycle</text>
+  <path d="M710,280 H840" class="w" marker-end="url(#arr)"/>
+  <text x="770" y="270" class="net" text-anchor="middle">yes</text>
+  <rect x="840" y="260" width="83" height="40" rx="6" class="comb"/>
+  <text x="854" y="285" class="code">break;</text>
+  <path d="M520,310 V340" class="w" marker-end="url(#arr)"/>
+  <text x="530" y="330" class="net">no</text>
+  <rect x="378" y="340" width="285" height="40" rx="6" class="comb"/>
+  <text x="392" y="365" class="code">p = preds[i];  found = 1'b1;</text>
+  <path d="M520,380 V410" class="w" marker-end="url(#arr)"/>
+  <path d="M360,410 H680 L710,450 L680,490 H360 L330,450 Z" class="comb"/>
+  <text x="520" y="445" class="code" text-anchor="middle">preds[i].cycle == s.cycle &amp;&amp;</text>
+  <text x="520" y="465" class="code" text-anchor="middle">preds[i].trst</text>
+  <path d="M710,450 H840" class="w" marker-end="url(#arr)"/>
+  <text x="775" y="440" class="net" text-anchor="middle">yes</text>
+  <rect x="840" y="430" width="221" height="80" rx="6" class="comb"/>
+  <text x="854" y="455" class="code">ms_run        = 0;</text>
+  <text x="854" y="475" class="code">done_exp_prev = 1'b0;</text>
+  <text x="854" y="495" class="code">pass_latched  = 1'b0;</text>
+  <text x="530" y="508" class="net">no</text>
+  <path d="M880,510 V540 H526" class="w" marker-end="url(#arr)"/>
+  <circle cx="520" cy="540" r="4" fill="#374151"/>
+  <path d="M520,490 V540" class="w"/>
+  <path d="M520,540 V570" class="w" marker-end="url(#arr)"/>
+  <rect x="220" y="210" width="920" height="350" rx="6" class="mod"/>
+  <text x="228" y="228" class="modl">foreach (preds[i])</text>
+  <path d="M923,280 H1110 V590 H526" class="w" marker-end="url(#arr)"/>
+  <circle cx="520" cy="590" r="4" fill="#374151"/>
+  <path d="M520,540 V590" class="w"/>
+  <path d="M520,590 V620" class="w" marker-end="url(#arr)"/>
+  <rect x="263" y="620" width="515" height="60" rx="6" class="comb"/>
+  <text x="277" y="645" class="code">while (preds.size() &gt; 1 &amp;&amp; preds[1].cycle &lt;= s.cycle)</text>
+  <text x="277" y="665" class="code" xml:space="preserve">  void'(preds.pop_front());</text>
+  <path d="M520,680 V710" class="w" marker-end="url(#arr)"/>
+  <path d="M308,710 H732 L762,760 L732,810 H308 L278,760 Z" class="comb"/>
+  <text x="520" y="745" class="code" text-anchor="middle">found &amp;&amp;</text>
+  <text x="520" y="765" class="code" text-anchor="middle">{s.test_mode, s.scan_en, s.mbist_start} !==</text>
+  <text x="520" y="785" class="code" text-anchor="middle">{p.test_mode, p.scan_en, p.mbist_start}</text>
+  <path d="M762,760 H840" class="w" marker-end="url(#arr)"/>
+  <text x="801" y="750" class="net" text-anchor="middle">yes</text>
+  <rect x="840" y="740" width="607" height="40" rx="6" class="comb"/>
+  <text x="854" y="765" class="code">error("DFT outputs at cycle %0d: got %b%b%b, expected %b%b%b");</text>
+  <text x="530" y="828" class="net">no</text>
+  <path d="M880,780 V840 H526" class="w" marker-end="url(#arr)"/>
+  <circle cx="520" cy="840" r="4" fill="#374151"/>
+  <path d="M520,810 V840" class="w"/>
+  <path d="M520,840 V870" class="w" marker-end="url(#arr)"/>
+  <path d="M360,870 H680 L710,900 L680,930 H360 L330,900 Z" class="comb"/>
+  <text x="520" y="905" class="code" text-anchor="middle">s.scan_en &amp;&amp; !s.test_mode</text>
+  <path d="M710,900 H840" class="w" marker-end="url(#arr)"/>
+  <text x="775" y="890" class="net" text-anchor="middle">yes</text>
+  <rect x="840" y="880" width="469" height="40" rx="6" class="comb"/>
+  <text x="854" y="905" class="code">error("scan_en without test_mode at cycle %0d");</text>
+  <text x="530" y="948" class="net">no</text>
+  <path d="M880,920 V960 H526" class="w" marker-end="url(#arr)"/>
+  <circle cx="520" cy="960" r="4" fill="#374151"/>
+  <path d="M520,930 V960" class="w"/>
+  <path d="M520,960 V990" class="w" marker-end="url(#arr)"/>
+  <rect x="341" y="990" width="359" height="40" rx="6" class="comb"/>
+  <text x="355" y="1015" class="code">done_exp = (ms_run &gt;= mbist_cycles);</text>
+  <path d="M520,1030 V1060" class="w" marker-end="url(#arr)"/>
+  <path d="M360,1060 H680 L710,1090 L680,1120 H360 L330,1090 Z" class="comb"/>
+  <text x="520" y="1095" class="code" text-anchor="middle">done_exp &amp;&amp; !done_exp_prev</text>
+  <path d="M710,1090 H840" class="w" marker-end="url(#arr)"/>
+  <text x="775" y="1080" class="net" text-anchor="middle">yes</text>
+  <rect x="840" y="1070" width="478" height="80" rx="6" class="comb"/>
+  <text x="854" y="1095" class="code">pass_latched = samples.exists(s.cycle - 1)</text>
+  <text x="854" y="1115" class="code" xml:space="preserve">             ? !samples[s.cycle - 1].mbist_fail_i</text>
+  <text x="854" y="1135" class="code" xml:space="preserve">             : 1'b0;</text>
+  <text x="530" y="1138" class="net">no</text>
+  <path d="M880,1150 V1180 H526" class="w" marker-end="url(#arr)"/>
+  <circle cx="520" cy="1180" r="4" fill="#374151"/>
+  <path d="M520,1120 V1180" class="w"/>
+  <path d="M520,1180 V1210" class="w" marker-end="url(#arr)"/>
+  <rect x="341" y="1210" width="359" height="40" rx="6" class="comb"/>
+  <text x="355" y="1235" class="code">pass_exp = done_exp &amp;&amp; pass_latched;</text>
+  <path d="M520,1250 V1280" class="w" marker-end="url(#arr)"/>
+  <path d="M360,1280 H680 L710,1320 L680,1360 H360 L330,1320 Z" class="comb"/>
+  <text x="520" y="1315" class="code" text-anchor="middle">s.mbist_done !== done_exp ||</text>
+  <text x="520" y="1335" class="code" text-anchor="middle">s.mbist_pass !== pass_exp</text>
+  <path d="M710,1320 H840" class="w" marker-end="url(#arr)"/>
+  <text x="775" y="1310" class="net" text-anchor="middle">yes</text>
+  <rect x="840" y="1300" width="626" height="40" rx="6" class="comb"/>
+  <text x="854" y="1325" class="code">error("MBIST at cycle %0d: got done/pass = %b%b, expected %b%b");</text>
+  <text x="530" y="1378" class="net">no</text>
+  <path d="M880,1340 V1390 H526" class="w" marker-end="url(#arr)"/>
+  <circle cx="520" cy="1390" r="4" fill="#374151"/>
+  <path d="M520,1360 V1390" class="w"/>
+  <path d="M520,1390 V1420" class="w" marker-end="url(#arr)"/>
+  <rect x="152" y="1420" width="736" height="80" rx="6" class="comb"/>
+  <text x="166" y="1445" class="code">ms_run = s.mbist_start ? ((ms_run &lt; mbist_cycles) ? ms_run + 1 : ms_run) : 0;</text>
+  <text x="166" y="1465" class="code">done_exp_prev = done_exp;</text>
+  <text x="166" y="1485" class="code">n_dft_checked++;</text>
+  <path d="M520,1500 V1530" class="w" marker-end="url(#arr)"/>
+  <text x="520" y="1550" class="bm" text-anchor="middle">return</text>
+  <rect x="1000" y="1400" width="690" height="168" class="comb"/>
+  <text x="1014" y="1426" class="bm">function void check_phase(uvm_phase phase);</text>
+  <text x="1014" y="1448" class="code" xml:space="preserve">  if (pending != null)     check_sample(pending);</text>
+  <text x="1014" y="1470" class="code" xml:space="preserve">  if (n_scans == 0)        error("no scan was checked");</text>
+  <text x="1014" y="1492" class="code" xml:space="preserve">  if (n_dft_checked == 0)  error("no DFT sample was checked");</text>
+  <text x="1014" y="1514" class="code" xml:space="preserve">  if (n_unknown != 0)      error("%0d TDO bits could not be predicted");</text>
+  <text x="1014" y="1536" class="code">function void report_phase(uvm_phase phase);</text>
+  <text x="1014" y="1558" class="code" xml:space="preserve">  `uvm_info("SB", "... scans, ... bits matched, ... errors")</text>
+</svg>

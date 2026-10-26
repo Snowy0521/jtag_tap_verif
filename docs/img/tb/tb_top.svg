@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1550 1150" width="1550" height="1150" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1550" height="1150" fill="#ffffff"/>
+  <rect x="110" y="30" width="1390" height="1100" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">tb_top</text>
+  <text x="200" y="80" class="code">`timescale 1ns/1ps</text>
+  <text x="200" y="102" class="code">localparam int unsigned MBIST_CYCLES = 16;</text>
+  <text x="660" y="80" class="code">import uvm_pkg::*;</text>
+  <text x="660" y="102" class="code">import jtag_tb_pkg::*;</text>
+  <rect x="200" y="130" width="718" height="168" class="comb"/>
+  <text x="214" y="156" class="bm">initial</text>
+  <text x="214" y="178" class="code">dif.mbist_fail_i = 1'b0;</text>
+  <text x="214" y="200" class="code">uvm_config_db#(virtual jtag_if)::set(null, "*", "jtag_vif", jif);</text>
+  <text x="214" y="222" class="code">uvm_config_db#(virtual dft_if)::set(null, "*", "dft_vif", dif);</text>
+  <text x="214" y="244" class="code">uvm_config_db#(int unsigned)::set(null, "*", "mbist_cycles", MBIST_CYCLES);</text>
+  <text x="214" y="266" class="code">test = "jtag_idcode_test";  $value$plusargs("UVM_TESTNAME=%s", test);</text>
+  <text x="214" y="288" class="code">run_test(test);</text>
+  <rect x="200" y="420" width="300" height="120" class="comb"/>
+  <text x="350" y="476" class="bm" text-anchor="middle">uvm_test_top</text>
+  <text x="350" y="494" class="small" text-anchor="middle">created by run_test(test)</text>
+  <path d="M350,300 V420" class="w" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <path d="M500,450 H660" class="w" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="580" y="440" class="net" text-anchor="middle">"jtag_vif"</text>
+  <text x="580" y="470" class="small" text-anchor="middle">virtual jtag_if</text>
+  <path d="M500,520 H560 V830 H660" class="w" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="610" y="820" class="net" text-anchor="middle">"dft_vif"</text>
+  <text x="610" y="850" class="small" text-anchor="middle">virtual dft_if</text>
+  <rect x="640" y="320" width="290" height="80" class="comb"/>
+  <text x="785" y="347" class="bm" text-anchor="middle">TCK gen</text>
+  <text x="785" y="365" class="small" text-anchor="middle">always #(TCK_PERIOD_NS/2.0)</text>
+  <text x="785" y="383" class="small" text-anchor="middle">tck = tck_en ? ~tck : 1'b0</text>
+  <rect x="660" y="430" width="220" height="274" rx="10" class="inst"/>
+  <text x="770" y="454" class="bm" text-anchor="middle">jif : jtag_if</text>
+  <text x="770" y="476" class="small" text-anchor="middle">jtag_if jif ();</text>
+  <text x="888" y="504" class="net">jif.tck</text>
+  <text x="888" y="538" class="net">jif.tms</text>
+  <text x="888" y="572" class="net">jif.tdi</text>
+  <text x="888" y="606" class="net">jif.trst_n</text>
+  <text x="888" y="640" class="net">jif.tdo</text>
+  <text x="888" y="674" class="net">jif.tdo_en</text>
+  <rect x="660" y="744" width="220" height="274" rx="10" class="inst"/>
+  <text x="770" y="768" class="bm" text-anchor="middle">dif : dft_if</text>
+  <text x="770" y="790" class="small" text-anchor="middle">dft_if dif (jif.tck);</text>
+  <text x="888" y="818" class="net">dif.mbist_fail_i</text>
+  <text x="888" y="852" class="net">dif.test_mode</text>
+  <text x="888" y="886" class="net">dif.scan_en</text>
+  <text x="888" y="920" class="net">dif.mbist_start</text>
+  <text x="888" y="954" class="net">dif.mbist_done</text>
+  <text x="888" y="988" class="net">dif.mbist_pass</text>
+  <path d="M720,430 V400" class="w" marker-end="url(#arr)"/>
+  <text x="726" y="422" class="net">jif.tck_en</text>
+  <path d="M830,400 V430" class="w" marker-end="url(#arr)"/>
+  <text x="836" y="422" class="net">jif.tck</text>
+  <rect x="1060" y="400" width="400" height="638" rx="8" class="mod"/>
+  <text x="1068" y="418" class="modl">dut : jtag_tap_top</text>
+  <text x="1068" y="436" class="modl">#(.MBIST_CYCLES(MBIST_CYCLES))</text>
+  <text x="1068" y="515" class="port">tck</text>
+  <path d="M880,510 H1060" class="w" marker-end="url(#arr)"/>
+  <text x="1068" y="549" class="port">tms</text>
+  <path d="M880,544 H1060" class="w" marker-end="url(#arr)"/>
+  <text x="1068" y="583" class="port">tdi</text>
+  <path d="M880,578 H1060" class="w" marker-end="url(#arr)"/>
+  <text x="1068" y="617" class="port">trst_n</text>
+  <path d="M880,612 H1060" class="w" marker-end="url(#arr)"/>
+  <text x="1068" y="651" class="port">tdo</text>
+  <path d="M1060,646 H880" class="w" marker-end="url(#arr)"/>
+  <text x="1068" y="685" class="port">tdo_en</text>
+  <path d="M1060,680 H880" class="w" marker-end="url(#arr)"/>
+  <text x="1068" y="829" class="port">mbist_fail_i</text>
+  <path d="M880,824 H1060" class="w" marker-end="url(#arr)"/>
+  <text x="1068" y="863" class="port">test_mode</text>
+  <path d="M1060,858 H880" class="w" marker-end="url(#arr)"/>
+  <text x="1068" y="897" class="port">scan_en</text>
+  <path d="M1060,892 H880" class="w" marker-end="url(#arr)"/>
+  <text x="1068" y="931" class="port">mbist_start</text>
+  <path d="M1060,926 H880" class="w" marker-end="url(#arr)"/>
+  <text x="1068" y="965" class="port">mbist_done</text>
+  <path d="M1060,960 H880" class="w" marker-end="url(#arr)"/>
+  <text x="1068" y="999" class="port">mbist_pass</text>
+  <path d="M1060,994 H880" class="w" marker-end="url(#arr)"/>
+  <rect x="1260" y="470" width="170" height="50" class="comb"/>
+  <text x="1345" y="491" class="bm" text-anchor="middle">RTL</text>
+  <text x="1345" y="509" class="small" text-anchor="middle">see RTL section</text>
+  <rect x="1205" y="560" width="245" height="250" rx="6" class="mod"/>
+  <text x="1213" y="578" class="modl">`ifdef JTAG_SIM_CHECKERS</text>
+  <text x="1260" y="600" class="small">`include "jtag_binds.svh"</text>
+  <rect x="1260" y="625" width="170" height="32" class="comb"/>
+  <text x="1345" y="646" class="bm" text-anchor="middle">u_fsm_props</text>
+  <rect x="1260" y="669" width="170" height="32" class="comb"/>
+  <text x="1345" y="690" class="bm" text-anchor="middle">u_reg_props</text>
+  <rect x="1260" y="713" width="170" height="32" class="comb"/>
+  <text x="1345" y="734" class="bm" text-anchor="middle">u_dft_props</text>
+  <rect x="1260" y="757" width="170" height="32" class="comb"/>
+  <text x="1345" y="778" class="bm" text-anchor="middle">u_covers</text>
+</svg>

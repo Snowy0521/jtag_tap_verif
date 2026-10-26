@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1420" width="1930" height="1420" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1420" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1370" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">directed sequences: body()</text>
+  <text x="420" y="80" class="bm" text-anchor="middle">jtag_idcode_seq</text>
+  <rect x="333" y="100" width="175" height="40" rx="6" class="comb"/>
+  <text x="347" y="125" class="code">do_reset_trst();</text>
+  <path d="M420,140 V170" class="w" marker-end="url(#arr)"/>
+  <rect x="351" y="170" width="138" height="40" rx="6" class="comb"/>
+  <text x="365" y="195" class="code">dr_scan(32);</text>
+  <path d="M420,210 V240" class="w" marker-end="url(#arr)"/>
+  <rect x="319" y="240" width="202" height="40" rx="6" class="comb"/>
+  <text x="333" y="265" class="code">ir_scan(OP_BYPASS);</text>
+  <path d="M420,280 V310" class="w" marker-end="url(#arr)"/>
+  <rect x="319" y="310" width="202" height="40" rx="6" class="comb"/>
+  <text x="333" y="335" class="code">ir_scan(OP_IDCODE);</text>
+  <path d="M420,350 V380" class="w" marker-end="url(#arr)"/>
+  <rect x="314" y="380" width="212" height="40" rx="6" class="comb"/>
+  <text x="328" y="405" class="code">dr_scan(40, 64'hA5);</text>
+  <path d="M420,420 V450" class="w" marker-end="url(#arr)"/>
+  <rect x="337" y="450" width="166" height="40" rx="6" class="comb"/>
+  <text x="351" y="475" class="code">do_reset_tms();</text>
+  <path d="M420,490 V520" class="w" marker-end="url(#arr)"/>
+  <rect x="351" y="520" width="138" height="40" rx="6" class="comb"/>
+  <text x="365" y="545" class="code">dr_scan(32);</text>
+  <text x="980" y="80" class="bm" text-anchor="middle">jtag_bypass_seq</text>
+  <rect x="893" y="100" width="175" height="40" rx="6" class="comb"/>
+  <text x="907" y="125" class="code">do_reset_trst();</text>
+  <path d="M980,140 V170" class="w" marker-end="url(#arr)"/>
+  <rect x="879" y="170" width="202" height="40" rx="6" class="comb"/>
+  <text x="893" y="195" class="code">ir_scan(OP_BYPASS);</text>
+  <path d="M980,210 V240" class="w" marker-end="url(#arr)"/>
+  <rect x="916" y="240" width="129" height="40" rx="6" class="comb"/>
+  <text x="930" y="265" class="code">dr_scan(0);</text>
+  <path d="M980,280 V310" class="w" marker-end="url(#arr)"/>
+  <rect x="916" y="310" width="129" height="40" rx="6" class="comb"/>
+  <text x="930" y="335" class="code">dr_scan(1);</text>
+  <path d="M980,350 V400" class="w" marker-end="url(#arr)"/>
+  <rect x="760" y="370" width="440" height="100" rx="6" class="mod"/>
+  <text x="768" y="388" class="modl"></text>
+  <text x="994" y="388" class="modl">repeat (10)</text>
+  <rect x="796" y="400" width="368" height="40" rx="6" class="comb"/>
+  <text x="810" y="425" class="code">dr_scan_rand($urandom_range(2, 100));</text>
+  <path d="M980,440 V490" class="w" marker-end="url(#arr)"/>
+  <rect x="884" y="490" width="193" height="40" rx="6" class="comb"/>
+  <text x="898" y="515" class="code">dr_scan_rand(200);</text>
+  <text x="1500" y="80" class="bm" text-anchor="middle">jtag_unused_opcode_seq</text>
+  <rect x="1413" y="100" width="175" height="40" rx="6" class="comb"/>
+  <text x="1427" y="125" class="code">do_reset_trst();</text>
+  <path d="M1500,140 V190" class="w" marker-end="url(#arr)"/>
+  <rect x="1230" y="160" width="640" height="270" rx="6" class="mod"/>
+  <text x="1238" y="178" class="modl"></text>
+  <text x="1514" y="178" class="modl">for (int op = 0; op &lt; 2**IR_W; op++)</text>
+  <rect x="1257" y="210" width="487" height="60" rx="6" class="comb"/>
+  <text x="1271" y="235" class="code">if (op inside {OP_IDCODE, OP_DFT_CTRL, OP_BYPASS})</text>
+  <text x="1271" y="255" class="code" xml:space="preserve">  continue;</text>
+  <path d="M1500,270 V300" class="w" marker-end="url(#arr)"/>
+  <rect x="1399" y="300" width="202" height="40" rx="6" class="comb"/>
+  <text x="1413" y="325" class="code">ir_scan(IR_W'(op));</text>
+  <path d="M1500,340 V370" class="w" marker-end="url(#arr)"/>
+  <rect x="1321" y="370" width="359" height="40" rx="6" class="comb"/>
+  <text x="1335" y="395" class="code">dr_scan_rand($urandom_range(2, 40));</text>
+  <text x="420" y="640" class="bm" text-anchor="middle">jtag_pause_seq</text>
+  <rect x="333" y="660" width="175" height="40" rx="6" class="comb"/>
+  <text x="347" y="685" class="code">do_reset_trst();</text>
+  <path d="M420,700 V730" class="w" marker-end="url(#arr)"/>
+  <rect x="259" y="730" width="322" height="60" rx="6" class="comb"/>
+  <text x="273" y="755" class="code">bits(q, 32);</text>
+  <text x="273" y="775" class="code">scan_with_pause(1'b0, q, 15, 3);</text>
+  <path d="M420,790 V820" class="w" marker-end="url(#arr)"/>
+  <rect x="264" y="820" width="313" height="60" rx="6" class="comb"/>
+  <text x="278" y="845" class="code">bits(q, 4, OP_BYPASS);</text>
+  <text x="278" y="865" class="code">scan_with_pause(1'b1, q, 1, 0);</text>
+  <path d="M420,880 V910" class="w" marker-end="url(#arr)"/>
+  <rect x="259" y="910" width="322" height="60" rx="6" class="comb"/>
+  <text x="273" y="935" class="code">bits(q, 100, 0, 1'b1);</text>
+  <text x="273" y="955" class="code">scan_with_pause(1'b0, q, 50, 5);</text>
+  <path d="M420,970 V1000" class="w" marker-end="url(#arr)"/>
+  <rect x="264" y="1000" width="313" height="60" rx="6" class="comb"/>
+  <text x="278" y="1025" class="code">bits(q, 4, OP_DFT_CTRL);</text>
+  <text x="278" y="1045" class="code">scan_with_pause(1'b1, q, 2, 2);</text>
+  <path d="M420,1060 V1090" class="w" marker-end="url(#arr)"/>
+  <rect x="264" y="1090" width="313" height="60" rx="6" class="comb"/>
+  <text x="278" y="1115" class="code">bits(q, 8, 8'b0000_0011);</text>
+  <text x="278" y="1135" class="code">scan_with_pause(1'b0, q, 3, 1);</text>
+  <path d="M420,1150 V1180" class="w" marker-end="url(#arr)"/>
+  <rect x="292" y="1180" width="257" height="40" rx="6" class="comb"/>
+  <text x="306" y="1205" class="code">bits(q, 8, 8'b0000_0000);</text>
+  <path d="M420,1220 V1270" class="w" marker-end="url(#arr)"/>
+  <rect x="170" y="1240" width="500" height="100" rx="6" class="mod"/>
+  <text x="178" y="1258" class="modl"></text>
+  <text x="434" y="1258" class="modl">for (int at = 0; at &lt; 7; at++)</text>
+  <rect x="259" y="1270" width="322" height="40" rx="6" class="comb"/>
+  <text x="273" y="1295" class="code">scan_with_pause(1'b0, q, at, 1);</text>
+  <rect x="760" y="660" width="745" height="102" class="comb"/>
+  <text x="774" y="686" class="bm">function automatic void bits(output bit q[$], input int unsigned n,</text>
+  <text x="774" y="708" class="code" xml:space="preserve">                             input logic [63:0] v = '0, input bit rnd = 1'b0);</text>
+  <text x="774" y="730" class="code" xml:space="preserve">  q.delete();</text>
+  <text x="774" y="752" class="code" xml:space="preserve">  for (int i = 0; i &lt; n; i++) q.push_back(rnd ? 1'($urandom) : v[i]);</text>
+</svg>

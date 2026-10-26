@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1880" width="1930" height="1880" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1880" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1830" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">cov : jtag_coverage (3/3): write_dft and report</text>
+  <circle cx="110" cy="90" r="7" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="124" y="78" class="port">dft_imp</text>
+  <path d="M117,90 H480 V130" class="w" marker-end="url(#arr)"/>
+  <text x="494" y="116" class="bm">function void write_dft(dft_txn s);</text>
+  <path d="M360,130 H600 L630,160 L600,190 H360 L330,160 Z" class="comb"/>
+  <text x="480" y="165" class="code" text-anchor="middle">!synced</text>
+  <path d="M630,160 H800" class="w" marker-end="url(#arr)"/>
+  <text x="715" y="150" class="net" text-anchor="middle">yes</text>
+  <rect x="800" y="140" width="92" height="40" rx="6" class="comb"/>
+  <text x="814" y="165" class="code">return;</text>
+  <text x="490" y="208" class="net">no</text>
+  <path d="M480,190 V230" class="w" marker-end="url(#arr)"/>
+  <rect x="370" y="230" width="221" height="40" rx="6" class="comb"/>
+  <text x="384" y="255" class="code">samples[s.cycle] = s;</text>
+  <path d="M480,270 V300" class="w" marker-end="url(#arr)"/>
+  <path d="M360,300 H600 L630,330 L600,360 H360 L330,330 Z" class="comb"/>
+  <text x="480" y="335" class="code" text-anchor="middle">prev != null</text>
+  <path d="M630,330 H1470" class="w"/>
+  <text x="660" y="320" class="net">no</text>
+  <path d="M480,360 V420" class="w" marker-end="url(#arr)"/>
+  <text x="490" y="378" class="net">yes</text>
+  <path d="M245,420 H715 L745,460 L715,500 H245 L215,460 Z" class="comb"/>
+  <text x="480" y="455" class="code" text-anchor="middle">{s.test_mode, s.scan_en, s.mbist_start} !=</text>
+  <text x="480" y="475" class="code" text-anchor="middle">{prev.test_mode, prev.scan_en, prev.mbist_start}</text>
+  <path d="M745,460 H800" class="w" marker-end="url(#arr)"/>
+  <text x="772" y="450" class="net" text-anchor="middle">yes</text>
+  <rect x="800" y="440" width="644" height="140" rx="6" class="comb"/>
+  <text x="814" y="465" class="code">tm = s.test_mode;</text>
+  <text x="814" y="485" class="code">se = s.scan_en;</text>
+  <text x="814" y="505" class="code">ms = s.mbist_start;</text>
+  <text x="814" y="525" class="code">cg_dft.sample();</text>
+  <text x="814" y="545" class="code">if (se &amp;&amp; !tm) `uvm_error("COV", "illegal DFT combination ...")</text>
+  <text x="814" y="565" class="code">else           hit($sformatf("dft:tm%0d_se%0d_ms%0d", tm, se, ms));</text>
+  <text x="490" y="518" class="net">no</text>
+  <path d="M840,580 V610 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="610" r="4" fill="#374151"/>
+  <path d="M480,500 V610" class="w"/>
+  <path d="M480,610 V640" class="w" marker-end="url(#arr)"/>
+  <path d="M318,640 H642 L672,670 L642,700 H318 L288,670 Z" class="comb"/>
+  <text x="480" y="675" class="code" text-anchor="middle">s.mbist_done &amp;&amp; !prev.mbist_done</text>
+  <path d="M672,670 H800" class="w" marker-end="url(#arr)"/>
+  <text x="736" y="660" class="net" text-anchor="middle">yes</text>
+  <rect x="800" y="650" width="396" height="60" rx="6" class="comb"/>
+  <text x="814" y="675" class="code">mbist(s.mbist_pass ? MB_PASS : MB_FAIL);</text>
+  <text x="814" y="695" class="code">run_completed = 1'b1;</text>
+  <text x="490" y="718" class="net">no</text>
+  <path d="M840,710 V740 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="740" r="4" fill="#374151"/>
+  <path d="M480,700 V740" class="w"/>
+  <path d="M480,740 V770" class="w" marker-end="url(#arr)"/>
+  <path d="M295,770 H665 L695,810 L665,850 H295 L265,810 Z" class="comb"/>
+  <text x="480" y="805" class="code" text-anchor="middle">s.mbist_start &amp;&amp; !prev.mbist_start &amp;&amp;</text>
+  <text x="480" y="825" class="code" text-anchor="middle">run_completed</text>
+  <path d="M695,810 H800" class="w" marker-end="url(#arr)"/>
+  <text x="747" y="800" class="net" text-anchor="middle">yes</text>
+  <rect x="800" y="790" width="193" height="40" rx="6" class="comb"/>
+  <text x="814" y="815" class="code">mbist(MB_RESTART);</text>
+  <text x="490" y="868" class="net">no</text>
+  <path d="M840,830 V880 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="880" r="4" fill="#374151"/>
+  <path d="M480,850 V880" class="w"/>
+  <path d="M480,880 V910" class="w" marker-end="url(#arr)"/>
+  <rect x="180" y="386" width="1270" height="514" rx="6" class="mod"/>
+  <text x="188" y="404" class="modl">if (prev != null)</text>
+  <path d="M1470,330 V930 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="930" r="4" fill="#374151"/>
+  <path d="M480,880 V930" class="w"/>
+  <path d="M480,930 V960" class="w" marker-end="url(#arr)"/>
+  <rect x="425" y="960" width="110" height="40" rx="6" class="comb"/>
+  <text x="439" y="985" class="code">prev = s;</text>
+  <path d="M480,1000 V1030" class="w" marker-end="url(#arr)"/>
+  <rect x="250" y="1070" width="460" height="40" rx="6" class="comb"/>
+  <text x="264" y="1095" class="code">int unsigned c = pending_redundant.pop_front();</text>
+  <path d="M480,1110 V1140" class="w" marker-end="url(#arr)"/>
+  <path d="M320,1140 H640 L670,1190 L640,1240 H320 L290,1190 Z" class="comb"/>
+  <text x="480" y="1175" class="code" text-anchor="middle">samples.exists(c - 1) &amp;&amp;</text>
+  <text x="480" y="1195" class="code" text-anchor="middle">samples[c - 1].mbist_start &amp;&amp;</text>
+  <text x="480" y="1215" class="code" text-anchor="middle">samples[c].mbist_start</text>
+  <path d="M670,1190 H800" class="w" marker-end="url(#arr)"/>
+  <text x="735" y="1180" class="net" text-anchor="middle">yes</text>
+  <rect x="800" y="1170" width="267" height="40" rx="6" class="comb"/>
+  <text x="814" y="1195" class="code">mbist(MB_REDUNDANT_START);</text>
+  <text x="490" y="1258" class="net">no</text>
+  <path d="M840,1210 V1270 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="1270" r="4" fill="#374151"/>
+  <path d="M480,1240 V1270" class="w"/>
+  <path d="M480,1270 V1300" class="w" marker-end="url(#arr)"/>
+  <rect x="180" y="1030" width="1270" height="280" rx="6" class="mod"/>
+  <text x="188" y="1048" class="modl"></text>
+  <text x="494" y="1048" class="modl">while (pending_redundant.size() != 0 &amp;&amp; samples.exists(pending_redundant[0]))</text>
+  <path d="M480,1030 V1070" class="w"/>
+  <path d="M480,1300 V1340" class="w" marker-end="url(#arr)"/>
+  <path d="M360,1340 H600 L630,1370 L600,1400 H360 L330,1370 Z" class="comb"/>
+  <text x="480" y="1375" class="code" text-anchor="middle">s.cycle &gt; 64</text>
+  <path d="M630,1370 H800" class="w" marker-end="url(#arr)"/>
+  <text x="715" y="1360" class="net" text-anchor="middle">yes</text>
+  <rect x="800" y="1350" width="294" height="40" rx="6" class="comb"/>
+  <text x="814" y="1375" class="code">samples.delete(s.cycle - 64);</text>
+  <text x="490" y="1418" class="net">no</text>
+  <path d="M840,1390 V1430 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="1430" r="4" fill="#374151"/>
+  <path d="M480,1400 V1430" class="w"/>
+  <path d="M480,1430 V1460" class="w" marker-end="url(#arr)"/>
+  <text x="480" y="1480" class="bm" text-anchor="middle">return</text>
+  <rect x="160" y="1530" width="368" height="146" class="comb"/>
+  <text x="174" y="1556" class="code">bit [IR_W-1:0] instr = OP_IDCODE;</text>
+  <text x="174" y="1578" class="code">dft_txn        samples[int unsigned];</text>
+  <text x="174" y="1600" class="code">int unsigned   pending_redundant[$];</text>
+  <text x="174" y="1622" class="code">bit            run_completed;</text>
+  <text x="174" y="1644" class="code">dft_txn        prev;</text>
+  <text x="174" y="1666" class="code">bit            synced;</text>
+  <rect x="160" y="1710" width="313" height="102" class="comb"/>
+  <text x="174" y="1736" class="bm">function void mbist(mbist_e m);</text>
+  <text x="174" y="1758" class="code" xml:space="preserve">  mbist_evt = m;</text>
+  <text x="174" y="1780" class="code" xml:space="preserve">  cg_mbist.sample();</text>
+  <text x="174" y="1802" class="code" xml:space="preserve">  hit({"mbist:", m.name()});</text>
+  <rect x="800" y="1530" width="644" height="212" class="comb"/>
+  <text x="814" y="1556" class="bm">function void report_phase(uvm_phase phase);</text>
+  <text x="814" y="1578" class="code" xml:space="preserve">  bit dump = $test$plusargs("cov_dump");</text>
+  <text x="814" y="1600" class="code" xml:space="preserve">  foreach (bins_expected[i]) begin</text>
+  <text x="814" y="1622" class="code" xml:space="preserve">    n = hits.exists(bins_expected[i]) ? hits[bins_expected[i]] : 0;</text>
+  <text x="814" y="1644" class="code" xml:space="preserve">    if (dump) $display("COV %s %0d", bins_expected[i], n);</text>
+  <text x="814" y="1666" class="code" xml:space="preserve">    if (n != 0) n_hit++;</text>
+  <text x="814" y="1688" class="code" xml:space="preserve">    else        holes = {holes, "\n  ", bins_expected[i]};</text>
+  <text x="814" y="1710" class="code" xml:space="preserve">  end</text>
+  <text x="814" y="1732" class="code" xml:space="preserve">  `uvm_info("COV", "%0d / %0d bins hit (%0.1f %%), holes: ...")</text>
+</svg>

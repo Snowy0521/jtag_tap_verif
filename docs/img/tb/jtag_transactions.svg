@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1260" width="1930" height="1260" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1260" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1210" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">transactions</text>
+  <rect x="160" y="80" width="170" height="40" class="comb"/>
+  <text x="245" y="105" class="bm" text-anchor="middle">seq</text>
+  <rect x="560" y="80" width="230" height="40" class="inst"/>
+  <text x="675" y="105" class="bm" text-anchor="middle">jtag_seq_item</text>
+  <rect x="1020" y="80" width="330" height="40" class="comb"/>
+  <text x="1185" y="105" class="small" text-anchor="middle">sqr  -&gt;  drv</text>
+  <path d="M330,100 H560" class="w" marker-end="url(#arr)"/>
+  <text x="445" y="92" class="small" text-anchor="middle">start_item / finish_item</text>
+  <path d="M790,100 H1020" class="w" marker-end="url(#arr)"/>
+  <text x="905" y="92" class="net" text-anchor="middle">pull</text>
+  <rect x="160" y="142" width="170" height="40" class="comb"/>
+  <text x="245" y="167" class="bm" text-anchor="middle">mon</text>
+  <rect x="560" y="142" width="230" height="40" class="inst"/>
+  <text x="675" y="167" class="bm" text-anchor="middle">jtag_scan_txn</text>
+  <rect x="1020" y="142" width="330" height="40" class="comb"/>
+  <text x="1185" y="167" class="small" text-anchor="middle">sb.jtag_imp,  cov.jtag_imp</text>
+  <path d="M330,162 H560" class="w" marker-end="url(#arr)"/>
+  <text x="445" y="154" class="small" text-anchor="middle">ap.write</text>
+  <path d="M790,162 H1020" class="w" marker-end="url(#arr)"/>
+  <text x="905" y="154" class="net" text-anchor="middle">push</text>
+  <rect x="160" y="204" width="170" height="40" class="comb"/>
+  <text x="245" y="229" class="bm" text-anchor="middle">mon</text>
+  <rect x="560" y="204" width="230" height="40" class="inst"/>
+  <text x="675" y="229" class="bm" text-anchor="middle">jtag_edge_txn</text>
+  <rect x="1020" y="204" width="330" height="40" class="comb"/>
+  <text x="1185" y="229" class="small" text-anchor="middle">cov.edge_imp</text>
+  <path d="M330,224 H560" class="w" marker-end="url(#arr)"/>
+  <text x="445" y="216" class="small" text-anchor="middle">edge_ap.write</text>
+  <path d="M790,224 H1020" class="w" marker-end="url(#arr)"/>
+  <text x="905" y="216" class="net" text-anchor="middle">push</text>
+  <rect x="160" y="266" width="170" height="40" class="comb"/>
+  <text x="245" y="291" class="bm" text-anchor="middle">dft_mon</text>
+  <rect x="560" y="266" width="230" height="40" class="inst"/>
+  <text x="675" y="291" class="bm" text-anchor="middle">dft_txn</text>
+  <rect x="1020" y="266" width="330" height="40" class="comb"/>
+  <text x="1185" y="291" class="small" text-anchor="middle">sb.dft_imp,  cov.dft_imp</text>
+  <path d="M330,286 H560" class="w" marker-end="url(#arr)"/>
+  <text x="445" y="278" class="small" text-anchor="middle">ap.write</text>
+  <path d="M790,286 H1020" class="w" marker-end="url(#arr)"/>
+  <text x="905" y="278" class="net" text-anchor="middle">push</text>
+  <rect x="160" y="360" width="791" height="718" class="comb"/>
+  <text x="174" y="386" class="bm">class jtag_seq_item extends uvm_sequence_item;</text>
+  <text x="174" y="408" class="code">typedef enum {IR_SCAN, DR_SCAN, RESET_TMS, RESET_TRST,</text>
+  <text x="174" y="430" class="code" xml:space="preserve">              IDLE, TCK_STOP, TMS_PATH} kind_e;</text>
+  <text x="174" y="452" class="code">rand kind_e       kind;</text>
+  <text x="174" y="474" class="code">rand int unsigned len;</text>
+  <text x="174" y="496" class="code">bit               tdi_q[$];</text>
+  <text x="174" y="518" class="code">rand bit          use_pause;</text>
+  <text x="174" y="540" class="code">rand int unsigned pause_at;</text>
+  <text x="174" y="562" class="code">rand bit          use_pause2;</text>
+  <text x="174" y="584" class="code">rand int unsigned pause_at2;</text>
+  <text x="174" y="606" class="code">rand int unsigned pause_cycles;</text>
+  <text x="174" y="628" class="code">rand int unsigned idle_cycles;</text>
+  <text x="174" y="650" class="code">int unsigned      fixed_len;</text>
+  <text x="174" y="672" class="code">bit               tms_q[$];</text>
+  <text x="174" y="694" class="code">bit               trst_short;</text>
+  <text x="174" y="716" class="code">constraint c_len {</text>
+  <text x="174" y="738" class="code" xml:space="preserve">  len inside {[0:80]};  fixed_len != 0 -&gt; len == fixed_len;</text>
+  <text x="174" y="760" class="code" xml:space="preserve">  if (fixed_len == 0) len dist {0 := 4, 1 := 4, [2:6] :/ 6, 7 := 2, 8 := 4, 9 := 2,</text>
+  <text x="174" y="782" class="code" xml:space="preserve">    [10:30] :/ 10, 31 := 2, 32 := 4, 33 := 2, [34:80] :/ 10}; }</text>
+  <text x="174" y="804" class="code">constraint c_pause {</text>
+  <text x="174" y="826" class="code" xml:space="preserve">  use_pause  -&gt; (len &gt;= 2 &amp;&amp; pause_at &lt; len - 1);</text>
+  <text x="174" y="848" class="code" xml:space="preserve">  pause_cycles inside {[0:5]};</text>
+  <text x="174" y="870" class="code" xml:space="preserve">  use_pause2 -&gt; (use_pause &amp;&amp; pause_at2 &gt; pause_at &amp;&amp; pause_at2 &lt; len - 1); }</text>
+  <text x="174" y="892" class="code">constraint c_idle { idle_cycles inside {[1:20]}; }</text>
+  <text x="174" y="914" class="code">function void pre_randomize();</text>
+  <text x="174" y="936" class="code" xml:space="preserve">  fixed_len = tdi_q.size();</text>
+  <text x="174" y="958" class="code">function void post_randomize();</text>
+  <text x="174" y="980" class="code" xml:space="preserve">  if (tdi_q.size() == 0) repeat (len) tdi_q.push_back(1'($urandom));</text>
+  <text x="174" y="1002" class="code" xml:space="preserve">  else                   len = tdi_q.size();</text>
+  <text x="174" y="1024" class="code" xml:space="preserve">  if (use_pause &amp;&amp; !(len &gt;= 2 &amp;&amp; pause_at &lt; len - 1)) `uvm_fatal("ITEM", ...)</text>
+  <text x="174" y="1046" class="code" xml:space="preserve">  if (use_pause2 &amp;&amp; !(use_pause &amp;&amp; pause_at2 &gt; pause_at &amp;&amp; pause_at2 &lt; len - 1))</text>
+  <text x="174" y="1068" class="code" xml:space="preserve">    `uvm_fatal("ITEM", ...)</text>
+  <rect x="1262" y="360" width="156" height="40" rx="6" class="comb"/>
+  <text x="1276" y="385" class="code">it.randomize()</text>
+  <path d="M1340,400 V430" class="w" marker-end="url(#arr)"/>
+  <rect x="1257" y="430" width="166" height="40" rx="6" class="comb"/>
+  <text x="1271" y="455" class="code">pre_randomize()</text>
+  <path d="M1340,470 V500" class="w" marker-end="url(#arr)"/>
+  <rect x="1198" y="500" width="285" height="40" rx="6" class="comb"/>
+  <text x="1212" y="525" class="code">solve c_len, c_pause, c_idle</text>
+  <path d="M1340,540 V570" class="w" marker-end="url(#arr)"/>
+  <rect x="1253" y="570" width="175" height="40" rx="6" class="comb"/>
+  <text x="1267" y="595" class="code">post_randomize()</text>
+  <rect x="1100" y="680" width="644" height="278" class="comb"/>
+  <text x="1114" y="706" class="bm">class jtag_scan_txn extends uvm_sequence_item;</text>
+  <text x="1114" y="728" class="code">typedef enum {IR, DR, RESET} scan_e;</text>
+  <text x="1114" y="750" class="code">scan_e       scan;</text>
+  <text x="1114" y="772" class="code">tap_state_e  path[$];</text>
+  <text x="1114" y="794" class="code">bit          tdi_q[$];</text>
+  <text x="1114" y="816" class="code">bit          tdo_q[$];</text>
+  <text x="1114" y="838" class="code">bit          aborted;</text>
+  <text x="1114" y="860" class="code">bit          trst;</text>
+  <text x="1114" y="882" class="code">tap_state_e  from_state;</text>
+  <text x="1114" y="904" class="code">int unsigned cap_cycle;</text>
+  <text x="1114" y="926" class="code">int unsigned cycle;</text>
+  <text x="1114" y="948" class="code">static function logic [63:0] bits(const ref bit q[$], input int n);</text>
+  <rect x="1100" y="990" width="451" height="80" class="comb"/>
+  <text x="1114" y="1016" class="bm">class jtag_edge_txn extends uvm_sequence_item;</text>
+  <text x="1114" y="1038" class="code">tap_state_e state;</text>
+  <text x="1114" y="1060" class="code">bit         tms;</text>
+  <rect x="1100" y="1110" width="708" height="80" class="comb"/>
+  <text x="1114" y="1136" class="bm">class dft_txn extends uvm_sequence_item;</text>
+  <text x="1114" y="1158" class="code">int unsigned cycle;</text>
+  <text x="1114" y="1180" class="code">bit test_mode, scan_en, mbist_start, mbist_done, mbist_pass, mbist_fail_i;</text>
+</svg>

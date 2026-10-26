@@ -1,0 +1,259 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 940" width="1930" height="940" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="940" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="890" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">jtag_reset_seq: body()</text>
+  <rect x="160" y="70" width="497" height="102" class="comb"/>
+  <text x="174" y="96" class="code">typedef struct {string name; bit tms[$];} path_t;</text>
+  <text x="174" y="118" class="code">path_t paths[$];</text>
+  <text x="174" y="140" class="code">function void add(string name, bit tms[$]);</text>
+  <text x="174" y="162" class="code" xml:space="preserve">  p.name = name;  p.tms = tms;  paths.push_back(p);</text>
+  <text x="320" y="226" class="small" text-anchor="end">i</text>
+  <text x="340" y="226" class="small">name</text>
+  <text x="542" y="226" class="small" text-anchor="middle">tms[0]</text>
+  <text x="586" y="226" class="small" text-anchor="middle">[1]</text>
+  <text x="630" y="226" class="small" text-anchor="middle">[2]</text>
+  <text x="674" y="226" class="small" text-anchor="middle">[3]</text>
+  <text x="718" y="226" class="small" text-anchor="middle">[4]</text>
+  <text x="762" y="226" class="small" text-anchor="middle">[5]</text>
+  <text x="806" y="226" class="small" text-anchor="middle">[6]</text>
+  <text x="320" y="266" class="small" text-anchor="end">0</text>
+  <rect x="330" y="240" width="190" height="40" class="inst"/>
+  <text x="340" y="266" class="small">RUN_TEST_IDLE</text>
+  <text x="320" y="306" class="small" text-anchor="end">1</text>
+  <rect x="330" y="280" width="190" height="40" class="inst"/>
+  <text x="340" y="306" class="small">SELECT_DR_SCAN</text>
+  <rect x="520" y="280" width="44" height="40" class="comb"/>
+  <text x="542" y="306" class="code" text-anchor="middle">1</text>
+  <text x="320" y="346" class="small" text-anchor="end">2</text>
+  <rect x="330" y="320" width="190" height="40" class="inst"/>
+  <text x="340" y="346" class="small">CAPTURE_DR</text>
+  <rect x="520" y="320" width="44" height="40" class="comb"/>
+  <text x="542" y="346" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="320" width="44" height="40" class="comb"/>
+  <text x="586" y="346" class="code" text-anchor="middle">0</text>
+  <text x="320" y="386" class="small" text-anchor="end">3</text>
+  <rect x="330" y="360" width="190" height="40" class="inst"/>
+  <text x="340" y="386" class="small">SHIFT_DR</text>
+  <rect x="520" y="360" width="44" height="40" class="comb"/>
+  <text x="542" y="386" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="360" width="44" height="40" class="comb"/>
+  <text x="586" y="386" class="code" text-anchor="middle">0</text>
+  <rect x="608" y="360" width="44" height="40" class="comb"/>
+  <text x="630" y="386" class="code" text-anchor="middle">0</text>
+  <rect x="652" y="360" width="44" height="40" class="comb"/>
+  <text x="674" y="386" class="code" text-anchor="middle">0</text>
+  <rect x="696" y="360" width="44" height="40" class="comb"/>
+  <text x="718" y="386" class="code" text-anchor="middle">0</text>
+  <text x="320" y="426" class="small" text-anchor="end">4</text>
+  <rect x="330" y="400" width="190" height="40" class="inst"/>
+  <text x="340" y="426" class="small">EXIT1_DR</text>
+  <rect x="520" y="400" width="44" height="40" class="comb"/>
+  <text x="542" y="426" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="400" width="44" height="40" class="comb"/>
+  <text x="586" y="426" class="code" text-anchor="middle">0</text>
+  <rect x="608" y="400" width="44" height="40" class="comb"/>
+  <text x="630" y="426" class="code" text-anchor="middle">0</text>
+  <rect x="652" y="400" width="44" height="40" class="comb"/>
+  <text x="674" y="426" class="code" text-anchor="middle">1</text>
+  <text x="320" y="466" class="small" text-anchor="end">5</text>
+  <rect x="330" y="440" width="190" height="40" class="inst"/>
+  <text x="340" y="466" class="small">PAUSE_DR</text>
+  <rect x="520" y="440" width="44" height="40" class="comb"/>
+  <text x="542" y="466" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="440" width="44" height="40" class="comb"/>
+  <text x="586" y="466" class="code" text-anchor="middle">0</text>
+  <rect x="608" y="440" width="44" height="40" class="comb"/>
+  <text x="630" y="466" class="code" text-anchor="middle">0</text>
+  <rect x="652" y="440" width="44" height="40" class="comb"/>
+  <text x="674" y="466" class="code" text-anchor="middle">1</text>
+  <rect x="696" y="440" width="44" height="40" class="comb"/>
+  <text x="718" y="466" class="code" text-anchor="middle">0</text>
+  <text x="320" y="506" class="small" text-anchor="end">6</text>
+  <rect x="330" y="480" width="190" height="40" class="inst"/>
+  <text x="340" y="506" class="small">EXIT2_DR</text>
+  <rect x="520" y="480" width="44" height="40" class="comb"/>
+  <text x="542" y="506" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="480" width="44" height="40" class="comb"/>
+  <text x="586" y="506" class="code" text-anchor="middle">0</text>
+  <rect x="608" y="480" width="44" height="40" class="comb"/>
+  <text x="630" y="506" class="code" text-anchor="middle">0</text>
+  <rect x="652" y="480" width="44" height="40" class="comb"/>
+  <text x="674" y="506" class="code" text-anchor="middle">1</text>
+  <rect x="696" y="480" width="44" height="40" class="comb"/>
+  <text x="718" y="506" class="code" text-anchor="middle">0</text>
+  <rect x="740" y="480" width="44" height="40" class="comb"/>
+  <text x="762" y="506" class="code" text-anchor="middle">1</text>
+  <text x="320" y="546" class="small" text-anchor="end">7</text>
+  <rect x="330" y="520" width="190" height="40" class="inst"/>
+  <text x="340" y="546" class="small">UPDATE_DR</text>
+  <rect x="520" y="520" width="44" height="40" class="comb"/>
+  <text x="542" y="546" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="520" width="44" height="40" class="comb"/>
+  <text x="586" y="546" class="code" text-anchor="middle">0</text>
+  <rect x="608" y="520" width="44" height="40" class="comb"/>
+  <text x="630" y="546" class="code" text-anchor="middle">0</text>
+  <rect x="652" y="520" width="44" height="40" class="comb"/>
+  <text x="674" y="546" class="code" text-anchor="middle">1</text>
+  <rect x="696" y="520" width="44" height="40" class="comb"/>
+  <text x="718" y="546" class="code" text-anchor="middle">1</text>
+  <text x="320" y="586" class="small" text-anchor="end">8</text>
+  <rect x="330" y="560" width="190" height="40" class="inst"/>
+  <text x="340" y="586" class="small">SELECT_IR_SCAN</text>
+  <rect x="520" y="560" width="44" height="40" class="comb"/>
+  <text x="542" y="586" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="560" width="44" height="40" class="comb"/>
+  <text x="586" y="586" class="code" text-anchor="middle">1</text>
+  <text x="320" y="626" class="small" text-anchor="end">9</text>
+  <rect x="330" y="600" width="190" height="40" class="inst"/>
+  <text x="340" y="626" class="small">CAPTURE_IR</text>
+  <rect x="520" y="600" width="44" height="40" class="comb"/>
+  <text x="542" y="626" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="600" width="44" height="40" class="comb"/>
+  <text x="586" y="626" class="code" text-anchor="middle">1</text>
+  <rect x="608" y="600" width="44" height="40" class="comb"/>
+  <text x="630" y="626" class="code" text-anchor="middle">0</text>
+  <text x="320" y="666" class="small" text-anchor="end">10</text>
+  <rect x="330" y="640" width="190" height="40" class="inst"/>
+  <text x="340" y="666" class="small">SHIFT_IR</text>
+  <rect x="520" y="640" width="44" height="40" class="comb"/>
+  <text x="542" y="666" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="640" width="44" height="40" class="comb"/>
+  <text x="586" y="666" class="code" text-anchor="middle">1</text>
+  <rect x="608" y="640" width="44" height="40" class="comb"/>
+  <text x="630" y="666" class="code" text-anchor="middle">0</text>
+  <rect x="652" y="640" width="44" height="40" class="comb"/>
+  <text x="674" y="666" class="code" text-anchor="middle">0</text>
+  <rect x="696" y="640" width="44" height="40" class="comb"/>
+  <text x="718" y="666" class="code" text-anchor="middle">0</text>
+  <text x="320" y="706" class="small" text-anchor="end">11</text>
+  <rect x="330" y="680" width="190" height="40" class="inst"/>
+  <text x="340" y="706" class="small">EXIT1_IR</text>
+  <rect x="520" y="680" width="44" height="40" class="comb"/>
+  <text x="542" y="706" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="680" width="44" height="40" class="comb"/>
+  <text x="586" y="706" class="code" text-anchor="middle">1</text>
+  <rect x="608" y="680" width="44" height="40" class="comb"/>
+  <text x="630" y="706" class="code" text-anchor="middle">0</text>
+  <rect x="652" y="680" width="44" height="40" class="comb"/>
+  <text x="674" y="706" class="code" text-anchor="middle">0</text>
+  <rect x="696" y="680" width="44" height="40" class="comb"/>
+  <text x="718" y="706" class="code" text-anchor="middle">1</text>
+  <text x="320" y="746" class="small" text-anchor="end">12</text>
+  <rect x="330" y="720" width="190" height="40" class="inst"/>
+  <text x="340" y="746" class="small">PAUSE_IR</text>
+  <rect x="520" y="720" width="44" height="40" class="comb"/>
+  <text x="542" y="746" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="720" width="44" height="40" class="comb"/>
+  <text x="586" y="746" class="code" text-anchor="middle">1</text>
+  <rect x="608" y="720" width="44" height="40" class="comb"/>
+  <text x="630" y="746" class="code" text-anchor="middle">0</text>
+  <rect x="652" y="720" width="44" height="40" class="comb"/>
+  <text x="674" y="746" class="code" text-anchor="middle">0</text>
+  <rect x="696" y="720" width="44" height="40" class="comb"/>
+  <text x="718" y="746" class="code" text-anchor="middle">1</text>
+  <rect x="740" y="720" width="44" height="40" class="comb"/>
+  <text x="762" y="746" class="code" text-anchor="middle">0</text>
+  <text x="320" y="786" class="small" text-anchor="end">13</text>
+  <rect x="330" y="760" width="190" height="40" class="inst"/>
+  <text x="340" y="786" class="small">EXIT2_IR</text>
+  <rect x="520" y="760" width="44" height="40" class="comb"/>
+  <text x="542" y="786" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="760" width="44" height="40" class="comb"/>
+  <text x="586" y="786" class="code" text-anchor="middle">1</text>
+  <rect x="608" y="760" width="44" height="40" class="comb"/>
+  <text x="630" y="786" class="code" text-anchor="middle">0</text>
+  <rect x="652" y="760" width="44" height="40" class="comb"/>
+  <text x="674" y="786" class="code" text-anchor="middle">0</text>
+  <rect x="696" y="760" width="44" height="40" class="comb"/>
+  <text x="718" y="786" class="code" text-anchor="middle">1</text>
+  <rect x="740" y="760" width="44" height="40" class="comb"/>
+  <text x="762" y="786" class="code" text-anchor="middle">0</text>
+  <rect x="784" y="760" width="44" height="40" class="comb"/>
+  <text x="806" y="786" class="code" text-anchor="middle">1</text>
+  <text x="320" y="826" class="small" text-anchor="end">14</text>
+  <rect x="330" y="800" width="190" height="40" class="inst"/>
+  <text x="340" y="826" class="small">UPDATE_IR</text>
+  <rect x="520" y="800" width="44" height="40" class="comb"/>
+  <text x="542" y="826" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="800" width="44" height="40" class="comb"/>
+  <text x="586" y="826" class="code" text-anchor="middle">1</text>
+  <rect x="608" y="800" width="44" height="40" class="comb"/>
+  <text x="630" y="826" class="code" text-anchor="middle">0</text>
+  <rect x="652" y="800" width="44" height="40" class="comb"/>
+  <text x="674" y="826" class="code" text-anchor="middle">0</text>
+  <rect x="696" y="800" width="44" height="40" class="comb"/>
+  <text x="718" y="826" class="code" text-anchor="middle">1</text>
+  <rect x="740" y="800" width="44" height="40" class="comb"/>
+  <text x="762" y="826" class="code" text-anchor="middle">1</text>
+  <text x="320" y="866" class="small" text-anchor="end">15</text>
+  <rect x="330" y="840" width="190" height="40" class="inst"/>
+  <text x="340" y="866" class="small">TEST_LOGIC_RESET</text>
+  <rect x="520" y="840" width="44" height="40" class="comb"/>
+  <text x="542" y="866" class="code" text-anchor="middle">1</text>
+  <rect x="564" y="840" width="44" height="40" class="comb"/>
+  <text x="586" y="866" class="code" text-anchor="middle">1</text>
+  <rect x="608" y="840" width="44" height="40" class="comb"/>
+  <text x="630" y="866" class="code" text-anchor="middle">1</text>
+  <rect x="1263" y="100" width="175" height="40" rx="6" class="comb"/>
+  <text x="1277" y="125" class="code">do_reset_trst();</text>
+  <path d="M1350,140 V190" class="w" marker-end="url(#arr)"/>
+  <rect x="1240" y="230" width="221" height="40" rx="6" class="comb"/>
+  <text x="1254" y="255" class="code">ir_scan(OP_DFT_CTRL);</text>
+  <path d="M1350,270 V300" class="w" marker-end="url(#arr)"/>
+  <rect x="1222" y="300" width="257" height="40" rx="6" class="comb"/>
+  <text x="1236" y="325" class="code">dr_scan(8, 8'b0000_0111);</text>
+  <path d="M1350,340 V370" class="w" marker-end="url(#arr)"/>
+  <rect x="1231" y="370" width="239" height="40" rx="6" class="comb"/>
+  <text x="1245" y="395" class="code">tms_path(paths[i].tms);</text>
+  <path d="M1350,410 V440" class="w" marker-end="url(#arr)"/>
+  <text x="1364" y="430" class="net">case (how)</text>
+  <path d="M1040,440 H1660" class="w"/>
+  <path d="M1040,440 V480" class="w" marker-end="url(#arr)"/>
+  <text x="1048" y="466" class="net">0</text>
+  <rect x="957" y="480" width="166" height="40" rx="6" class="comb"/>
+  <text x="971" y="505" class="code">do_reset_tms();</text>
+  <path d="M1350,440 V480" class="w" marker-end="url(#arr)"/>
+  <text x="1358" y="466" class="net">1</text>
+  <rect x="1263" y="480" width="175" height="40" rx="6" class="comb"/>
+  <text x="1277" y="505" class="code">do_reset_trst();</text>
+  <path d="M1660,440 V480" class="w" marker-end="url(#arr)"/>
+  <text x="1668" y="466" class="net">2</text>
+  <rect x="1554" y="480" width="212" height="40" rx="6" class="comb"/>
+  <text x="1568" y="505" class="code">do_reset_trst(1'b1);</text>
+  <path d="M1040,520 V550" class="w"/>
+  <path d="M1350,520 V550" class="w"/>
+  <path d="M1660,520 V550" class="w"/>
+  <path d="M1040,550 H1660" class="w"/>
+  <path d="M1350,550 V580" class="w" marker-end="url(#arr)"/>
+  <rect x="1281" y="580" width="138" height="40" rx="6" class="comb"/>
+  <text x="1295" y="605" class="code">dr_scan(32);</text>
+  <rect x="890" y="165" width="950" height="515" rx="6" class="mod"/>
+  <text x="898" y="183" class="modl"></text>
+  <text x="1364" y="183" class="modl">foreach (paths[i])</text>
+  <rect x="920" y="200" width="890" height="445" rx="6" class="mod"/>
+  <text x="928" y="218" class="modl"></text>
+  <text x="1364" y="218" class="modl">for (int how = 0; how &lt; 3; how++)</text>
+</svg>
