@@ -42,7 +42,7 @@ Instructions: BYPASS (`1111`), IDCODE (`0001`, default after reset) and the priv
 
 ## How to run
 
-All targets run from the repository root; outputs go to `build/`.
+All targets run from the repository root; outputs go to `build/`. Run `make check` (every local flow, about a minute) before each commit; `make regress-questa` is the sign-off on the Questa machine.
 
 | Command | Tools | What it does |
 |---|---|---|

@@ -2,6 +2,9 @@
 # Makefile -- run every target from the repo root (docs/plan.md §4.5): the .f file
 # lists hold repo-root-relative paths, and all outputs go to build/.
 #
+#   make check      BEFORE EVERY COMMIT: lint, smoke, gen-check, props-sim and
+#                   regress SEEDS=5, all local (about a minute). A change that
+#                   was only run on one simulator must not be committed.
 #   make lint       verilator --lint-only + slang over rtl/rtl.f
 #   make smoke      iverilog directed smoke test (tb/tb_smoke.sv)
 #   make gen        regenerate formal/jtag_fsm_arcs.svh from docs/design_spec.md
@@ -73,7 +76,16 @@ CHECKERS     := +incdir+formal +define+JTAG_SIM_CHECKERS $(CHECKER_SRCS)
 
 export MODELSIM := $(CURDIR)/$(BUILD)/modelsim.ini
 
-.PHONY: lint lint-verilator lint-slang smoke gen gen-check props-sim formal uvm uvm-build sim-build sim sim-run sim-directed regress regress-questa clean
+.PHONY: check lint lint-verilator lint-slang smoke gen gen-check props-sim formal uvm uvm-build sim-build sim sim-run sim-directed regress regress-questa clean
+
+# Pre-commit check: every local flow, stops at the first failure
+check:
+	$(MAKE) lint
+	$(MAKE) smoke
+	$(MAKE) gen-check
+	$(MAKE) props-sim
+	$(MAKE) regress SEEDS=5
+	@echo "CHECK PASSED: lint, smoke, gen-check, props-sim, regress (5 seeds)"
 
 lint: lint-verilator lint-slang
 
