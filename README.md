@@ -3,7 +3,7 @@
 An IEEE 1149.1 test access port (TAP) with a private DFT control register, written in SystemVerilog and verified three ways:
 
 1. **Formal (Questa PropCheck), done:** full (unbounded) proofs of the TAP state machine, the IR / DR protocol, the DFT register and the MBIST timing, with covers for every state and transition. No assumptions: every input is free, and `trst_n` can assert at any cycle. 63/63 assertions proven, 67/67 covers reached.
-2. **UVM (QuestaSim), in progress:** a JTAG agent whose monitor rebuilds the TAP state from the pins on its own and feeds a reference-model scoreboard, so a driver bug cannot hide a DUT bug. Directed tests plus a random test with TCK stops and mid-scan `trst_n`, to be signed off on merged coverage over 20 seeds.
+2. **UVM (QuestaSim), done:** a JTAG agent whose monitor rebuilds the TAP state from the pins on its own and feeds a reference-model scoreboard, so a driver bug cannot hide a DUT bug. Directed tests plus a random test with TCK stops and mid-scan `trst_n`, signed off on merged coverage over 20 seeds: 26/26 runs pass, 100 % functional coverage (87/87 bins), 100 % DUT code coverage.
 3. **Mutation testing, planned:** 21 injected bugs, each to be recorded as caught by formal, by simulation, or both.
 
 The full plan is in [docs/plan.md](docs/plan.md), the design rules in [docs/design_spec.md](docs/design_spec.md).
@@ -21,7 +21,7 @@ Work in progress.
 | Lint (verilator `-Wall`, slang) | clean |
 | Directed smoke test (iverilog) | passing |
 | Formal properties and proofs (`formal/`) | done |
-| UVM environment and regression (`tb/`) | in progress |
+| UVM environment and regression (`tb/`) | done |
 | Mutation testing (`mutations/`) | planned |
 
 ## Design
@@ -72,9 +72,11 @@ To be filled in as each flow is completed.
 
 **UVM regression (QuestaSim)**
 
-| Seeds passed | Directed tests passed | Merged functional coverage | Code coverage (stmt / branch / FSM) |
+| Seeds passed | Directed tests passed | Merged functional coverage | Code coverage (stmt / branch / cond / expr) |
 |---|---|---|---|
-| – | – | – | – |
+| 20 / 20 | 6 / 6 | 100 % (87 / 87 bins) | 100 % / 100 % / 100 % / 100 % |
+
+`make regress-questa`, Questa 2024.3 with UVM 1.2; the random test covers 307–344 scans and 3 883–5 098 checked TDO bits per seed. The formal checkers run in every simulation too: all 63 assertions pass and all 67 formal covers are hit in the merged runs. No FSM code coverage: Questa does not extract the state machine (next states come from a function), and its 16 states and 32 arcs are covered by the `cg_arc` covergroup, the formal covers and the per-arc proofs instead ([docs/plan.md](docs/plan.md) §3.5).
 
 **Mutation testing**
 
