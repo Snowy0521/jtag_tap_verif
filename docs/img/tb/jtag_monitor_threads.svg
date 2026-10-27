@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1330" width="1930" height="1330" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1330" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1280" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">mon : jtag_monitor (1/2): run_phase</text>
+  <rect x="160" y="70" width="718" height="190" class="comb"/>
+  <text x="174" y="96" class="bm">class jtag_monitor extends uvm_monitor;</text>
+  <text x="174" y="118" class="code">virtual jtag_if vif;               build_phase: vif &lt;- config_db "jtag_vif"</text>
+  <text x="174" y="140" class="code">uvm_analysis_port #(jtag_scan_txn) ap;</text>
+  <text x="174" y="162" class="code">uvm_analysis_port #(jtag_edge_txn) edge_ap;</text>
+  <text x="174" y="184" class="code">bit           synced;</text>
+  <text x="174" y="206" class="code">int unsigned  tms_ones, cycle, n_scans, n_aborted;</text>
+  <text x="174" y="228" class="code">tap_state_e   state = TEST_LOGIC_RESET;</text>
+  <text x="174" y="250" class="code">jtag_scan_txn txn;                 // scan in progress, null between scans</text>
+  <rect x="1874" y="114" width="12" height="12" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="1866" y="125" class="port" text-anchor="end">ap</text>
+  <rect x="1874" y="164" width="12" height="12" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="1866" y="175" class="port" text-anchor="end">edge_ap</text>
+  <text x="160" y="290" class="bm">task run_phase</text>
+  <path d="M230,310 H1860" class="bus"/>
+  <text x="178" y="316" class="bm">fork</text>
+  <rect x="210" y="340" width="340" height="40" rx="6" class="comb"/>
+  <text x="224" y="365" class="code">@(negedge vif.trst_n);</text>
+  <path d="M380,380 V410" class="w" marker-end="url(#arr)"/>
+  <rect x="210" y="410" width="340" height="40" rx="6" class="comb"/>
+  <text x="224" y="435" class="code">abort_scan();</text>
+  <path d="M380,450 V480" class="w" marker-end="url(#arr)"/>
+  <rect x="210" y="480" width="340" height="40" rx="6" class="comb"/>
+  <text x="224" y="505" class="code">publish_reset(1'b1, state);</text>
+  <path d="M380,520 V550" class="w" marker-end="url(#arr)"/>
+  <rect x="210" y="550" width="340" height="40" rx="6" class="comb"/>
+  <text x="224" y="575" class="code">state = TEST_LOGIC_RESET;</text>
+  <path d="M380,590 V620" class="w" marker-end="url(#arr)"/>
+  <rect x="210" y="620" width="340" height="40" rx="6" class="comb"/>
+  <text x="224" y="645" class="code">synced = 1'b1;</text>
+  <path d="M380,660 V690 H190 V360 H210" class="w" marker-end="url(#arr)"/>
+  <text x="184" y="560" class="net" text-anchor="end">forever</text>
+  <rect x="670" y="340" width="300" height="40" rx="6" class="comb"/>
+  <text x="684" y="365" class="code">@(vif.mon_cb);</text>
+  <path d="M820,380 V410" class="w" marker-end="url(#arr)"/>
+  <rect x="670" y="410" width="300" height="40" rx="6" class="comb"/>
+  <text x="684" y="435" class="code">cycle++;</text>
+  <path d="M820,450 V480" class="w" marker-end="url(#arr)"/>
+  <path d="M670,480 H970 L1000,520 L970,560 H670 L640,520 Z" class="comb"/>
+  <text x="820" y="525" class="code" text-anchor="middle">vif.mon_cb.trst_n !== 1'b1</text>
+  <path d="M1000,520 H1040" class="w" marker-end="url(#arr)"/>
+  <text x="1010" y="510" class="net" text-anchor="middle">yes</text>
+  <rect x="1040" y="500" width="260" height="40" rx="6" class="comb"/>
+  <text x="1054" y="525" class="code">state = TEST_LOGIC_RESET;</text>
+  <path d="M1300,520 H1340" class="w"/>
+  <path d="M820,560 V615" class="w" marker-end="url(#arr)"/>
+  <text x="830" y="582" class="net">no</text>
+  <path d="M740,615 H900 L930,650 L900,685 H740 L710,650 Z" class="comb"/>
+  <text x="820" y="655" class="code" text-anchor="middle">!synced</text>
+  <path d="M930,650 H1040" class="w" marker-end="url(#arr)"/>
+  <text x="1000" y="640" class="net" text-anchor="middle">no</text>
+  <rect x="1040" y="630" width="260" height="40" rx="6" class="comb"/>
+  <text x="1054" y="655" class="code">sample();</text>
+  <path d="M1300,650 H1340" class="w"/>
+  <path d="M820,685 V715" class="w" marker-end="url(#arr)"/>
+  <text x="830" y="706" class="net">yes</text>
+  <rect x="641" y="715" width="359" height="60" rx="6" class="comb"/>
+  <text x="655" y="740" class="code">tms_ones = (vif.mon_cb.tms === 1'b1)</text>
+  <text x="655" y="760" class="code" xml:space="preserve">           ? tms_ones + 1 : 0;</text>
+  <path d="M820,775 V815" class="w" marker-end="url(#arr)"/>
+  <path d="M730,815 H910 L940,850 L910,885 H730 L700,850 Z" class="comb"/>
+  <text x="820" y="855" class="code" text-anchor="middle">tms_ones == 5</text>
+  <path d="M940,850 H1340" class="w"/>
+  <text x="970" y="840" class="net" text-anchor="middle">no</text>
+  <path d="M820,885 V915" class="w" marker-end="url(#arr)"/>
+  <text x="830" y="906" class="net">yes</text>
+  <rect x="632" y="915" width="377" height="80" rx="6" class="comb"/>
+  <text x="646" y="940" class="code">state  = TEST_LOGIC_RESET;</text>
+  <text x="646" y="960" class="code">synced = 1'b1;</text>
+  <text x="646" y="980" class="code">publish_reset(1'b0, TEST_LOGIC_RESET);</text>
+  <circle cx="1340" cy="520" r="4" fill="#374151"/>
+  <circle cx="1340" cy="650" r="4" fill="#374151"/>
+  <circle cx="1340" cy="850" r="4" fill="#374151"/>
+  <path d="M820,995 V1050" class="w"/>
+  <path d="M1340,520 V1050 H630 V360 H670" class="w" marker-end="url(#arr)"/>
+  <circle cx="820" cy="1050" r="4" fill="#374151"/>
+  <text x="624" y="700" class="net" text-anchor="end">forever</text>
+  <rect x="1490" y="340" width="300" height="40" rx="6" class="comb"/>
+  <text x="1504" y="365" class="code">@(vif.tdo or vif.tdo_en);</text>
+  <path d="M1640,380 V460" class="w" marker-end="url(#arr)"/>
+  <path d="M1490,460 H1790 L1820,520 L1790,580 H1490 L1460,520 Z" class="comb"/>
+  <text x="1640" y="505" class="code" text-anchor="middle">(vif.tck === 1'b1 ||</text>
+  <text x="1640" y="525" class="code" text-anchor="middle" xml:space="preserve"> vif.tck_en === 1'b0) &amp;&amp;</text>
+  <text x="1640" y="545" class="code" text-anchor="middle" xml:space="preserve"> vif.trst_n === 1'b1</text>
+  <path d="M1640,580 V620" class="w" marker-end="url(#arr)"/>
+  <text x="1650" y="604" class="net">yes</text>
+  <rect x="1525" y="620" width="230" height="80" rx="6" class="comb"/>
+  <text x="1539" y="645" class="code">`uvm_error("MON_EDGE",</text>
+  <text x="1539" y="665" class="code" xml:space="preserve">  "tdo/tdo_en changed</text>
+  <text x="1539" y="685" class="code" xml:space="preserve">   while TCK is ...")</text>
+  <path d="M1460,520 H1415" class="w"/>
+  <text x="1425" y="510" class="net">no</text>
+  <circle cx="1415" cy="520" r="4" fill="#374151"/>
+  <path d="M1640,700 V730 H1415 V360 H1490" class="w" marker-end="url(#arr)"/>
+  <text x="1409" y="760" class="net" text-anchor="end">forever</text>
+  <path d="M230,1100 H1860" class="bus"/>
+  <text x="178" y="1106" class="bm">join</text>
+  <rect x="160" y="1150" width="626" height="124" class="comb"/>
+  <text x="174" y="1176" class="bm">function void publish_reset(bit by_trst, tap_state_e from_state);</text>
+  <text x="174" y="1198" class="code" xml:space="preserve">  r = jtag_scan_txn::type_id::create("reset");</text>
+  <text x="174" y="1220" class="code" xml:space="preserve">  r.scan = RESET;  r.trst = by_trst;  r.from_state = from_state;</text>
+  <text x="174" y="1242" class="code" xml:space="preserve">  r.cycle = cycle + 1;</text>
+  <text x="174" y="1264" class="code" xml:space="preserve">  ap.write(r);</text>
+  <rect x="880" y="1150" width="304" height="124" class="comb"/>
+  <text x="894" y="1176" class="bm">function void abort_scan();</text>
+  <text x="894" y="1198" class="code" xml:space="preserve">  if (txn == null) return;</text>
+  <text x="894" y="1220" class="code" xml:space="preserve">  txn.aborted = 1'b1;</text>
+  <text x="894" y="1242" class="code" xml:space="preserve">  ap.write(txn);  n_aborted++;</text>
+  <text x="894" y="1264" class="code" xml:space="preserve">  txn = null;</text>
+  <rect x="1230" y="1150" width="497" height="58" class="comb"/>
+  <text x="1244" y="1176" class="code">check_phase:  txn != null -&gt; `uvm_error("MON_OPEN")</text>
+  <text x="1244" y="1198" class="code">report_phase: !synced     -&gt; `uvm_error("MON_SYNC")</text>
+</svg>

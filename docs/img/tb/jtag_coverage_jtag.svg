@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1720" width="1930" height="1720" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1720" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1670" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">cov : jtag_coverage (2/3): write_edge and write_jtag</text>
+  <circle cx="110" cy="110" r="7" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="124" y="98" class="port">edge_imp</text>
+  <path d="M117,110 H220 V130" class="w" marker-end="url(#arr)"/>
+  <rect x="160" y="130" width="552" height="124" class="comb"/>
+  <text x="174" y="156" class="bm">function void write_edge(jtag_edge_txn e);</text>
+  <text x="174" y="178" class="code" xml:space="preserve">  arc_state = e.state;</text>
+  <text x="174" y="200" class="code" xml:space="preserve">  arc_tms   = e.tms;</text>
+  <text x="174" y="222" class="code" xml:space="preserve">  cg_arc.sample();</text>
+  <text x="174" y="244" class="code" xml:space="preserve">  hit($sformatf("arc:%s/tms%0d", e.state.name(), e.tms));</text>
+  <circle cx="110" cy="330" r="7" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="124" y="318" class="port">jtag_imp</text>
+  <path d="M117,330 H480 V370" class="w" marker-end="url(#arr)"/>
+  <text x="494" y="356" class="bm">function void write_jtag(jtag_scan_txn t);</text>
+  <path d="M320,370 H640 L670,400 L640,430 H320 L290,400 Z" class="comb"/>
+  <text x="480" y="405" class="code" text-anchor="middle">t.scan == RESET</text>
+  <path d="M670,400 H820" class="w" marker-end="url(#arr)"/>
+  <text x="745" y="390" class="net" text-anchor="middle">yes</text>
+  <rect x="820" y="380" width="515" height="200" rx="6" class="comb"/>
+  <text x="834" y="405" class="code">synced   = 1'b1;</text>
+  <text x="834" y="425" class="code">rst_kind = t.trst ? RST_TRST : RST_TMS;</text>
+  <text x="834" y="445" class="code">rst_from = t.from_state;</text>
+  <text x="834" y="465" class="code">cg_reset.sample();</text>
+  <text x="834" y="485" class="code">hit({"reset:", rst_kind.name()});</text>
+  <text x="834" y="505" class="code">if (t.trst) hit({"trst_from:", t.from_state.name()});</text>
+  <text x="834" y="525" class="code">instr         = OP_IDCODE;</text>
+  <text x="834" y="545" class="code">run_completed = 1'b0;</text>
+  <text x="834" y="565" class="code">return;</text>
+  <text x="490" y="448" class="net">no</text>
+  <path d="M480,430 V610" class="w" marker-end="url(#arr)"/>
+  <rect x="195" y="610" width="570" height="100" rx="6" class="comb"/>
+  <text x="209" y="635" class="code">scan_kind   = (t.scan == jtag_scan_txn::IR) ? S_IR : S_DR;</text>
+  <text x="209" y="655" class="code">scan_pauses = count_pauses(t);</text>
+  <text x="209" y="675" class="code">cg_pause.sample();</text>
+  <text x="209" y="695" class="code">hit({"pause:", scan_kind.name(), "/", scan_pauses.name()});</text>
+  <path d="M480,710 V740" class="w" marker-end="url(#arr)"/>
+  <path d="M320,740 H640 L670,770 L640,800 H320 L290,770 Z" class="comb"/>
+  <text x="480" y="775" class="code" text-anchor="middle">t.aborted</text>
+  <path d="M670,770 H820" class="w" marker-end="url(#arr)"/>
+  <text x="745" y="760" class="net" text-anchor="middle">yes</text>
+  <rect x="820" y="750" width="368" height="100" rx="6" class="comb"/>
+  <text x="834" y="775" class="code">aborted_kind = scan_kind;</text>
+  <text x="834" y="795" class="code">cg_abort.sample();</text>
+  <text x="834" y="815" class="code">hit({"abort:", aborted_kind.name()});</text>
+  <text x="834" y="835" class="code">return;</text>
+  <text x="490" y="818" class="net">no</text>
+  <path d="M480,800 V880" class="w" marker-end="url(#arr)"/>
+  <path d="M320,880 H640 L670,910 L640,940 H320 L290,910 Z" class="comb"/>
+  <text x="480" y="915" class="code" text-anchor="middle">t.scan == jtag_scan_txn::IR</text>
+  <path d="M670,910 H820" class="w" marker-end="url(#arr)"/>
+  <text x="745" y="900" class="net" text-anchor="middle">yes</text>
+  <rect x="820" y="890" width="368" height="100" rx="6" class="comb"/>
+  <text x="834" y="915" class="code">instr        = ir_after(t);</text>
+  <text x="834" y="935" class="code">instr_loaded = classify(instr);</text>
+  <text x="834" y="955" class="code">cg_instr.sample();</text>
+  <text x="834" y="975" class="code">hit({"instr:", instr_loaded.name()});</text>
+  <path d="M480,940 V970" class="w" marker-end="url(#arr)"/>
+  <text x="490" y="960" class="net">no</text>
+  <rect x="149" y="970" width="662" height="160" rx="6" class="comb"/>
+  <text x="163" y="995" class="code">dr_reg = (instr == OP_IDCODE)   ? R_IDCODE   :</text>
+  <text x="163" y="1015" class="code" xml:space="preserve">         (instr == OP_DFT_CTRL) ? R_DFT_CTRL : R_BYPASS;</text>
+  <text x="163" y="1035" class="code">dr_len = len_class(t.tdi_q.size(),</text>
+  <text x="163" y="1055" class="code" xml:space="preserve">         (dr_reg == R_IDCODE) ? 32 : (dr_reg == R_DFT_CTRL) ? 8 : 1);</text>
+  <text x="163" y="1075" class="code">cg_dr_len.sample();</text>
+  <text x="163" y="1095" class="code">hit({"dr_len:", dr_reg.name(), "/", dr_len.name()});</text>
+  <text x="163" y="1115" class="code">if (dr_reg == R_DFT_CTRL) pending_redundant.push_back(t.cycle);</text>
+  <path d="M860,990 V1160 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="1160" r="4" fill="#374151"/>
+  <path d="M480,1130 V1160" class="w"/>
+  <path d="M480,1160 V1180" class="w" marker-end="url(#arr)"/>
+  <text x="480" y="1200" class="bm" text-anchor="middle">return</text>
+  <rect x="160" y="1250" width="570" height="146" class="comb"/>
+  <text x="174" y="1276" class="bm">function pause_e count_pauses(jtag_scan_txn t);</text>
+  <text x="174" y="1298" class="code" xml:space="preserve">  int n = 0;</text>
+  <text x="174" y="1320" class="code" xml:space="preserve">  foreach (t.path[i])</text>
+  <text x="174" y="1342" class="code" xml:space="preserve">    if ((t.path[i] == PAUSE_DR || t.path[i] == PAUSE_IR) &amp;&amp;</text>
+  <text x="174" y="1364" class="code" xml:space="preserve">        (i == 0 || t.path[i-1] != t.path[i])) n++;</text>
+  <text x="174" y="1386" class="code" xml:space="preserve">  return (n == 0) ? P_NONE : (n == 1) ? P_ONE : P_MULTI;</text>
+  <rect x="1000" y="1250" width="487" height="190" class="comb"/>
+  <text x="1014" y="1276" class="bm">function bit [IR_W-1:0] ir_after(jtag_scan_txn t);</text>
+  <text x="1014" y="1298" class="code" xml:space="preserve">  bit sr[$] = '{1'b1, 1'b0, 1'b0, 1'b0};</text>
+  <text x="1014" y="1320" class="code" xml:space="preserve">  foreach (t.tdi_q[i]) begin</text>
+  <text x="1014" y="1342" class="code" xml:space="preserve">    void'(sr.pop_front());</text>
+  <text x="1014" y="1364" class="code" xml:space="preserve">    sr.push_back(t.tdi_q[i]);</text>
+  <text x="1014" y="1386" class="code" xml:space="preserve">  end</text>
+  <text x="1014" y="1408" class="code" xml:space="preserve">  foreach (sr[i]) v[i] = sr[i];</text>
+  <text x="1014" y="1430" class="code" xml:space="preserve">  return v;</text>
+  <rect x="160" y="1470" width="441" height="168" class="comb"/>
+  <text x="174" y="1496" class="bm">function instr_e classify(bit [IR_W-1:0] op);</text>
+  <text x="174" y="1518" class="code" xml:space="preserve">  case (op)</text>
+  <text x="174" y="1540" class="code" xml:space="preserve">    OP_IDCODE:   return I_IDCODE;</text>
+  <text x="174" y="1562" class="code" xml:space="preserve">    OP_BYPASS:   return I_BYPASS;</text>
+  <text x="174" y="1584" class="code" xml:space="preserve">    OP_DFT_CTRL: return I_DFT_CTRL;</text>
+  <text x="174" y="1606" class="code" xml:space="preserve">    default:     return I_UNUSED;</text>
+  <text x="174" y="1628" class="code" xml:space="preserve">  endcase</text>
+  <rect x="1000" y="1470" width="441" height="124" class="comb"/>
+  <text x="1014" y="1496" class="bm">function len_e len_class(int n, int reg_len);</text>
+  <text x="1014" y="1518" class="code" xml:space="preserve">  if (n == 0)       return L_ZERO;</text>
+  <text x="1014" y="1540" class="code" xml:space="preserve">  if (n &lt; reg_len)  return L_SHORT;</text>
+  <text x="1014" y="1562" class="code" xml:space="preserve">  if (n == reg_len) return L_EXACT;</text>
+  <text x="1014" y="1584" class="code" xml:space="preserve">  return L_LONG;</text>
+</svg>

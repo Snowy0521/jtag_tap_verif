@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1550 1230" width="1550" height="1230" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1550" height="1230" fill="#ffffff"/>
+  <rect x="110" y="30" width="1280" height="1180" rx="8" class="mod"/>
+  <text x="118" y="46" class="modl">jtag_tap_fsm_props</text>
+  <text x="-15" y="76" class="pin">tck</text>
+  <path d="M110,72 H130" class="w"/>
+  <text x="136" y="76" class="net">tck</text>
+  <text x="-15" y="94" class="pin">trst_n</text>
+  <path d="M110,90 H130" class="w"/>
+  <text x="136" y="94" class="net">trst_n</text>
+  <text x="-15" y="112" class="pin">tms</text>
+  <path d="M110,108 H130" class="w"/>
+  <text x="136" y="112" class="net">tms</text>
+  <text x="-15" y="130" class="pin">state</text>
+  <path d="M110,126 H130" class="w"/>
+  <text x="136" y="130" class="net">state [3:0]</text>
+  <rect x="200" y="165" width="340" height="30" class="comb"/>
+  <text x="370" y="184" class="bm" text-anchor="middle">`include "jtag_checker_defaults.svh"</text>
+<g transform="translate(0,-170)">
+  <rect x="230" y="400" width="130" height="64" class="inst"/>
+  <text x="295" y="416" class="bm" text-anchor="middle">$past(state)</text>
+  <text x="235" y="436" class="port">D</text>
+  <text x="355" y="436" class="port" text-anchor="end">Q</text>
+  <path d="M230,442 L240,449 L230,456" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M216,449 H230" class="w"/>
+  <text x="214" y="453" class="net" text-anchor="end">tck</text>
+  <rect x="230" y="480" width="130" height="64" class="inst"/>
+  <text x="295" y="496" class="bm" text-anchor="middle">$past(tms)</text>
+  <text x="235" y="516" class="port">D</text>
+  <text x="355" y="516" class="port" text-anchor="end">Q</text>
+  <path d="M230,522 L240,529 L230,536" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M216,529 H230" class="w"/>
+  <text x="214" y="533" class="net" text-anchor="end">tck</text>
+  <path d="M205,432 H230" class="bus" marker-end="url(#arrb)"/>
+  <text x="201" y="436" class="net" text-anchor="end">state</text>
+  <path d="M205,512 H230" class="w" marker-end="url(#arr)"/>
+  <text x="201" y="516" class="net" text-anchor="end">tms</text>
+  <path d="M360,432 H420" class="bus" marker-end="url(#arrb)"/>
+  <path d="M360,512 H420" class="w" marker-end="url(#arr)"/>
+  <rect x="420" y="405" width="190" height="125" class="comb"/>
+  <text x="515" y="425" class="bm" text-anchor="middle">model_next(s, t)</text>
+  <text x="515" y="445" class="small" text-anchor="middle">function automatic</text>
+  <text x="515" y="461" class="small" text-anchor="middle">if (t) case (s) ...</text>
+  <text x="515" y="477" class="small" text-anchor="middle">else   case (s) ...</text>
+  <text x="426" y="436" class="port">s</text>
+  <text x="426" y="516" class="port">t</text>
+  <path d="M610,470 H680" class="bus" marker-end="url(#arrb)"/>
+  <rect x="680" y="455" width="70" height="50" class="comb"/>
+  <text x="715" y="484" class="bm" text-anchor="middle">==</text>
+  <path d="M655,495 H680" class="bus" marker-end="url(#arrb)"/>
+  <text x="651" y="499" class="net" text-anchor="end">state</text>
+  <path d="M750,480 H1140" class="w" marker-end="url(#arr)"/>
+  <rect x="1140" y="455" width="240" height="52" rx="10" class="chk"/>
+  <text x="1260" y="477" class="bm" text-anchor="middle">a_next_state</text>
+  <text x="1260" y="497" class="small" text-anchor="middle">assert property</text>
+  <text x="200" y="562" class="code">a_next_state: assert property (1'b1 |=&gt; state == model_next($past(state), $past(tms)));</text>
+  <rect x="200" y="575" width="1100" height="100" class="comb"/>
+  <text x="212" y="595" class="bm">`include "jtag_fsm_arcs.svh"</text>
+  <text x="212" y="617" class="code">a_arc_&lt;s&gt;_&lt;t&gt;: assert property ((state == S &amp;&amp;  tms == t) |=&gt; state == NEXT(S, t));     x 32</text>
+  <text x="212" y="637" class="code">c_arc_&lt;s&gt;_&lt;t&gt;: cover  property ((state == S &amp;&amp;  tms == t) ##1 state == NEXT(S, t));     x 32</text>
+  <text x="212" y="657" class="code">c_state_&lt;s&gt;:   cover  property (state == S);                                             x 16</text>
+  <path d="M175,605 H200" class="bus" marker-end="url(#arrb)"/>
+  <text x="171" y="609" class="net" text-anchor="end">state</text>
+  <path d="M175,640 H200" class="w" marker-end="url(#arr)"/>
+  <text x="171" y="644" class="net" text-anchor="end">tms</text>
+  <rect x="200" y="712" width="100" height="64" class="inst"/>
+  <text x="250" y="728" class="small" text-anchor="middle">$past(tms,1)</text>
+  <text x="205" y="748" class="port">D</text>
+  <text x="295" y="748" class="port" text-anchor="end">Q</text>
+  <path d="M200,754 L210,761 L200,768" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M186,761 H200" class="w"/>
+  <text x="184" y="765" class="net" text-anchor="end">tck</text>
+  <path d="M175,744 H200" class="w" marker-end="url(#arr)"/>
+  <text x="171" y="748" class="net" text-anchor="end">tms</text>
+  <path d="M300,744 H360" class="w" marker-end="url(#arr)"/>
+  <circle cx="308" cy="744" r="4" fill="#374151"/>
+  <path d="M308,744 V820 H960" class="w" marker-end="url(#arr)"/>
+  <rect x="360" y="712" width="100" height="64" class="inst"/>
+  <text x="410" y="728" class="small" text-anchor="middle">$past(tms,2)</text>
+  <text x="365" y="748" class="port">D</text>
+  <text x="455" y="748" class="port" text-anchor="end">Q</text>
+  <path d="M360,754 L370,761 L360,768" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M346,761 H360" class="w"/>
+  <text x="344" y="765" class="net" text-anchor="end">tck</text>
+  <path d="M460,744 H520" class="w" marker-end="url(#arr)"/>
+  <circle cx="468" cy="744" r="4" fill="#374151"/>
+  <path d="M468,744 V808 H960" class="w" marker-end="url(#arr)"/>
+  <rect x="520" y="712" width="100" height="64" class="inst"/>
+  <text x="570" y="728" class="small" text-anchor="middle">$past(tms,3)</text>
+  <text x="525" y="748" class="port">D</text>
+  <text x="615" y="748" class="port" text-anchor="end">Q</text>
+  <path d="M520,754 L530,761 L520,768" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M506,761 H520" class="w"/>
+  <text x="504" y="765" class="net" text-anchor="end">tck</text>
+  <path d="M620,744 H680" class="w" marker-end="url(#arr)"/>
+  <circle cx="628" cy="744" r="4" fill="#374151"/>
+  <path d="M628,744 V796 H960" class="w" marker-end="url(#arr)"/>
+  <rect x="680" y="712" width="100" height="64" class="inst"/>
+  <text x="730" y="728" class="small" text-anchor="middle">$past(tms,4)</text>
+  <text x="685" y="748" class="port">D</text>
+  <text x="775" y="748" class="port" text-anchor="end">Q</text>
+  <path d="M680,754 L690,761 L680,768" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M666,761 H680" class="w"/>
+  <text x="664" y="765" class="net" text-anchor="end">tck</text>
+  <path d="M780,744 H840" class="w" marker-end="url(#arr)"/>
+  <circle cx="788" cy="744" r="4" fill="#374151"/>
+  <path d="M788,744 V784 H960" class="w" marker-end="url(#arr)"/>
+  <rect x="840" y="712" width="100" height="64" class="inst"/>
+  <text x="890" y="728" class="small" text-anchor="middle">$past(tms,5)</text>
+  <text x="845" y="748" class="port">D</text>
+  <text x="935" y="748" class="port" text-anchor="end">Q</text>
+  <path d="M840,754 L850,761 L840,768" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M826,761 H840" class="w"/>
+  <text x="824" y="765" class="net" text-anchor="end">tck</text>
+  <path d="M940,744 H948" class="w"/>
+  <path d="M948,744 V772 H960" class="w" marker-end="url(#arr)"/>
+  <path d="M960,762 H985 A35.0,35.0 0 0 1 985,832 H960 Z" class="comb"/>
+  <path d="M1020.0,797.0 H1030" class="w" marker-end="url(#arr)"/>
+  <text x="990.0" y="756" class="net" text-anchor="middle">tms[*5]</text>
+  <rect x="200" y="872" width="290" height="30" class="comb"/>
+  <text x="345" y="891" class="bm" text-anchor="middle">state == TEST_LOGIC_RESET</text>
+  <path d="M175,887 H200" class="bus" marker-end="url(#arrb)"/>
+  <text x="171" y="891" class="net" text-anchor="end">state</text>
+  <path d="M490,887 H1010 V822.0 H1030" class="w" marker-end="url(#arr)"/>
+  <rect x="1030" y="777.0" width="90" height="60" class="comb"/>
+  <text x="1082" y="811.0" class="small" text-anchor="middle">!A || B</text>
+  <text x="1034" y="801.0" class="port">A</text>
+  <text x="1034" y="826.0" class="port">B</text>
+  <path d="M1120,807.0 H1140" class="w" marker-end="url(#arr)"/>
+  <rect x="1140" y="782.0" width="240" height="52" rx="10" class="chk"/>
+  <text x="1260" y="804.0" class="bm" text-anchor="middle">a_tms5_reset</text>
+  <text x="1260" y="824.0" class="small" text-anchor="middle">assert property</text>
+  <text x="640" y="917" class="code">a_tms5_reset: assert property (tms [*5] |=&gt; state == TEST_LOGIC_RESET);</text>
+  <path d="M875,964 H900" class="w" marker-end="url(#arr)"/>
+  <text x="871" y="968" class="net" text-anchor="end">tms[*5]</text>
+  <path d="M875,982 H900" class="w" marker-end="url(#arr)"/>
+  <text x="871" y="986" class="net" text-anchor="end">$past(state, 5) == SHIFT_DR</text>
+  <path d="M875,1000 H900" class="w" marker-end="url(#arr)"/>
+  <text x="871" y="1004" class="net" text-anchor="end">state == TEST_LOGIC_RESET</text>
+  <path d="M900,952 H925 A30.0,30.0 0 0 1 925,1012 H900 Z" class="comb"/>
+  <path d="M955.0,982.0 H1140" class="w" marker-end="url(#arr)"/>
+  <rect x="1140" y="957.0" width="240" height="52" rx="10" class="chk"/>
+  <text x="1260" y="979.0" class="bm" text-anchor="middle">c_tms5_from_shift_dr</text>
+  <text x="1260" y="999.0" class="small" text-anchor="middle">cover property</text>
+  <text x="520" y="1034" class="code">c_tms5_from_shift_dr: cover property ((state == SHIFT_DR) ##0 tms [*5] ##1 (state == TEST_LOGIC_RESET));</text>
+  <path d="M875,1064 H900" class="w" marker-end="url(#arr)"/>
+  <text x="871" y="1068" class="net" text-anchor="end">tms[*5]</text>
+  <path d="M875,1082 H900" class="w" marker-end="url(#arr)"/>
+  <text x="871" y="1086" class="net" text-anchor="end">$past(state, 5) == PAUSE_IR</text>
+  <path d="M875,1100 H900" class="w" marker-end="url(#arr)"/>
+  <text x="871" y="1104" class="net" text-anchor="end">state == TEST_LOGIC_RESET</text>
+  <path d="M900,1052 H925 A30.0,30.0 0 0 1 925,1112 H900 Z" class="comb"/>
+  <path d="M955.0,1082.0 H1140" class="w" marker-end="url(#arr)"/>
+  <rect x="1140" y="1057.0" width="240" height="52" rx="10" class="chk"/>
+  <text x="1260" y="1079.0" class="bm" text-anchor="middle">c_tms5_from_pause_ir</text>
+  <text x="1260" y="1099.0" class="small" text-anchor="middle">cover property</text>
+  <text x="520" y="1134" class="code">c_tms5_from_pause_ir: cover property ((state == PAUSE_IR) ##0 tms [*5] ##1 (state == TEST_LOGIC_RESET));</text>
+  <rect x="610" y="1180" width="190" height="28" class="comb"/>
+  <text x="705" y="1198" class="bm" text-anchor="middle">trst_n !== 1'b0</text>
+  <path d="M585,1194 H610" class="w" marker-end="url(#arr)"/>
+  <text x="581" y="1198" class="net" text-anchor="end">trst_n</text>
+  <rect x="510" y="1220" width="290" height="28" class="comb"/>
+  <text x="655" y="1238" class="bm" text-anchor="middle">state == TEST_LOGIC_RESET</text>
+  <path d="M485,1234 H510" class="bus" marker-end="url(#arrb)"/>
+  <text x="481" y="1238" class="net" text-anchor="end">state</text>
+  <path d="M800,1194 H900" class="w" marker-end="url(#arr)"/>
+  <path d="M800,1234 H900" class="w" marker-end="url(#arr)"/>
+  <path d="M900,1182 Q940,1182 965,1214.0 Q940,1246 900,1246 Q914,1214.0 900,1182 Z" class="comb"/>
+  <path d="M965,1214.0 H1140" class="w" marker-end="url(#arr)"/>
+  <rect x="1140" y="1189.0" width="240" height="52" rx="10" class="chk"/>
+  <text x="1260" y="1211.0" class="bm" text-anchor="middle">a_trst_state</text>
+  <text x="1260" y="1231.0" class="small" text-anchor="middle">assert final</text>
+  <text x="640" y="1272" class="code">`ASSERT_TRST(a_trst_state, state == TEST_LOGIC_RESET)</text>
+  <rect x="420" y="1300" width="480" height="34" class="comb"/>
+  <text x="660" y="1313" class="bm" text-anchor="middle">state inside {TEST_LOGIC_RESET, ..., UPDATE_IR}</text>
+  <text x="660" y="1329" class="small" text-anchor="middle">16 tap_state_e values</text>
+  <path d="M395,1317 H420" class="bus" marker-end="url(#arrb)"/>
+  <text x="391" y="1321" class="net" text-anchor="end">state</text>
+  <path d="M900,1317 H1140" class="w" marker-end="url(#arr)"/>
+  <rect x="1140" y="1292" width="240" height="52" rx="10" class="chk"/>
+  <text x="1260" y="1314" class="bm" text-anchor="middle">a_state_legal</text>
+  <text x="1260" y="1334" class="small" text-anchor="middle">assert property</text>
+</g>
+</svg>

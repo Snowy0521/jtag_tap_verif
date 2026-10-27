@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1350 720" width="1350" height="720" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1350" height="720" fill="#ffffff"/>
+  <rect x="110" y="30" width="1030" height="670" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">agent : jtag_agent</text>
+  <rect x="160" y="80" width="790" height="270" rx="6" class="mod"/>
+  <text x="168" y="98" class="modl">if (get_is_active() == UVM_ACTIVE)</text>
+  <rect x="190" y="130" width="260" height="170" rx="6" class="inst"/>
+  <text x="204" y="156" class="bm">sqr : jtag_sequencer</text>
+  <text x="204" y="182" class="small">uvm_sequencer</text>
+  <text x="204" y="202" class="small">#(jtag_seq_item)</text>
+  <rect x="600" y="130" width="320" height="170" rx="6" class="inst"/>
+  <text x="614" y="156" class="bm">drv : jtag_driver</text>
+  <text x="614" y="182" class="small">vif &lt;- "jtag_vif"</text>
+  <text x="614" y="202" class="small">writes vif.tms, vif.tdi,</text>
+  <text x="614" y="222" class="small" xml:space="preserve">       vif.trst_n, vif.tck_en</text>
+  <path d="M594,215 H458" class="w" marker-end="url(#arr)"/>
+  <circle cx="450" cy="215" r="7" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <rect x="594" y="209" width="12" height="12" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="525" y="205" class="net" text-anchor="middle">pull</text>
+  <text x="440" y="245" class="small" text-anchor="end">seq_item_export</text>
+  <text x="612" y="245" class="small">seq_item_port</text>
+  <rect x="190" y="390" width="730" height="170" rx="6" class="inst"/>
+  <text x="204" y="416" class="bm">mon : jtag_monitor</text>
+  <text x="204" y="442" class="small">vif &lt;- "jtag_vif"</text>
+  <text x="204" y="462" class="small">reads vif.mon_cb.{tms, tdi, trst_n, tdo, tdo_en}</text>
+  <rect x="914" y="444" width="12" height="12" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="908" y="455" class="port" text-anchor="end">ap</text>
+  <path d="M926,450 H1140" class="w"/>
+  <text x="1033" y="442" class="net" text-anchor="middle">push</text>
+  <rect x="1134" y="444" width="12" height="12" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="1154" y="455" class="pin">mon.ap</text>
+  <rect x="914" y="504" width="12" height="12" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="908" y="515" class="port" text-anchor="end">edge_ap</text>
+  <path d="M926,510 H1140" class="w"/>
+  <text x="1033" y="502" class="net" text-anchor="middle">push</text>
+  <rect x="1134" y="504" width="12" height="12" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="1154" y="515" class="pin">mon.edge_ap</text>
+  <rect x="160" y="600" width="938" height="80" class="comb"/>
+  <text x="174" y="626" class="code">typedef uvm_sequencer #(jtag_seq_item) jtag_sequencer;</text>
+  <text x="174" y="648" class="code">build_phase:   mon = create("mon");  if (UVM_ACTIVE) { sqr = create("sqr");  drv = create("drv"); }</text>
+  <text x="174" y="670" class="code">connect_phase: if (UVM_ACTIVE)  drv.seq_item_port.connect(sqr.seq_item_export);</text>
+</svg>

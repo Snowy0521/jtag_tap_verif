@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1450 800" width="1450" height="800" font-family="Helvetica, Arial, sans-serif" font-size="15">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:14px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:12px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:15px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1450" height="800" fill="#ffffff"/>
+  <rect x="110" y="30" width="1160" height="740" rx="8" class="mod"/>
+  <text x="118" y="46" class="modl">formal_top</text>
+  <rect x="150" y="70" width="1090" height="680" rx="8" class="mod"/>
+  <text x="158" y="86" class="modl">dut : jtag_tap_top #(.MBIST_CYCLES(4)) (.*)</text>
+  <rect x="180" y="266" width="130" height="328" class="inst"/>
+  <text x="245" y="582" class="bm" text-anchor="middle">RTL logic</text>
+  <text x="-15" y="134" class="pin">tck</text>
+  <path d="M118,130 H1130" class="w"/>
+  <circle cx="195" cy="130" r="4" fill="#374151"/>
+  <path d="M195,130 V266" class="w" marker-end="url(#arr)"/>
+  <text x="-15" y="160" class="pin">trst_n</text>
+  <path d="M118,156 H1130" class="w"/>
+  <circle cx="217" cy="156" r="4" fill="#374151"/>
+  <path d="M217,156 V266" class="w" marker-end="url(#arr)"/>
+  <text x="-15" y="186" class="pin">tms</text>
+  <path d="M118,182 H560" class="w"/>
+  <circle cx="239" cy="182" r="4" fill="#374151"/>
+  <path d="M239,182 V266" class="w" marker-end="url(#arr)"/>
+  <text x="-15" y="212" class="pin">tdi</text>
+  <path d="M118,208 H940" class="w"/>
+  <circle cx="261" cy="208" r="4" fill="#374151"/>
+  <path d="M261,208 V266" class="w" marker-end="url(#arr)"/>
+  <text x="-15" y="238" class="pin">mbist_fail_i</text>
+  <path d="M118,234 H940" class="w"/>
+  <circle cx="283" cy="234" r="4" fill="#374151"/>
+  <path d="M283,234 V266" class="w" marker-end="url(#arr)"/>
+  <text x="304" y="294" class="port" text-anchor="end">state</text>
+  <path d="M310,290 H1130" class="bus"/>
+  <text x="318" y="286" class="small">[3:0]</text>
+  <text x="304" y="320" class="port" text-anchor="end">ir_sr</text>
+  <path d="M310,316 H750" class="bus"/>
+  <text x="318" y="312" class="small">[3:0]</text>
+  <text x="304" y="346" class="port" text-anchor="end">ir</text>
+  <path d="M310,342 H1130" class="bus"/>
+  <text x="318" y="338" class="small">[3:0]</text>
+  <text x="304" y="372" class="port" text-anchor="end">dr_sel</text>
+  <path d="M310,368 H750" class="bus"/>
+  <text x="318" y="364" class="small">[1:0]</text>
+  <text x="304" y="398" class="port" text-anchor="end">tdo</text>
+  <path d="M310,394 H1270" class="w" marker-end="url(#arr)"/>
+  <text x="1280" y="398" class="pin">tdo</text>
+  <text x="304" y="424" class="port" text-anchor="end">tdo_en</text>
+  <path d="M310,420 H1270" class="w" marker-end="url(#arr)"/>
+  <text x="1280" y="424" class="pin">tdo_en</text>
+  <text x="304" y="450" class="port" text-anchor="end">test_mode</text>
+  <path d="M310,446 H1270" class="w" marker-end="url(#arr)"/>
+  <text x="1280" y="450" class="pin">test_mode</text>
+  <text x="304" y="476" class="port" text-anchor="end">scan_en</text>
+  <path d="M310,472 H1270" class="w" marker-end="url(#arr)"/>
+  <text x="1280" y="476" class="pin">scan_en</text>
+  <text x="304" y="502" class="port" text-anchor="end">mbist_start</text>
+  <path d="M310,498 H1270" class="w" marker-end="url(#arr)"/>
+  <text x="1280" y="502" class="pin">mbist_start</text>
+  <text x="304" y="528" class="port" text-anchor="end">mbist_done</text>
+  <path d="M310,524 H1270" class="w" marker-end="url(#arr)"/>
+  <text x="1280" y="528" class="pin">mbist_done</text>
+  <text x="304" y="554" class="port" text-anchor="end">mbist_pass</text>
+  <path d="M310,550 H1270" class="w" marker-end="url(#arr)"/>
+  <text x="1280" y="554" class="pin">mbist_pass</text>
+  <path d="M560,130 V640" class="w" marker-end="url(#arr)"/>
+  <circle cx="560" cy="130" r="4" fill="#374151"/>
+  <circle cx="560" cy="156" r="4" fill="#374151"/>
+  <circle cx="560" cy="182" r="4" fill="#374151"/>
+  <circle cx="560" cy="290" r="4" fill="#374151"/>
+  <rect x="470" y="640" width="180" height="66" class="inst"/>
+  <text x="560" y="660" class="bm" text-anchor="middle">u_fsm_props</text>
+  <text x="560" y="678" class="code" text-anchor="middle">jtag_tap_fsm_props</text>
+  <path d="M750,130 V640" class="w" marker-end="url(#arr)"/>
+  <circle cx="750" cy="130" r="4" fill="#374151"/>
+  <circle cx="750" cy="156" r="4" fill="#374151"/>
+  <circle cx="750" cy="208" r="4" fill="#374151"/>
+  <circle cx="750" cy="394" r="4" fill="#374151"/>
+  <circle cx="750" cy="420" r="4" fill="#374151"/>
+  <circle cx="750" cy="290" r="4" fill="#374151"/>
+  <circle cx="750" cy="316" r="4" fill="#374151"/>
+  <circle cx="750" cy="342" r="4" fill="#374151"/>
+  <circle cx="750" cy="368" r="4" fill="#374151"/>
+  <circle cx="750" cy="446" r="4" fill="#374151"/>
+  <circle cx="750" cy="472" r="4" fill="#374151"/>
+  <circle cx="750" cy="498" r="4" fill="#374151"/>
+  <circle cx="750" cy="524" r="4" fill="#374151"/>
+  <circle cx="750" cy="550" r="4" fill="#374151"/>
+  <rect x="660" y="640" width="180" height="66" class="inst"/>
+  <text x="750" y="660" class="bm" text-anchor="middle">u_reg_props</text>
+  <text x="750" y="678" class="code" text-anchor="middle">jtag_reg_props</text>
+  <path d="M940,130 V640" class="w" marker-end="url(#arr)"/>
+  <circle cx="940" cy="130" r="4" fill="#374151"/>
+  <circle cx="940" cy="156" r="4" fill="#374151"/>
+  <circle cx="940" cy="208" r="4" fill="#374151"/>
+  <circle cx="940" cy="290" r="4" fill="#374151"/>
+  <circle cx="940" cy="342" r="4" fill="#374151"/>
+  <circle cx="940" cy="446" r="4" fill="#374151"/>
+  <circle cx="940" cy="472" r="4" fill="#374151"/>
+  <circle cx="940" cy="498" r="4" fill="#374151"/>
+  <circle cx="940" cy="524" r="4" fill="#374151"/>
+  <circle cx="940" cy="550" r="4" fill="#374151"/>
+  <circle cx="940" cy="234" r="4" fill="#374151"/>
+  <rect x="850" y="640" width="180" height="66" class="inst"/>
+  <text x="940" y="660" class="bm" text-anchor="middle">u_dft_props</text>
+  <text x="940" y="678" class="code" text-anchor="middle">jtag_dft_props</text>
+  <text x="940" y="694" class="small" text-anchor="middle" style="font-size:9px">#(.MBIST_CYCLES(MBIST_CYCLES))</text>
+  <path d="M1130,130 V640" class="w" marker-end="url(#arr)"/>
+  <circle cx="1130" cy="130" r="4" fill="#374151"/>
+  <circle cx="1130" cy="156" r="4" fill="#374151"/>
+  <circle cx="1130" cy="290" r="4" fill="#374151"/>
+  <circle cx="1130" cy="342" r="4" fill="#374151"/>
+  <circle cx="1130" cy="446" r="4" fill="#374151"/>
+  <circle cx="1130" cy="472" r="4" fill="#374151"/>
+  <circle cx="1130" cy="498" r="4" fill="#374151"/>
+  <circle cx="1130" cy="524" r="4" fill="#374151"/>
+  <circle cx="1130" cy="550" r="4" fill="#374151"/>
+  <rect x="1040" y="640" width="180" height="66" class="inst"/>
+  <text x="1130" y="660" class="bm" text-anchor="middle">u_covers</text>
+  <text x="1130" y="678" class="code" text-anchor="middle">jtag_covers</text>
+  <text x="180" y="660" class="modl">bind jtag_tap_top</text>
+  <text x="180" y="676" class="modl">(`include "jtag_binds.svh")</text>
+</svg>

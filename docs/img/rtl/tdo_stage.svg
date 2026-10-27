@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1150 490" width="1150" height="490" font-family="Helvetica, Arial, sans-serif" font-size="15">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:14px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:15px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1150" height="490" fill="#ffffff"/>
+  <rect x="110" y="30" width="890" height="440" rx="8" class="mod"/>
+  <text x="118" y="46" class="modl">jtag_tap_top: TDO stage</text>
+  <path d="M520,60 L550,72 L550,148 L520,160 Z" class="comb"/>
+  <text x="525" y="89" class="port">0</text>
+  <text x="525" y="134" class="port">1</text>
+  <path d="M440,85 H520" class="w" marker-end="url(#arr)"/>
+  <text x="444" y="79" class="code">1'b0</text>
+  <text x="-15" y="134" class="pin">dr_tdo</text>
+  <path d="M75,130 H520" class="w" marker-end="url(#arr)"/>
+  <path d="M640,85 L670,97 L670,173 L640,185 Z" class="comb"/>
+  <text x="645" y="114" class="port">0</text>
+  <text x="645" y="159" class="port">1</text>
+  <path d="M550,110 H640" class="w" marker-end="url(#arr)"/>
+  <text x="-15" y="219" class="pin">ir_sr[0]</text>
+  <path d="M95,215 H529 a6,6 0 0 1 12,0 H610 V155 H640" class="w" marker-end="url(#arr)"/>
+  <path d="M670,135 H800" class="w" marker-end="url(#arr)"/>
+  <rect x="800" y="80" width="140" height="110" class="inst"/>
+  <text x="870" y="100" class="bm" text-anchor="middle">tdo</text>
+  <text x="870" y="122" class="code" text-anchor="middle">negedge tck</text>
+  <text x="870" y="160" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="806" y="139" class="port">D</text>
+  <text x="934" y="139" class="port" text-anchor="end">Q</text>
+  <path d="M800,162 L812,169 L800,176" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <circle cx="795" cy="169" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M778,169 H790" class="w"/>
+  <text x="775" y="173" class="net" text-anchor="end">tck</text>
+  <circle cx="870" cy="195" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M870,200 V210" class="w"/>
+  <text x="870" y="223" class="net" text-anchor="middle">trst_n</text>
+  <text x="882" y="208" class="code">reset 1'b0</text>
+  <path d="M940,135 H1000" class="w" marker-end="url(#arr)"/>
+  <text x="1010" y="139" class="pin">tdo</text>
+  <text x="-15" y="336" class="pin">state</text>
+  <path d="M65,332 H200" class="bus"/>
+  <circle cx="200" cy="332" r="4" fill="#374151"/>
+  <path d="M200,332 V300 H230" class="bus" marker-end="url(#arrb)"/>
+  <path d="M200,332 V365 H230" class="bus" marker-end="url(#arrb)"/>
+  <rect x="230" y="282" width="190" height="36" class="comb"/>
+  <text x="325" y="304" class="bm" text-anchor="middle">state == SHIFT_DR</text>
+  <rect x="230" y="347" width="190" height="36" class="comb"/>
+  <text x="325" y="369" class="bm" text-anchor="middle">state == SHIFT_IR</text>
+  <path d="M420,300 H535 V154" class="w" marker-end="url(#arr)"/>
+  <circle cx="500" cy="300" r="4" fill="#374151"/>
+  <path d="M500,300 V345 H649 a6,6 0 0 1 12,0 H706" class="w" marker-end="url(#arr)"/>
+  <path d="M420,365 H706" class="w" marker-end="url(#arr)"/>
+  <circle cx="655" cy="365" r="4" fill="#374151"/>
+  <path d="M655,365 V179" class="w" marker-end="url(#arr)"/>
+  <path d="M700,330 Q735,330 755,355 Q735,380 700,380 Q714,355 700,330 Z" class="comb"/>
+  <text x="722" y="359" class="port" text-anchor="middle">≥1</text>
+  <path d="M755,355 H800" class="w" marker-end="url(#arr)"/>
+  <rect x="800" y="300" width="140" height="110" class="inst"/>
+  <text x="870" y="320" class="bm" text-anchor="middle">tdo_en</text>
+  <text x="870" y="342" class="code" text-anchor="middle">negedge tck</text>
+  <text x="870" y="380" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="806" y="359" class="port">D</text>
+  <text x="934" y="359" class="port" text-anchor="end">Q</text>
+  <path d="M800,382 L812,389 L800,396" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <circle cx="795" cy="389" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M778,389 H790" class="w"/>
+  <text x="775" y="393" class="net" text-anchor="end">tck</text>
+  <circle cx="870" cy="415" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M870,420 V430" class="w"/>
+  <text x="870" y="443" class="net" text-anchor="middle">trst_n</text>
+  <text x="882" y="428" class="code">reset 1'b0</text>
+  <path d="M940,355 H1000" class="w" marker-end="url(#arr)"/>
+  <text x="1010" y="359" class="pin">tdo_en</text>
+  <text x="-15" y="424" class="pin">tck</text>
+  <path d="M110,420 H130" class="w"/>
+  <text x="136" y="424" class="net">tck</text>
+  <text x="-15" y="446" class="pin">trst_n</text>
+  <path d="M110,442 H130" class="w"/>
+  <text x="136" y="446" class="net">trst_n</text>
+</svg>

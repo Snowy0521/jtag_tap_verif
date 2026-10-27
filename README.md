@@ -3,8 +3,8 @@
 An IEEE 1149.1 test access port (TAP) with a private DFT control register, written in SystemVerilog and verified three ways:
 
 1. **Formal (Questa PropCheck), done:** full (unbounded) proofs of the TAP state machine, the IR / DR protocol, the DFT register and the MBIST timing, with covers for every state and transition. No assumptions: every input is free, and `trst_n` can assert at any cycle. 63/63 assertions proven, 67/67 covers reached.
-2. **UVM (QuestaSim), planned:** a JTAG agent whose monitor rebuilds the TAP state from the pins on its own and feeds a reference-model scoreboard, so a driver bug cannot hide a DUT bug. Directed tests plus a random test with TCK stops and mid-scan `trst_n`, to be signed off on merged coverage over 20 seeds.
-3. **Mutation testing, planned:** 20 injected bugs, each to be recorded as caught by formal, by simulation, or both.
+2. **UVM (QuestaSim), done:** a JTAG agent whose monitor rebuilds the TAP state from the pins on its own and feeds a reference-model scoreboard, so a driver bug cannot hide a DUT bug. Directed tests plus a random test with TCK stops and mid-scan `trst_n`, signed off on merged coverage over 20 seeds: 26/26 runs pass, 100 % functional coverage (87/87 bins), 100 % DUT code coverage.
+3. **Mutation testing, planned:** 21 injected bugs, each to be recorded as caught by formal, by simulation, or both.
 
 The full plan is in [docs/plan.md](docs/plan.md), the design rules in [docs/design_spec.md](docs/design_spec.md).
 
@@ -21,7 +21,7 @@ Work in progress.
 | Lint (verilator `-Wall`, slang) | clean |
 | Directed smoke test (iverilog) | passing |
 | Formal properties and proofs (`formal/`) | done |
-| UVM environment and regression (`tb/`) | planned |
+| UVM environment and regression (`tb/`) | done |
 | Mutation testing (`mutations/`) | planned |
 
 ## Design
@@ -51,9 +51,14 @@ All targets run from the repository root; outputs go to `build/`.
 | `make gen` | Python | Regenerate the per-arc state-machine checks from the spec's state table |
 | `make props-sim` | Verilator | Run the formal properties in a random simulation (local sanity check, not a proof) |
 | `make formal` | Questa Formal | Prove all properties (`formal/run_formal.tcl`) |
+| `make uvm TEST=<test> SEED=<n>` | Verilator + UVM 1800.2-2020 | Run a UVM test locally (development; sign-off runs on Questa) |
+| `make sim TEST=<test> SEED=<n>` | QuestaSim + UVM 1.2 | Run a UVM test with functional and DUT code coverage (`build/cov/<test>_<seed>.ucdb`) |
+| `make sim-directed` | QuestaSim + UVM 1.2 | Run every directed test once (one build) |
+| `make regress SEEDS=<n>` | Verilator | Every directed test + the random test on seeds 1..n: pass / fail table, merged functional coverage (TB counters), seed check (`build/regress/summary.md`) |
+| `make regress-questa SEEDS=<n>` | QuestaSim | The same, plus `vcover merge` of all runs: covergroup and RTL code coverage (sign-off) |
 | `make clean` | | Remove `build/` |
 
-Questa targets for UVM (`sim`, `regress`, `cov`) and mutations (`mutate`) will follow. The open-source tools cannot run the formal proofs or UVM.
+The UVM bench runs unchanged on UVM 1.2 (QuestaSim) and UVM 1800.2-2020 (Verilator), and both simulation flows also run the formal checkers, bound into the DUT. A mutation target (`mutate`) will follow. The open-source tools cannot run the formal proofs, and Verilator's functional coverage support is limited, so coverage sign-off runs on Questa.
 
 ## Results
 
@@ -67,15 +72,17 @@ To be filled in as each flow is completed.
 
 **UVM regression (QuestaSim)**
 
-| Seeds passed | Directed tests passed | Merged functional coverage | Code coverage (stmt / branch / FSM) |
+| Seeds passed | Directed tests passed | Merged functional coverage | Code coverage (stmt / branch / cond / expr) |
 |---|---|---|---|
-| – | – | – | – |
+| 20 / 20 | 6 / 6 | 100 % (87 / 87 bins) | 100 % / 100 % / 100 % / 100 % |
+
+`make regress-questa`, Questa 2024.3 with UVM 1.2; the random test covers 307–344 scans and 3 883–5 098 checked TDO bits per seed. The formal checkers run in every simulation too: all 63 assertions pass and all 67 formal covers are hit in the merged runs. No FSM code coverage: Questa does not extract the state machine (next states come from a function), and its 16 states and 32 arcs are covered by the `cg_arc` covergroup, the formal covers and the per-arc proofs instead ([docs/plan.md](docs/plan.md) §3.5).
 
 **Mutation testing**
 
 | Mutations | Caught by formal | Caught by simulation | Caught by both | Missed |
 |---|---|---|---|---|
-| 20 | – | – | – | – |
+| 21 | – | – | – | – |
 
 ## Repository layout
 
@@ -99,11 +106,10 @@ jtag_tap_verif/
 ├── formal/                  formal harness, checkers, Questa run script
 ├── scripts/
 │   └── gen_fsm_props.py     spec state table → per-arc checks
-└── tb/
-    └── tb_smoke.sv          directed smoke test (no UVM)
+└── tb/                      UVM testbench (agent, monitor, sequences, tests), tb_smoke.sv directed smoke test
 ```
 
-Planned: the UVM files in `tb/` and `mutations/`, each named in [docs/plan.md](docs/plan.md) where it is introduced.
+Planned: `mutations/`, named in [docs/plan.md](docs/plan.md) where it is introduced.
 
 ## References
 

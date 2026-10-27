@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1480" width="1930" height="1480" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1480" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1430" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">model : jtag_ref_model</text>
+  <rect x="160" y="70" width="543" height="168" class="comb"/>
+  <text x="174" y="96" class="bm">class jtag_ref_model extends uvm_object;</text>
+  <text x="174" y="118" class="code">localparam logic [3:0]  SPEC_IR_CAPTURE = 4'b0001;</text>
+  <text x="174" y="140" class="code">localparam logic [31:0] SPEC_IDCODE     = 32'h1114_9FFF;</text>
+  <text x="174" y="162" class="code">bit [IR_W-1:0] instr;</text>
+  <text x="174" y="184" class="code">bit            test_mode,   scan_en,   mbist_start;</text>
+  <text x="174" y="206" class="code">bit            test_mode_k, scan_en_k, mbist_start_k;</text>
+  <text x="174" y="228" class="code">bit            st_done, st_pass, st_known;</text>
+  <rect x="1000" y="70" width="497" height="102" class="comb"/>
+  <text x="1014" y="96" class="bm">function void reset();</text>
+  <text x="1014" y="118" class="code" xml:space="preserve">  instr = OP_IDCODE;</text>
+  <text x="1014" y="140" class="code" xml:space="preserve">  {test_mode,   scan_en,   mbist_start}   = 3'b000;</text>
+  <text x="1014" y="162" class="code" xml:space="preserve">  {test_mode_k, scan_en_k, mbist_start_k} = 3'b111;</text>
+  <text x="160" y="300" class="bm">function void predict(jtag_scan_txn t, ref bit exp[$], ref bit exp_known[$]);</text>
+  <path d="M480,310 V330" class="w" marker-end="url(#arr)"/>
+  <path d="M360,330 H600 L630,360 L600,390 H360 L330,360 Z" class="comb"/>
+  <text x="480" y="365" class="code" text-anchor="middle">t.scan == IR</text>
+  <path d="M630,360 H780" class="w" marker-end="url(#arr)"/>
+  <text x="695" y="350" class="net" text-anchor="middle">yes</text>
+  <rect x="780" y="340" width="248" height="80" rx="6" class="comb"/>
+  <text x="794" y="365" class="code">len   = IR_W;</text>
+  <text x="794" y="385" class="code">cap   = SPEC_IR_CAPTURE;</text>
+  <text x="794" y="405" class="code">known = '1;</text>
+  <path d="M480,390 V420" class="w" marker-end="url(#arr)"/>
+  <text x="490" y="410" class="net">no</text>
+  <rect x="338" y="420" width="285" height="40" rx="6" class="comb"/>
+  <text x="352" y="445" class="code">capture_dr(len, cap, known);</text>
+  <path d="M820,420 V490 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="490" r="4" fill="#374151"/>
+  <path d="M480,460 V490" class="w"/>
+  <path d="M480,490 V520" class="w" marker-end="url(#arr)"/>
+  <rect x="305" y="520" width="350" height="100" rx="6" class="comb"/>
+  <text x="319" y="545" class="code">for (int i = 0; i &lt; len; i++) begin</text>
+  <text x="319" y="565" class="code" xml:space="preserve">  sr.push_back(cap[i]);</text>
+  <text x="319" y="585" class="code" xml:space="preserve">  sr_k.push_back(known[i]);</text>
+  <text x="319" y="605" class="code">end</text>
+  <path d="M480,620 V650" class="w" marker-end="url(#arr)"/>
+  <rect x="310" y="650" width="340" height="40" rx="6" class="comb"/>
+  <text x="324" y="675" class="code">exp.delete();  exp_known.delete();</text>
+  <path d="M480,690 V720" class="w" marker-end="url(#arr)"/>
+  <rect x="1070" y="300" width="809" height="256" class="comb"/>
+  <text x="1084" y="326" class="bm">function void capture_dr(output int len,</text>
+  <text x="1084" y="348" class="code" xml:space="preserve">    output bit [31:0] cap, output bit [31:0] known);</text>
+  <text x="1084" y="370" class="code">case (instr)</text>
+  <text x="1084" y="392" class="code" xml:space="preserve">  OP_IDCODE:   begin len = 32;  cap = SPEC_IDCODE;  known = '1; end</text>
+  <text x="1084" y="414" class="code" xml:space="preserve">  OP_DFT_CTRL: begin</text>
+  <text x="1084" y="436" class="code" xml:space="preserve">    len   = 8;</text>
+  <text x="1084" y="458" class="code" xml:space="preserve">    cap   = 32'({3'b000, st_pass, st_done, mbist_start, scan_en, test_mode});</text>
+  <text x="1084" y="480" class="code" xml:space="preserve">    known = 32'({3'b111, st_known, st_known, mbist_start_k, scan_en_k, test_mode_k});</text>
+  <text x="1084" y="502" class="code" xml:space="preserve">  end</text>
+  <text x="1084" y="524" class="code" xml:space="preserve">  default:     begin len = 1;   cap = '0;  known = '1; end</text>
+  <text x="1084" y="546" class="code">endcase</text>
+  <rect x="160" y="720" width="1690" height="220" rx="6" class="mod"/>
+  <text x="168" y="738" class="modl">foreach (t.tdi_q[i])</text>
+  <rect x="760" y="768" width="120" height="44" class="inst"/>
+  <text x="820" y="795" class="code" text-anchor="middle">sr[0]</text>
+  <rect x="880" y="768" width="120" height="44" class="inst"/>
+  <text x="940" y="795" class="code" text-anchor="middle">sr[1]</text>
+  <rect x="1000" y="768" width="120" height="44" class="inst"/>
+  <text x="1060" y="795" class="code" text-anchor="middle">sr[2]</text>
+  <rect x="1120" y="768" width="120" height="44" class="inst"/>
+  <text x="1180" y="795" class="code" text-anchor="middle">...</text>
+  <rect x="1240" y="768" width="120" height="44" class="inst"/>
+  <text x="1300" y="795" class="code" text-anchor="middle">sr[len-1]</text>
+  <rect x="396" y="770" width="304" height="40" rx="6" class="comb"/>
+  <text x="410" y="795" class="code">exp.push_back(sr.pop_front());</text>
+  <path d="M760,790 H700" class="w" marker-end="url(#arr)"/>
+  <rect x="1440" y="770" width="257" height="40" rx="6" class="comb"/>
+  <text x="1454" y="795" class="code">sr.push_back(t.tdi_q[i]);</text>
+  <path d="M1440,790 H1360" class="w" marker-end="url(#arr)"/>
+  <rect x="760" y="858" width="120" height="44" class="inst"/>
+  <text x="820" y="885" class="code" text-anchor="middle">sr_k[0]</text>
+  <rect x="880" y="858" width="120" height="44" class="inst"/>
+  <text x="940" y="885" class="code" text-anchor="middle">sr_k[1]</text>
+  <rect x="1000" y="858" width="120" height="44" class="inst"/>
+  <text x="1060" y="885" class="code" text-anchor="middle">sr_k[2]</text>
+  <rect x="1120" y="858" width="120" height="44" class="inst"/>
+  <text x="1180" y="885" class="code" text-anchor="middle">...</text>
+  <rect x="1240" y="858" width="120" height="44" class="inst"/>
+  <text x="1300" y="885" class="code" text-anchor="middle">sr_k[len-1]</text>
+  <rect x="323" y="860" width="377" height="40" rx="6" class="comb"/>
+  <text x="337" y="885" class="code">exp_known.push_back(sr_k.pop_front());</text>
+  <path d="M760,880 H700" class="w" marker-end="url(#arr)"/>
+  <rect x="1440" y="860" width="221" height="40" rx="6" class="comb"/>
+  <text x="1454" y="885" class="code">sr_k.push_back(1'b1);</text>
+  <path d="M1440,880 H1360" class="w" marker-end="url(#arr)"/>
+  <path d="M480,940 V970" class="w" marker-end="url(#arr)"/>
+  <path d="M360,970 H600 L630,1000 L600,1030 H360 L330,1000 Z" class="comb"/>
+  <text x="480" y="1005" class="code" text-anchor="middle">t.aborted</text>
+  <path d="M630,1000 H780" class="w" marker-end="url(#arr)"/>
+  <text x="705" y="990" class="net" text-anchor="middle">yes</text>
+  <rect x="780" y="980" width="92" height="40" rx="6" class="comb"/>
+  <text x="794" y="1005" class="code">return;</text>
+  <text x="490" y="1048" class="net">no</text>
+  <path d="M480,1030 V1070" class="w" marker-end="url(#arr)"/>
+  <path d="M360,1070 H600 L630,1100 L600,1130 H360 L330,1100 Z" class="comb"/>
+  <text x="480" y="1105" class="code" text-anchor="middle">t.scan == IR</text>
+  <path d="M630,1100 H780" class="w" marker-end="url(#arr)"/>
+  <text x="695" y="1090" class="net" text-anchor="middle">yes</text>
+  <rect x="780" y="1080" width="469" height="40" rx="6" class="comb"/>
+  <text x="794" y="1105" class="code">for (int i = 0; i &lt; IR_W; i++) instr[i] = sr[i];</text>
+  <path d="M480,1130 V1160" class="w" marker-end="url(#arr)"/>
+  <text x="490" y="1150" class="net">no</text>
+  <path d="M320,1160 H640 L670,1190 L640,1220 H320 L290,1190 Z" class="comb"/>
+  <text x="480" y="1195" class="code" text-anchor="middle">instr == OP_DFT_CTRL</text>
+  <path d="M670,1190 H780" class="w" marker-end="url(#arr)"/>
+  <text x="725" y="1180" class="net" text-anchor="middle">yes</text>
+  <rect x="780" y="1170" width="791" height="140" rx="6" class="comb"/>
+  <text x="794" y="1195" class="code">test_mode     = sr[0];</text>
+  <text x="794" y="1215" class="code">test_mode_k   = sr_k[0];</text>
+  <text x="794" y="1235" class="code">scan_en       = sr[1] &amp; sr[0];</text>
+  <text x="794" y="1255" class="code">scan_en_k     = (sr_k[0] &amp;&amp; sr_k[1]) || (sr_k[0] &amp;&amp; !sr[0]) || (sr_k[1] &amp;&amp; !sr[1]);</text>
+  <text x="794" y="1275" class="code">mbist_start   = sr[2];</text>
+  <text x="794" y="1295" class="code">mbist_start_k = sr_k[2];</text>
+  <text x="490" y="1238" class="net">no</text>
+  <path d="M820,1310 V1340 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="1340" r="4" fill="#374151"/>
+  <path d="M480,1220 V1340" class="w"/>
+  <path d="M480,1340 V1370" class="w" marker-end="url(#arr)"/>
+  <path d="M1249,1100 H1590 V1370 H486" class="w" marker-end="url(#arr)"/>
+  <circle cx="480" cy="1370" r="4" fill="#374151"/>
+  <path d="M480,1340 V1370" class="w"/>
+  <path d="M480,1370 V1390" class="w" marker-end="url(#arr)"/>
+  <text x="480" y="1410" class="bm" text-anchor="middle">return</text>
+</svg>

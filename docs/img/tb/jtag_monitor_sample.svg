@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1340" width="1930" height="1340" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1340" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1290" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">mon : jtag_monitor (2/2): sample() and next_state()</text>
+  <text x="160" y="80" class="bm">function void sample();</text>
+  <path d="M470,90 V110" class="w" marker-end="url(#arr)"/>
+  <rect x="208" y="110" width="524" height="40" rx="6" class="comb"/>
+  <text x="222" y="135" class="code">shifting = (state == SHIFT_IR) || (state == SHIFT_DR);</text>
+  <path d="M470,150 V180" class="w" marker-end="url(#arr)"/>
+  <path d="M310,180 H630 L660,220 L630,260 H310 L280,220 Z" class="comb"/>
+  <text x="470" y="215" class="code" text-anchor="middle">state == CAPTURE_IR ||</text>
+  <text x="470" y="235" class="code" text-anchor="middle">state == CAPTURE_DR</text>
+  <path d="M660,220 H760" class="w" marker-end="url(#arr)"/>
+  <text x="710" y="210" class="net" text-anchor="middle">yes</text>
+  <rect x="760" y="200" width="469" height="80" rx="6" class="comb"/>
+  <text x="774" y="225" class="code">txn = jtag_scan_txn::type_id::create("txn");</text>
+  <text x="774" y="245" class="code">txn.scan      = (state == CAPTURE_IR) ? IR : DR;</text>
+  <text x="774" y="265" class="code">txn.cap_cycle = cycle;</text>
+  <path d="M800,280 V310 H476" class="w" marker-end="url(#arr)"/>
+  <circle cx="470" cy="310" r="4" fill="#374151"/>
+  <path d="M470,260 V310" class="w"/>
+  <text x="480" y="278" class="net">no</text>
+  <path d="M470,310 V340" class="w" marker-end="url(#arr)"/>
+  <path d="M310,340 H630 L660,370 L630,400 H310 L280,370 Z" class="comb"/>
+  <text x="470" y="375" class="code" text-anchor="middle">txn != null</text>
+  <path d="M660,370 H760" class="w" marker-end="url(#arr)"/>
+  <text x="710" y="360" class="net" text-anchor="middle">yes</text>
+  <rect x="760" y="350" width="267" height="40" rx="6" class="comb"/>
+  <text x="774" y="375" class="code">txn.path.push_back(state);</text>
+  <path d="M800,390 V430 H476" class="w" marker-end="url(#arr)"/>
+  <circle cx="470" cy="430" r="4" fill="#374151"/>
+  <path d="M470,400 V430" class="w"/>
+  <text x="480" y="418" class="net">no</text>
+  <path d="M470,430 V460" class="w" marker-end="url(#arr)"/>
+  <path d="M310,460 H630 L660,490 L630,520 H310 L280,490 Z" class="comb"/>
+  <text x="470" y="495" class="code" text-anchor="middle">vif.mon_cb.tdo_en !== shifting</text>
+  <path d="M660,490 H760" class="w" marker-end="url(#arr)"/>
+  <text x="710" y="480" class="net" text-anchor="middle">yes</text>
+  <rect x="760" y="470" width="285" height="40" rx="6" class="comb"/>
+  <text x="774" y="495" class="code">`uvm_error("MON_TDOEN", ...)</text>
+  <path d="M800,510 V550 H476" class="w" marker-end="url(#arr)"/>
+  <circle cx="470" cy="550" r="4" fill="#374151"/>
+  <path d="M470,520 V550" class="w"/>
+  <text x="480" y="538" class="net">no</text>
+  <path d="M470,550 V580" class="w" marker-end="url(#arr)"/>
+  <path d="M310,580 H630 L660,610 L630,640 H310 L280,610 Z" class="comb"/>
+  <text x="470" y="615" class="code" text-anchor="middle">shifting &amp;&amp; txn != null</text>
+  <path d="M660,610 H760" class="w" marker-end="url(#arr)"/>
+  <text x="710" y="600" class="net" text-anchor="middle">yes</text>
+  <rect x="760" y="590" width="359" height="60" rx="6" class="comb"/>
+  <text x="774" y="615" class="code">txn.tdi_q.push_back(vif.mon_cb.tdi);</text>
+  <text x="774" y="635" class="code">txn.tdo_q.push_back(vif.mon_cb.tdo);</text>
+  <path d="M800,650 V680 H476" class="w" marker-end="url(#arr)"/>
+  <circle cx="470" cy="680" r="4" fill="#374151"/>
+  <path d="M470,640 V680" class="w"/>
+  <text x="480" y="658" class="net">no</text>
+  <path d="M470,680 V710" class="w" marker-end="url(#arr)"/>
+  <path d="M310,710 H630 L660,760 L630,810 H310 L280,760 Z" class="comb"/>
+  <text x="470" y="745" class="code" text-anchor="middle">(state == UPDATE_IR ||</text>
+  <text x="470" y="765" class="code" text-anchor="middle" xml:space="preserve"> state == UPDATE_DR) &amp;&amp;</text>
+  <text x="470" y="785" class="code" text-anchor="middle" xml:space="preserve"> txn != null</text>
+  <path d="M660,760 H760" class="w" marker-end="url(#arr)"/>
+  <text x="710" y="750" class="net" text-anchor="middle">yes</text>
+  <rect x="760" y="740" width="193" height="100" rx="6" class="comb"/>
+  <text x="774" y="765" class="code">txn.cycle = cycle;</text>
+  <text x="774" y="785" class="code">ap.write(txn);</text>
+  <text x="774" y="805" class="code">n_scans++;</text>
+  <text x="774" y="825" class="code">txn = null;</text>
+  <path d="M800,840 V870 H476" class="w" marker-end="url(#arr)"/>
+  <circle cx="470" cy="870" r="4" fill="#374151"/>
+  <path d="M470,810 V870" class="w"/>
+  <text x="480" y="828" class="net">no</text>
+  <path d="M470,870 V900" class="w" marker-end="url(#arr)"/>
+  <rect x="268" y="900" width="405" height="100" rx="6" class="comb"/>
+  <text x="282" y="925" class="code">prev = state;</text>
+  <text x="282" y="945" class="code">e = jtag_edge_txn::type_id::create("e");</text>
+  <text x="282" y="965" class="code">e.state = state;  e.tms = vif.mon_cb.tms;</text>
+  <text x="282" y="985" class="code">edge_ap.write(e);</text>
+  <path d="M470,1000 V1030" class="w" marker-end="url(#arr)"/>
+  <rect x="263" y="1030" width="414" height="40" rx="6" class="comb"/>
+  <text x="277" y="1055" class="code">state = next_state(state, vif.mon_cb.tms);</text>
+  <path d="M470,1070 V1100" class="w" marker-end="url(#arr)"/>
+  <path d="M310,1100 H630 L660,1140 L630,1180 H310 L280,1140 Z" class="comb"/>
+  <text x="470" y="1135" class="code" text-anchor="middle">state == TEST_LOGIC_RESET &amp;&amp;</text>
+  <text x="470" y="1155" class="code" text-anchor="middle">prev  != TEST_LOGIC_RESET</text>
+  <path d="M660,1140 H760" class="w" marker-end="url(#arr)"/>
+  <text x="710" y="1130" class="net" text-anchor="middle">yes</text>
+  <rect x="760" y="1120" width="267" height="40" rx="6" class="comb"/>
+  <text x="774" y="1145" class="code">publish_reset(1'b0, prev);</text>
+  <path d="M800,1160 V1210 H476" class="w" marker-end="url(#arr)"/>
+  <circle cx="470" cy="1210" r="4" fill="#374151"/>
+  <path d="M470,1180 V1210" class="w"/>
+  <text x="480" y="1198" class="net">no</text>
+  <path d="M470,1210 V1240" class="w" marker-end="url(#arr)"/>
+  <text x="470" y="1260" class="bm" text-anchor="middle">return</text>
+  <rect x="1090" y="880" width="764" height="432" class="comb"/>
+  <text x="1104" y="906" class="bm">function tap_state_e next_state(tap_state_e s, bit tms);</text>
+  <text x="1104" y="928" class="code">case (s)</text>
+  <text x="1104" y="950" class="code" xml:space="preserve">  TEST_LOGIC_RESET: return tms ? TEST_LOGIC_RESET : RUN_TEST_IDLE;</text>
+  <text x="1104" y="972" class="code" xml:space="preserve">  RUN_TEST_IDLE:    return tms ? SELECT_DR_SCAN   : RUN_TEST_IDLE;</text>
+  <text x="1104" y="994" class="code" xml:space="preserve">  SELECT_DR_SCAN:   return tms ? SELECT_IR_SCAN   : CAPTURE_DR;</text>
+  <text x="1104" y="1016" class="code" xml:space="preserve">  CAPTURE_DR:       return tms ? EXIT1_DR         : SHIFT_DR;</text>
+  <text x="1104" y="1038" class="code" xml:space="preserve">  SHIFT_DR:         return tms ? EXIT1_DR         : SHIFT_DR;</text>
+  <text x="1104" y="1060" class="code" xml:space="preserve">  EXIT1_DR:         return tms ? UPDATE_DR        : PAUSE_DR;</text>
+  <text x="1104" y="1082" class="code" xml:space="preserve">  PAUSE_DR:         return tms ? EXIT2_DR         : PAUSE_DR;</text>
+  <text x="1104" y="1104" class="code" xml:space="preserve">  EXIT2_DR:         return tms ? UPDATE_DR        : SHIFT_DR;</text>
+  <text x="1104" y="1126" class="code" xml:space="preserve">  UPDATE_DR:        return tms ? SELECT_DR_SCAN   : RUN_TEST_IDLE;</text>
+  <text x="1104" y="1148" class="code" xml:space="preserve">  SELECT_IR_SCAN:   return tms ? TEST_LOGIC_RESET : CAPTURE_IR;</text>
+  <text x="1104" y="1170" class="code" xml:space="preserve">  CAPTURE_IR:       return tms ? EXIT1_IR         : SHIFT_IR;</text>
+  <text x="1104" y="1192" class="code" xml:space="preserve">  SHIFT_IR:         return tms ? EXIT1_IR         : SHIFT_IR;</text>
+  <text x="1104" y="1214" class="code" xml:space="preserve">  EXIT1_IR:         return tms ? UPDATE_IR        : PAUSE_IR;</text>
+  <text x="1104" y="1236" class="code" xml:space="preserve">  PAUSE_IR:         return tms ? EXIT2_IR         : PAUSE_IR;</text>
+  <text x="1104" y="1258" class="code" xml:space="preserve">  EXIT2_IR:         return tms ? UPDATE_IR        : SHIFT_IR;</text>
+  <text x="1104" y="1280" class="code" xml:space="preserve">  default:          return tms ? SELECT_DR_SCAN   : RUN_TEST_IDLE;  // UPDATE_IR</text>
+  <text x="1104" y="1302" class="code">endcase</text>
+</svg>

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1090 350" width="1090" height="350" font-family="Helvetica, Arial, sans-serif" font-size="15">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:14px; font-family:Menlo, Consolas, monospace; }
+      .b    { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:15px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1090" height="350" fill="#ffffff"/>
+  <rect x="110" y="30" width="790" height="295" rx="8" class="mod"/>
+  <text x="118" y="46" class="modl">jtag_pkg::decode_ir()  ·  function automatic dr_sel_e decode_ir(logic [IR_W-1:0] ir)</text>
+  <text x="-15" y="259" class="pin">ir [3:0]</text>
+  <path d="M85,255 H250" class="bus"/>
+  <circle cx="250" cy="255" r="4" fill="#374151"/>
+  <path d="M250,255 V220 H300" class="bus" marker-end="url(#arrb)"/>
+  <path d="M250,255 V290 H300" class="bus" marker-end="url(#arrb)"/>
+  <rect x="300" y="200" width="160" height="40" class="comb"/>
+  <text x="380" y="217" class="b" text-anchor="middle">ir == OP_DFT_CTRL</text>
+  <text x="380" y="233" class="code" text-anchor="middle">4'b1000</text>
+  <rect x="300" y="270" width="160" height="40" class="comb"/>
+  <text x="380" y="287" class="b" text-anchor="middle">ir == OP_IDCODE</text>
+  <text x="380" y="303" class="code" text-anchor="middle">4'b0001</text>
+  <path d="M520,75 L550,87 L550,163 L520,175 Z" class="comb"/>
+  <text x="525" y="104" class="port">0</text>
+  <text x="525" y="149" class="port">1</text>
+  <path d="M420,100 H520" class="bus" marker-end="url(#arrb)"/>
+  <text x="412" y="104" class="code" text-anchor="end">DR_BYPASS = 2'd0 (default)</text>
+  <path d="M420,145 H520" class="bus" marker-end="url(#arrb)"/>
+  <text x="412" y="149" class="code" text-anchor="end">DR_DFT_CTRL = 2'd2</text>
+  <path d="M720,100 L750,112 L750,188 L720,200 Z" class="comb"/>
+  <text x="725" y="129" class="port">0</text>
+  <text x="725" y="179" class="port">1</text>
+  <path d="M550,125 H720" class="bus" marker-end="url(#arrb)"/>
+  <path d="M565,175 H720" class="bus" marker-end="url(#arrb)"/>
+  <text x="570" y="169" class="code">DR_IDCODE = 2'd1</text>
+  <path d="M460,220 H535 V169" class="w" marker-end="url(#arr)"/>
+  <path d="M460,290 H735 V194" class="w" marker-end="url(#arr)"/>
+  <path d="M750,150 H900" class="bus" marker-end="url(#arrb)"/>
+  <text x="910" y="154" class="pin">dr_sel [1:0]</text>
+  <text x="910" y="170" class="code">dr_sel_e</text>
+</svg>

@@ -26,7 +26,7 @@ Aim for the same sign-off as the AXI4-Lite project: **every assertion a full pro
 
 **Checker conventions (apply to every file in `formal/`):**
 - Every checker register (shadow registers, counters, reference state) has `trst_n` as its asynchronous reset and resets to the value the **spec** defines, never to whatever the RTL does.
-- Every checker module starts with `` `include "jtag_checker_defaults.svh" ``: `default clocking cb @(posedge tck)` and `default disable iff (!trst_n || trst_seen)`, so no property can forget its reset. `trst_seen` stays 1 from any `trst_n` assertion until the next rising edge, so a reset pulse that starts and ends between two rising edges still disables the attempts it interrupts. A property on another edge names its clock explicitly (e.g. `@(negedge tck)`); the default `disable iff` still applies. The async-reset checks (2.1) are deferred immediate assertions, which the defaults do not affect.
+- Every checker module starts with `` `include "jtag_checker_defaults.svh" ``: `default clocking cb @(posedge tck)` and an X-safe `default disable iff (trst_n !== 1'b1 || trst_seen !== 1'b0 || rst_seen !== 1'b1)`, so no property can forget its reset. `rst_seen` keeps every property off until `trst_n` has been asserted once (before that, a 4-state simulator has X everywhere); in formal it is the constant 1, and a simulation that never asserts `trst_n` ends with an error. `trst_seen` stays 1 from any `trst_n` assertion until the next rising edge, so a reset pulse that starts and ends between two rising edges still disables the attempts it interrupts. A property on another edge names its clock explicitly (e.g. `@(negedge tck)`); the default `disable iff` still applies. The async-reset checks (2.1) are deferred immediate assertions, which the defaults do not affect.
 - Checker counters are wide enough to saturate at their limit (e.g. `$clog2(MBIST_CYCLES + 1)` bits) and stop there.
 
 These matter because the sign-off run leaves `trst_n` free (`-auto_constraint_off`, 2.5): a mid-scan or mid-MBIST reset clears the DUT, and a checker that kept its state would fail falsely.
@@ -59,7 +59,7 @@ In `formal/jtag_reg_props.sv`.
 
   `k` (5 bits) and `j` (6 bits) are registers that hold their value and have no reset under `QUESTA_FORMAL`, so formal picks any initial value: the same mechanism as `sym_idx` in the AXI project, and no range assumption is needed. In simulation they get new random values at every capture (constant within a scan), or are pinned with `+scan_k=` / `+scan_j=`.
   Covers `c_scan_data_last_*` and `c_scan_delay_*`, one per register (IR, BYPASS, IDCODE, DFT_CTRL), show that both properties are actually exercised for every register, not passing vacuously.
-- **Edge checks (shadow registers):** `a_tdo_no_rise_change`, `a_tdo_en_no_rise_change`, `a_ir_no_rise_change`. Each falling-edge signal is copied at the rising edge, and a `@(negedge tck)` assertion checks it has not moved since. The shadows reset to the spec reset values, so a wrong reset value is caught rather than copied. TDO is sampled at the rising edge (section 1), so a data check alone cannot see on which edge TDO changed.
+- **Edge checks (shadow registers):** `a_tdo_no_rise_change`, `a_tdo_en_no_rise_change`, `a_ir_no_rise_change`. Each falling-edge signal is copied at the rising edge (`$sampled`, so simulation also takes the pre-edge value), and a `@(negedge tck)` assertion checks it has not moved since. The shadows reset to the spec reset values, so a wrong reset value is caught rather than copied. TDO is sampled at the rising edge (section 1), so a data check alone cannot see on which edge TDO changed.
 
 ### 2.3 DFT and MBIST checks
 
@@ -80,7 +80,7 @@ Generated: all 16 states and all 32 arcs (2.1). In `formal/jtag_covers.sv`:
 
 ### 2.5 Questa Verify flow
 
-`formal/formal_top.sv` instantiates the DUT and binds the checkers; `formal/formal.f` lists the files; `formal/run_formal.tcl` runs the flow.
+`formal/formal_top.sv` instantiates the DUT and binds the checkers (`formal/jtag_binds.svh`, shared with the UVM bench); `formal/formal.f` lists the files; `formal/run_formal.tcl` runs the flow.
 
 Before each Questa run, `make props-sim` runs the same checkers in a random Verilator simulation (`formal/props_sim.sv`). It is not a proof, but it catches compile errors and wrong properties locally. Verilator treats `assert final` as a plain immediate assertion, so the async-reset checks have a simulation-only variant under `ifdef VERILATOR`.
 
@@ -89,19 +89,21 @@ Based on the known-working `axi4lite_uvm_questa/sim/formal_questa.do`, which use
 ```tcl
 onerror {exit 1}
 vlib build/formal_work                ;# own library, separate from the simulation flow (vlog-13233)
-vmap work build/formal_work
+vmap work [pwd]/build/formal_work     ;# absolute, so it resolves from any directory
 vlog -sv -timescale 1ns/1ps +define+QUESTA_FORMAL -f rtl/rtl.f -f formal/formal.f   ;# run from the repo root, see below
 formal compile -d formal_top
 formal verify -auto_constraint_off    ;# see below
-formal generate report build/formal_report.txt
+formal generate report [pwd]/build/formal/formal_report.txt
 exit
 ```
+
+The Makefile starts it as `qverify -c -od build/formal -do formal/run_formal.tcl`.
 
 **Reset:** by default qverify pins the reset inactive after its init sequence, which makes every `!trst_n |-> ...` property vacuous and never exercises mid-scan `trst_n` (confirmed in the AXI project's script comments). `-auto_constraint_off` makes `trst_n` a free input after init, so reset can hit at any cycle. This is the single sign-off run; the `disable iff (!trst_n)` properties still prove, and the async-reset properties become non-vacuous. Check the vacuity / cover results for the reset properties in the report.
 
 **No no-assumption run:** the AXI project needed `formal-verify-noassume` because its environment had `assume property` constraints on the master. This environment has none (see the sign-off rule above), so that run would be identical to the main one and is dropped.
 
-**File lists and run directory:** with `vlog -f` (and `verilator -f`, `iverilog -c`), relative paths inside a `.f` file resolve against the **current directory**, not the `.f` file's location. So every `.f` entry is written relative to the **repo root** (e.g. `rtl/jtag_pkg.sv`), and every flow (Makefile targets, `run_formal.tcl`, `regress.py`, `run_mutations.py`) runs with the repo root as its working directory. Libraries (`build/formal_work`, `build/questa_work`) and reports (`build/formal_report.txt`) go to `build/`. The Makefile exports `MODELSIM=$(CURDIR)/build/modelsim.ini`, as the AXI Makefile does, so `vmap` writes `modelsim.ini` there too. Tool scratch files that Questa always writes to the working directory (`transcript`, `.qverify/`, `propcheck.db/`) stay in the repo root; all are git-ignored. This works the same for all three tools, unlike `-F`, which iverilog does not offer in the same form.
+**File lists and run directory:** with `vlog -f` (and `verilator -f`, `iverilog -c`), relative paths inside a `.f` file resolve against the **current directory**, not the `.f` file's location. So every `.f` entry is written relative to the **repo root** (e.g. `rtl/jtag_pkg.sv`), and every flow (Makefile targets, `run_formal.tcl`, `regress.py`, `run_mutations.py`) runs with the repo root as its working directory. Every tool output goes to `build/`, nothing to the repo root: libraries (`build/formal_work`, `build/questa_work`, mapped with absolute paths), all qverify outputs (`-od build/formal`: logs, `.rpt` files, `formal_report.txt`, `propcheck.db/`, `.qverify/`, `qverify_cmds.tcl`), simulation logs and vsim scratch files (`build/sim/`: vsim runs inside it) and coverage databases (`build/cov/`). The Makefile exports `MODELSIM=$(CURDIR)/build/modelsim.ini`, as the AXI Makefile does, so `vmap` writes `modelsim.ini` there too. `build/` is git-ignored, and `.gitignore` still lists the Questa scratch files as a fallback for a tool started by hand from the repo root. This works the same for all three tools, unlike `-F`, which iverilog does not offer in the same form.
 
 **Results table in README.md:** number of assertions proven / total, covers reached / total, max proof depth, run time.
 
@@ -111,7 +113,7 @@ exit
 
 ### 3.1 Transactions
 
-All UVM files live in `tb/`; `tb/tb.f` lists them.
+All UVM files live in `tb/`; `tb/tb.f` lists them. Development runs locally under Verilator with UVM 1800.2-2020 (`make uvm TEST=… SEED=…`); the regression and coverage sign-off run on Questa.
 
 Stimulus and observation are separate classes: the driver never fills in results, and the scoreboard never sees a driver object.
 
@@ -120,7 +122,8 @@ Stimulus and observation are separate classes: the driver never fills in results
 class jtag_seq_item extends uvm_sequence_item;
   typedef enum {IR_SCAN, DR_SCAN, RESET_TMS, RESET_TRST, IDLE, TCK_STOP} kind_e;
   rand kind_e        kind;
-  rand bit           tdi_q[$];     // shifted in, LSB first; length = number of bits shifted (no 64-bit limit)
+  rand int unsigned  len;          // random length; after randomize(), len == tdi_q.size()
+       bit           tdi_q[$];     // shifted in, LSB first, what the driver uses (no 64-bit limit)
   rand bit           use_pause;    // go through Pause-xR mid-shift
   rand int unsigned  pause_at;     // shift index where the pause happens
   rand int unsigned  idle_cycles;  // also TCK-stopped cycles for TCK_STOP
@@ -139,12 +142,16 @@ class jtag_scan_txn extends uvm_sequence_item;
 endclass
 ```
 
+`len` exists only because random queue sizes are poorly supported by some simulators: `len` is randomized, `post_randomize` fills `tdi_q`, and if a sequence pre-filled `tdi_q`, its size wins. A pause that does not fit the scan is a fatal error, in `post_randomize` and in the driver, so it can never be skipped silently.
+
 ### 3.2 Components
 
 - **TCK source:** a free-running clock in `tb_top`, gated by `tck_en` in `jtag_if`. The driver drops `tck_en` (only while TCK is low, so no glitch) for `TCK_STOP` items. A stopped TCK is legal JTAG; the monitor checks that the TAP state, `tdo` and the DFT outputs do not change while TCK is stopped, and the scoreboard checks that the next scan after the stop is still correct.
 - **Driver:** tracks the TAP state itself and generates the TMS path for each item, e.g. IR_SCAN from Run-Test/Idle = `1,1,0,0` → shift `tdi_q.size()` bits (TMS = 1 on the last bit) → `1` (Update-IR) → `0` (Run-Test/Idle). Drive TMS/TDI on the falling edge so they are stable at the rising edge.
+- **Formal checkers in simulation:** both simulation flows bind the formal checker modules into the DUT (same binds as `formal_top.sv`), so the UVM stimulus also drives every property, including the white-box ones. A failing property fails the run.
+- **Sampling:** both monitors read pins through clocking blocks with `#1step` input skew, so they see the values just before the rising edge in every simulator, even for an output that changes in the edge's own time step.
 - **JTAG monitor:** reconstructs the TAP state **independently** from TMS (its own copy of the spec's state table, not the driver's), collects TDI/TDO bits during Shift states and publishes `jtag_scan_txn`s. Flag a protocol error if `tdo_en` is high outside Shift states, or if `tdo` / `tdo_en` change while `tck` is high (i.e. not at a falling edge; changes caused by `trst_n` are ignored). On `trst_n` low mid-scan, it publishes the partial scan with `aborted = 1` and resets its state. (Only `trst_n` can abort a scan: via TMS, every path out of Shift-xR / Pause-xR passes Exit → Update before Test-Logic-Reset, so the scan always completes first.)
-- **DFT monitor:** a passive monitor on `dft_if` that publishes every change of `test_mode` / `scan_en` / `mbist_start` / `mbist_done` / `mbist_pass` with a timestamp. It flags an error if `test_mode` / `scan_en` / `mbist_start` change while `tck` is high (ignoring `trst_n` clears), the simulation counterpart of the formal edge-only properties.
+- **DFT monitor:** a passive monitor on `dft_if` that samples the DFT pins at every rising edge of TCK and publishes them stamped with the edge number. Both monitors count TCK edges the same way, so the scoreboard lines up their messages by cycle, not by arrival order (they fire on the same edge). It flags an error if `test_mode` / `scan_en` / `mbist_start` change while `tck` is high (ignoring `trst_n` clears), the simulation counterpart of the formal edge-only properties.
 - **Reference model:** predicts the active instruction, BYPASS / IDCODE / DFT_CTRL contents, TDO streams and DFT output changes, including the "unused opcode = BYPASS" and "reset = IDCODE" rules. It is fed **only by the monitors, never by the driver** (stated in the code comments too): this is why a driver bug cannot hide a DUT bug.
 - **Scoreboard:** compares every observed TDO stream and every DFT output change against the model. In `check_phase`, report any scan that started but never completed; scans that ended with `aborted = 1` count as complete, so a mid-scan `trst_n` in `jtag_random_test` does not false-fail.
 - **Timeouts:** fail fast if a sequence hangs, as in the AXI project.
@@ -163,19 +170,30 @@ endclass
 
 ### 3.4 Functional coverage
 
-- TAP state × TMS (= all 32 arcs), sampled in the monitor.
-- Opcode loaded: each defined instruction + "unused" bin.
-- DR scan length: `< length`, `== length`, `> length` for each selected register.
-- Pause usage: no pause, pause in IR, pause in DR, multiple pauses.
-- DFT: `test_mode` × `scan_en` × `mbist_start`. The `illegal_bins` for `scan_en && !test_mode` duplicates `a_scan_en_safe`: it is counted as a **check**, not as a coverage goal, and is excluded from the coverage percentage.
-- MBIST: run completed with pass, with fail, restart (write 0 then 1), redundant write of 1 while running.
-- Reset kind × state at reset time; mid-scan reset (aborted scans).
+In `tb/jtag_coverage.sv`, fed by the monitors only. Every event is first classified into small enums, and each bin is one enum value or combination, so the bins are defined in one place. 87 bins:
+
+| Group | Bins |
+|---|---|
+| Arcs | TAP state × TMS: all 32 transitions (from the monitor's per-edge port) |
+| Instruction | instruction loaded by a completed IR scan: IDCODE, BYPASS, DFT_CTRL, unused (4) |
+| IR length | completed IR scan × length class vs. `IR_W` (zero / shorter / exact / longer) (4) |
+| DR length | selected register × length class (zero / shorter / exact / longer); BYPASS has no "shorter" (11) |
+| Pauses | IR / DR scan × none / one / several pauses (6) |
+| DFT | the 6 legal `test_mode` × `scan_en` × `mbist_start` combinations. `scan_en && !test_mode` is an `illegal_bins`: it duplicates `a_scan_en_safe`, so it counts as a **check**, not as a coverage goal |
+| MBIST | pass, fail, restart after a completed run, redundant write of `mbist_start = 1` (4) |
+| Reset | by TMS, by `trst_n`; `trst_n` × the state it hit (2 + 16) |
+| Aborted scans | IR / DR scan aborted by `trst_n` (2) |
+
+Two views of the same classification: **covergroups** (the sign-off numbers, in the QuestaSim UCDB, merged with `vcover`; coverpoints that only build a cross have `option.weight = 0`, so the percentage means the same 87 bins), and **TB counters** that count the same combinations and list the holes. Verilator parses covergroups but does not count them, so the counters are the local view; `+cov_dump` prints one line per bin so runs can be added up. The random stimulus weights scan lengths towards the register boundaries (0, 1, 8, 32 and neighbours) and can pause twice in one scan: both were added because coverage showed the holes. IR scans are mostly `IR_W` bits but also shorter, empty or up to 64 bits longer: the first regression showed `c_scan_delay_ir` (the formal cover for TDI passing through the IR) never hit in simulation, because every IR scan was exactly 4 bits.
 
 ### 3.5 Regression
 
-- `scripts/regress.py`: 20 seeds × `jtag_random_test`, plus every directed test once. Merge coverage with `vcover merge` and sign off on **merged** coverage (same rule as the AXI project).
-- Check that the seed is really applied: merged coverage should differ from each per-seed result. The AXI project found that bug the hard way.
-- Collect DUT code coverage (statements, branches, conditions, FSM states/transitions). Treat any gap as a hole in the verification plan, and close unreachable terms with formal covers. Known exclusion: the FSM `default` branch in `jtag_tap_fsm.sv` is unreachable by R4 (all 16 codes are states) and is wrapped in `// coverage off` / `// coverage on`; every exclusion is listed here with its reason.
+- `scripts/regress.py` (`make regress` / `make regress-questa`): 20 seeds × `jtag_random_test`, plus every directed test once, one build. Sign off on **merged** coverage (same rule as the AXI project): `vcover merge` of all UCDBs on Questa; the TB counters are merged under both simulators.
+- A run passes only with a complete UVM summary, no UVM error and no simulator error (a failing bound property is not a UVM error). Coverage is merged from **passing runs only**.
+- Seed check: the random seeds merged must hit more bins than the best single seed (evaluated with at least two passing seeds). The AXI project found the "seed not applied" bug the hard way.
+- Collect DUT code coverage (statements, branches, conditions, expressions; `+cover=bcesf`). Treat any gap as a hole in the verification plan, and close unreachable terms with formal covers. Every exclusion is listed here with its reason:
+  - The FSM `default` branch in `jtag_tap_fsm.sv` is unreachable by R4 (all 16 codes are states) and is wrapped in `// coverage off` / `// coverage on`.
+  - **No FSM code coverage.** Questa's FSM recognition needs the state register assigned directly in the `case`; `jtag_tap_fsm.sv` takes each next state from the function `arc(tms, on1, on0)` (kept because iverilog drops the enum type through `?:`), so no FSM is extracted and the report has no FSM line. Not rewritten, because the FSM metric would add nothing: all 16 states and 32 transitions are already covered three ways, by the `cg_arc` covergroup (simulation, 100 %), the formal covers `c_state_*` / `c_arc_*` (all reached) and the per-arc assertions `a_arc_*` (all proven).
 
 ---
 
@@ -189,7 +207,7 @@ One patch per bug in `mutations/`. Run each against formal and UVM, then record 
 | M2 | Select-IR-Scan with TMS = 1 goes to Run-Test/Idle instead of Test-Logic-Reset | `a_tms5_reset` |
 | M3 | Capture-IR loads `2'b00` | `a_capture_ir_01`; scoreboard |
 | M4 | TDO updated on the rising edge | `a_tdo_no_rise_change`; JTAG monitor edge check |
-| M5 | IR updates during Shift-IR | `a_ir_stable`; scoreboard |
+| M5 | IR updates during Shift-IR | `a_ir_stable` (formal, and in simulation with the checkers bound into the DUT). Not visible at the pins in this design (every exit from Shift-IR passes Update-IR, and no output depends on the instruction outside DR scans), so no black-box check can see it; with boundary scan (EXTEST driving pins) it would be |
 | M6 | Reset leaves BYPASS active instead of IDCODE | `a_reset_idcode`; idcode test |
 | M7 | Unused opcode selects IDCODE | `a_unused_is_bypass`; unused opcode test |
 | M8 | `scan_en` not gated by `test_mode` | `a_scan_en_safe` |
@@ -200,13 +218,14 @@ One patch per bug in `mutations/`. Run each against formal and UVM, then record 
 | M13 | DFT update fires with any instruction active | `a_dft_update_only`; DFT monitor + scoreboard |
 | M14 | Reserved bits 7:5 writable (read back what was written) | `a_scan_data`, `a_dft_write`; dft test |
 | M15 | `tdo_en` also high in Exit1-xR | `a_tdo_en`; monitor protocol check |
-| M16 | `trst_n` does not reset the IR (only the TLR falling-edge clear does) | `a_trst_ir`, IR shadow register (need `-auto_constraint_off`); simulation may miss it |
+| M16 | `trst_n` does not reset the IR (only the TLR falling-edge clear does) | `a_trst_ir`, IR shadow register (need `-auto_constraint_off`); reset test: short `trst_n` pulse with TMS = 0, so no falling edge happens in Test-Logic-Reset |
 | M17 | Update registers clocked on the rising edge | edge checks (2.2, 2.3), `a_dft_write`; DFT monitor edge check |
 | M18 | `mbist_done` one edge early (`MBIST_CYCLES - 2` in the compare) | `a_mbist_done_exact`; exact-count check in dft test / smoke |
 | M19 | `mbist_done` is a pulse, not held while `mbist_start` = 1 | `a_mbist_hold`; dft test |
 | M20 | `mbist_pass` re-sampled from `mbist_fail_i` after done | `a_mbist_hold`; dft test |
+| M21 | TDO returns to zero while TCK is high (combinational; correct at every rising-edge sample) | `a_tdo_no_rise_change`; JTAG monitor edge check. No data check can see it |
 
-M1–M9 are mostly control / FSM bugs; M10–M17 cover the data path and the edge timing; M18–M20 cover the MBIST stub. The goal is a table in README.md showing which flow caught each of the **20 mutations**. M16 is expected to be a formal-only catch, which is a result worth reporting, not a gap to hide. Any other miss points to a missing check, so add it.
+M1–M9 are mostly control / FSM bugs; M10–M17 and M21 cover the data path and the edge timing; M18–M20 cover the MBIST stub. The goal is a table in README.md showing which flow caught each of the **21 mutations**. M16 needs a specific stimulus in simulation (a short `trst_n` pulse followed directly by TMS = 0); a result worth reporting either way. Any other miss points to a missing check, so add it.
 
 **Mutant sanity check (`run_mutations.py`):** before scoring, confirm that each mutant applies cleanly, compiles, and actually changes behaviour (e.g. a short directed run whose trace differs from the clean RTL, or at least one formal assertion that differs). An equivalent mutant would otherwise show up as falsely "missed". Patches are applied and reverted with `git apply` / `git apply -R`.
 
@@ -229,4 +248,4 @@ M1–M9 are mostly control / FSM bugs; M10–M17 cover the data path and the edg
 | Phase 1 | Specification (`design_spec.md`), RTL, lint, directed smoke test | Lint clean, smoke test passing |
 | Phase 2 | Formal: FSM, register, DFT and MBIST properties, covers, Questa flow | Every assertion proven, every cover reached |
 | Phase 3 | UVM: agent, monitors, reference model, scoreboard, coverage, tests, regression | 20/20 seeds pass, 100 % merged functional coverage, code coverage reviewed |
-| Phase 4 | Mutation testing, results tables in README.md | All 20 mutations scored per flow, README results complete |
+| Phase 4 | Mutation testing, results tables in README.md | All 21 mutations scored per flow, README results complete |

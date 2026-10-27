@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1530 920" width="1530" height="920" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1530" height="920" fill="#ffffff"/>
+  <rect x="110" y="30" width="1370" height="870" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">env : jtag_env</text>
+<g transform="translate(0,-230)">
+  <rect x="230" y="560" width="510" height="200" rx="6" class="inst"/>
+  <text x="244" y="586" class="bm">agent : jtag_agent</text>
+  <text x="244" y="610" class="small">sqr + drv (only if UVM_ACTIVE), mon</text>
+  <rect x="734" y="644" width="12" height="12" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="728" y="655" class="port" text-anchor="end">mon.ap</text>
+  <rect x="734" y="694" width="12" height="12" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="728" y="705" class="port" text-anchor="end">mon.edge_ap</text>
+  <rect x="230" y="820" width="510" height="120" rx="6" class="inst"/>
+  <text x="244" y="846" class="bm">dft_mon : dft_monitor</text>
+  <text x="244" y="870" class="small">vif &lt;- "dft_vif",  jvif &lt;- "jtag_vif"</text>
+  <rect x="734" y="874" width="12" height="12" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="728" y="885" class="port" text-anchor="end">ap</text>
+  <rect x="1030" y="300" width="380" height="210" rx="6" class="inst"/>
+  <text x="1044" y="326" class="bm">sb : jtag_scoreboard</text>
+  <text x="1044" y="350" class="small">model : jtag_ref_model</text>
+  <text x="1044" y="370" class="small">mbist_cycles &lt;- config_db</text>
+  <circle cx="1030" cy="390" r="7" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="1044" y="395" class="port">jtag_imp</text>
+  <circle cx="1030" cy="460" r="7" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="1044" y="465" class="port">dft_imp</text>
+  <rect x="1030" y="610" width="380" height="330" rx="6" class="inst"/>
+  <text x="1044" y="636" class="bm">cov : jtag_coverage</text>
+  <text x="1044" y="660" class="small">covergroups</text>
+  <circle cx="1030" cy="700" r="7" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="1044" y="705" class="port">jtag_imp</text>
+  <circle cx="1030" cy="780" r="7" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="1044" y="785" class="port">edge_imp</text>
+  <circle cx="1030" cy="880" r="7" fill="#ffffff" stroke="#334155" stroke-width="1.6"/>
+  <text x="1044" y="885" class="port">dft_imp</text>
+  <circle cx="820" cy="650" r="4" fill="#374151"/>
+  <text x="783" y="642" class="net" text-anchor="middle">push</text>
+  <text x="768" y="692" class="net" text-anchor="middle">push</text>
+  <text x="840" y="872" class="net" text-anchor="middle">push</text>
+  <path d="M746,650 H820 V390 H1023" class="w" marker-end="url(#arr)"/>
+  <path d="M820,650 V700 H1023" class="w" marker-end="url(#arr)"/>
+  <path d="M746,700 H790 V780 H1023" class="w" marker-end="url(#arr)"/>
+  <path d="M746,880 H1023" class="w" marker-end="url(#arr)"/>
+  <circle cx="930" cy="880" r="4" fill="#374151"/>
+  <path d="M930,880 V786 a6,6 0 0 1 0,-12 V706 a6,6 0 0 1 0,-12 V460 H1023" class="w" marker-end="url(#arr)"/>
+  <rect x="200" y="990" width="681" height="102" class="comb"/>
+  <text x="214" y="1016" class="bm">check_phase (if UVM_ACTIVE)</text>
+  <text x="214" y="1038" class="code">driven   = agent.drv.n_scans;</text>
+  <text x="214" y="1060" class="code">observed = agent.mon.n_scans + agent.mon.n_aborted;</text>
+  <text x="214" y="1082" class="code">error if observed &lt; driven || observed &gt; driven + agent.drv.n_tms_paths</text>
+</g>
+</svg>

@@ -157,9 +157,11 @@ module jtag_reg_props
       tdo_en_at_rise <= 1'b0;
       ir_at_rise     <= OP_IDCODE;
     end else begin
-      tdo_at_rise    <= tdo;
-      tdo_en_at_rise <= tdo_en;
-      ir_at_rise     <= ir;
+      // $sampled: the value just before the edge, also in simulation, where a
+      // combinational output may already have changed in the edge's time step
+      tdo_at_rise    <= $sampled(tdo);
+      tdo_en_at_rise <= $sampled(tdo_en);
+      ir_at_rise     <= $sampled(ir);
     end
   end
 

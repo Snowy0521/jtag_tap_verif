@@ -1,0 +1,228 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1750 1730" width="1750" height="1730" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1750" height="1730" fill="#ffffff"/>
+  <rect x="110" y="30" width="1590" height="1680" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">jtag_covers</text>
+  <text x="-15" y="81" class="pin">tck</text>
+  <path d="M110,76 H130" class="w"/>
+  <text x="136" y="81" class="net">tck</text>
+  <text x="-15" y="102" class="pin">trst_n</text>
+  <path d="M110,97 H130" class="w"/>
+  <text x="136" y="102" class="net">trst_n</text>
+  <text x="-15" y="123" class="pin">state</text>
+  <path d="M110,118 H130" class="w"/>
+  <text x="136" y="123" class="net">state [3:0]</text>
+  <text x="-15" y="144" class="pin">ir</text>
+  <path d="M110,139 H130" class="w"/>
+  <text x="136" y="144" class="net">ir [3:0]</text>
+  <text x="-15" y="165" class="pin">test_mode</text>
+  <path d="M110,160 H130" class="w"/>
+  <text x="136" y="165" class="net">test_mode</text>
+  <text x="-15" y="186" class="pin">scan_en</text>
+  <path d="M110,181 H130" class="w"/>
+  <text x="136" y="186" class="net">scan_en</text>
+  <text x="-15" y="207" class="pin">mbist_start</text>
+  <path d="M110,202 H130" class="w"/>
+  <text x="136" y="207" class="net">mbist_start</text>
+  <text x="-15" y="228" class="pin">mbist_done</text>
+  <path d="M110,223 H130" class="w"/>
+  <text x="136" y="228" class="net">mbist_done</text>
+  <text x="-15" y="249" class="pin">mbist_pass</text>
+  <path d="M110,244 H130" class="w"/>
+  <text x="136" y="249" class="net">mbist_pass</text>
+  <rect x="420" y="70" width="359" height="34" class="comb"/>
+  <text x="599" y="92" class="bm" text-anchor="middle">`include "jtag_checker_defaults.svh"</text>
+  <rect x="150" y="280" width="1530" height="1420" rx="6" class="mod"/>
+  <text x="158" y="298" class="modl">scenario covers</text>
+  <rect x="200" y="333" width="110" height="54" class="comb"/>
+  <text x="255" y="357" class="bm" text-anchor="middle">state ==</text>
+  <text x="255" y="377" class="bm" text-anchor="middle">UPDATE_IR</text>
+  <path d="M310,360 H390" class="w" marker-end="url(#arr)"/>
+  <text x="348" y="352" class="net" text-anchor="middle">##0</text>
+  <rect x="390" y="333" width="110" height="54" class="comb"/>
+  <text x="445" y="357" class="bm" text-anchor="middle">ir ==</text>
+  <text x="445" y="377" class="bm" text-anchor="middle">OP_IDCODE</text>
+  <path d="M500,360 H580" class="w" marker-end="url(#arr)"/>
+  <text x="538" y="352" class="net" text-anchor="middle">##[1:$]</text>
+  <rect x="580" y="323" width="196" height="74" class="comb"/>
+  <text x="678" y="347" class="bm" text-anchor="middle">state ==</text>
+  <text x="678" y="367" class="bm" text-anchor="middle">CAPTURE_DR</text>
+  <text x="678" y="387" class="bm" text-anchor="middle">&amp;&amp; ir == OP_IDCODE</text>
+  <path d="M776,360 H856" class="w" marker-end="url(#arr)"/>
+  <text x="814" y="352" class="net" text-anchor="middle">##1</text>
+  <rect x="856" y="323" width="100" height="74" class="comb"/>
+  <text x="906" y="347" class="bm" text-anchor="middle">state ==</text>
+  <text x="906" y="367" class="bm" text-anchor="middle">SHIFT_DR</text>
+  <text x="906" y="387" class="net" text-anchor="middle">[*32]</text>
+  <path d="M956,360 H1036" class="w" marker-end="url(#arr)"/>
+  <text x="994" y="352" class="net" text-anchor="middle">##1</text>
+  <rect x="1036" y="333" width="100" height="54" class="comb"/>
+  <text x="1086" y="357" class="bm" text-anchor="middle">state ==</text>
+  <text x="1086" y="377" class="bm" text-anchor="middle">EXIT1_DR</text>
+  <path d="M1136,360 H1410" class="w" marker-end="url(#arr)"/>
+  <rect x="1410" y="333" width="280" height="54" rx="10" class="chk"/>
+  <text x="1550" y="356" class="bm" text-anchor="middle">c_ir_scan_then_idcode_read</text>
+  <text x="1550" y="377" class="small" text-anchor="middle">cover property</text>
+  <text x="200" y="422" class="code">c_ir_scan_then_idcode_read: cover property (state == UPDATE_IR ##0 ir == OP_IDCODE ##[1:$]</text>
+  <text x="200" y="442" class="code" xml:space="preserve">  state == CAPTURE_DR &amp;&amp; ir == OP_IDCODE ##1 state == SHIFT_DR [*32] ##1 state == EXIT1_DR);</text>
+  <rect x="200" y="493" width="100" height="54" class="comb"/>
+  <text x="250" y="517" class="bm" text-anchor="middle">state ==</text>
+  <text x="250" y="537" class="bm" text-anchor="middle">SHIFT_DR</text>
+  <path d="M300,520 H380" class="w" marker-end="url(#arr)"/>
+  <text x="338" y="512" class="net" text-anchor="middle">##1</text>
+  <rect x="380" y="493" width="100" height="54" class="comb"/>
+  <text x="430" y="517" class="bm" text-anchor="middle">state ==</text>
+  <text x="430" y="537" class="bm" text-anchor="middle">EXIT1_DR</text>
+  <path d="M480,520 H560" class="w" marker-end="url(#arr)"/>
+  <text x="518" y="512" class="net" text-anchor="middle">##1</text>
+  <rect x="560" y="483" width="100" height="74" class="comb"/>
+  <text x="610" y="507" class="bm" text-anchor="middle">state ==</text>
+  <text x="610" y="527" class="bm" text-anchor="middle">PAUSE_DR</text>
+  <text x="610" y="547" class="net" text-anchor="middle">[*1:$]</text>
+  <path d="M660,520 H740" class="w" marker-end="url(#arr)"/>
+  <text x="698" y="512" class="net" text-anchor="middle">##1</text>
+  <rect x="740" y="493" width="100" height="54" class="comb"/>
+  <text x="790" y="517" class="bm" text-anchor="middle">state ==</text>
+  <text x="790" y="537" class="bm" text-anchor="middle">EXIT2_DR</text>
+  <path d="M840,520 H920" class="w" marker-end="url(#arr)"/>
+  <text x="878" y="512" class="net" text-anchor="middle">##1</text>
+  <rect x="920" y="493" width="100" height="54" class="comb"/>
+  <text x="970" y="517" class="bm" text-anchor="middle">state ==</text>
+  <text x="970" y="537" class="bm" text-anchor="middle">SHIFT_DR</text>
+  <path d="M1020,520 H1410" class="w" marker-end="url(#arr)"/>
+  <rect x="1410" y="493" width="280" height="54" rx="10" class="chk"/>
+  <text x="1550" y="516" class="bm" text-anchor="middle">c_pause_dr</text>
+  <text x="1550" y="537" class="small" text-anchor="middle">cover property</text>
+  <text x="200" y="582" class="code">c_pause_dr: cover property (state == SHIFT_DR ##1 state == EXIT1_DR ##1 state == PAUSE_DR [*1:$]</text>
+  <text x="200" y="602" class="code" xml:space="preserve">  ##1 state == EXIT2_DR ##1 state == SHIFT_DR);</text>
+  <rect x="200" y="653" width="100" height="54" class="comb"/>
+  <text x="250" y="677" class="bm" text-anchor="middle">state ==</text>
+  <text x="250" y="697" class="bm" text-anchor="middle">SHIFT_IR</text>
+  <path d="M300,680 H380" class="w" marker-end="url(#arr)"/>
+  <text x="338" y="672" class="net" text-anchor="middle">##1</text>
+  <rect x="380" y="653" width="100" height="54" class="comb"/>
+  <text x="430" y="677" class="bm" text-anchor="middle">state ==</text>
+  <text x="430" y="697" class="bm" text-anchor="middle">EXIT1_IR</text>
+  <path d="M480,680 H560" class="w" marker-end="url(#arr)"/>
+  <text x="518" y="672" class="net" text-anchor="middle">##1</text>
+  <rect x="560" y="643" width="100" height="74" class="comb"/>
+  <text x="610" y="667" class="bm" text-anchor="middle">state ==</text>
+  <text x="610" y="687" class="bm" text-anchor="middle">PAUSE_IR</text>
+  <text x="610" y="707" class="net" text-anchor="middle">[*1:$]</text>
+  <path d="M660,680 H740" class="w" marker-end="url(#arr)"/>
+  <text x="698" y="672" class="net" text-anchor="middle">##1</text>
+  <rect x="740" y="653" width="100" height="54" class="comb"/>
+  <text x="790" y="677" class="bm" text-anchor="middle">state ==</text>
+  <text x="790" y="697" class="bm" text-anchor="middle">EXIT2_IR</text>
+  <path d="M840,680 H920" class="w" marker-end="url(#arr)"/>
+  <text x="878" y="672" class="net" text-anchor="middle">##1</text>
+  <rect x="920" y="653" width="100" height="54" class="comb"/>
+  <text x="970" y="677" class="bm" text-anchor="middle">state ==</text>
+  <text x="970" y="697" class="bm" text-anchor="middle">SHIFT_IR</text>
+  <path d="M1020,680 H1410" class="w" marker-end="url(#arr)"/>
+  <rect x="1410" y="653" width="280" height="54" rx="10" class="chk"/>
+  <text x="1550" y="676" class="bm" text-anchor="middle">c_pause_ir</text>
+  <text x="1550" y="697" class="small" text-anchor="middle">cover property</text>
+  <text x="200" y="742" class="code">c_pause_ir: cover property (state == SHIFT_IR ##1 state == EXIT1_IR ##1 state == PAUSE_IR [*1:$]</text>
+  <text x="200" y="762" class="code" xml:space="preserve">  ##1 state == EXIT2_IR ##1 state == SHIFT_IR);</text>
+  <path d="M535,828 H560" class="w" marker-end="url(#arr)"/>
+  <text x="531" y="833" class="net" text-anchor="end">test_mode</text>
+  <path d="M535,852 H560" class="w" marker-end="url(#arr)"/>
+  <text x="531" y="857" class="net" text-anchor="end">scan_en</text>
+  <path d="M560,810 H585 A30.0,30.0 0 0 1 585,870 H560 Z" class="comb"/>
+  <path d="M615.0,840.0 H1410" class="w" marker-end="url(#arr)"/>
+  <rect x="1410" y="813.0" width="280" height="54" rx="10" class="chk"/>
+  <text x="1550" y="836.0" class="bm" text-anchor="middle">c_scan_mode</text>
+  <text x="1550" y="857.0" class="small" text-anchor="middle">cover property</text>
+  <text x="200" y="902" class="code">c_scan_mode: cover property (test_mode &amp;&amp; scan_en);</text>
+  <rect x="200" y="963" width="196" height="54" class="comb"/>
+  <text x="298" y="987" class="bm" text-anchor="middle">$rose(mbist_start)</text>
+  <text x="298" y="1007" class="bm" text-anchor="middle">&amp;&amp; test_mode</text>
+  <path d="M396,990 H476" class="w" marker-end="url(#arr)"/>
+  <text x="434" y="982" class="net" text-anchor="middle">##[1:$]</text>
+  <rect x="476" y="973" width="254" height="34" class="comb"/>
+  <text x="603" y="997" class="bm" text-anchor="middle">mbist_done &amp;&amp; mbist_pass</text>
+  <path d="M730,990 H810" class="w" marker-end="url(#arr)"/>
+  <text x="768" y="982" class="net" text-anchor="middle">##[1:$]</text>
+  <rect x="810" y="943" width="283" height="94" class="comb"/>
+  <text x="951" y="967" class="bm" text-anchor="middle">state ==</text>
+  <text x="951" y="987" class="bm" text-anchor="middle">CAPTURE_DR</text>
+  <text x="951" y="1007" class="bm" text-anchor="middle">&amp;&amp; ir == OP_DFT_CTRL</text>
+  <text x="951" y="1027" class="bm" text-anchor="middle">&amp;&amp; mbist_done &amp;&amp; mbist_pass</text>
+  <path d="M1093,990 H1410" class="w" marker-end="url(#arr)"/>
+  <rect x="1410" y="963" width="280" height="54" rx="10" class="chk"/>
+  <text x="1550" y="986" class="bm" text-anchor="middle">c_mbist_pass_readback</text>
+  <text x="1550" y="1007" class="small" text-anchor="middle">cover property</text>
+  <text x="200" y="1052" class="code">c_mbist_pass_readback: cover property ($rose(mbist_start) &amp;&amp; test_mode ##[1:$] mbist_done &amp;&amp; mbist_pass</text>
+  <text x="200" y="1072" class="code" xml:space="preserve">  ##[1:$] state == CAPTURE_DR &amp;&amp; ir == OP_DFT_CTRL &amp;&amp; mbist_done &amp;&amp; mbist_pass);</text>
+  <rect x="200" y="1143" width="331" height="34" class="comb"/>
+  <text x="365" y="1167" class="bm" text-anchor="middle">$rose(mbist_done) &amp;&amp; !mbist_pass</text>
+  <path d="M531,1160 H1410" class="w" marker-end="url(#arr)"/>
+  <rect x="1410" y="1133" width="280" height="54" rx="10" class="chk"/>
+  <text x="1550" y="1156" class="bm" text-anchor="middle">c_mbist_fail</text>
+  <text x="1550" y="1177" class="small" text-anchor="middle">cover property</text>
+  <text x="200" y="1222" class="code">c_mbist_fail: cover property ($rose(mbist_done) &amp;&amp; !mbist_pass);</text>
+  <rect x="200" y="1283" width="120" height="34" class="comb"/>
+  <text x="260" y="1307" class="bm" text-anchor="middle">mbist_done</text>
+  <path d="M320,1300 H400" class="w" marker-end="url(#arr)"/>
+  <text x="358" y="1292" class="net" text-anchor="middle">##[1:$]</text>
+  <rect x="400" y="1283" width="139" height="34" class="comb"/>
+  <text x="469" y="1307" class="bm" text-anchor="middle">!mbist_start</text>
+  <path d="M539,1300 H619" class="w" marker-end="url(#arr)"/>
+  <text x="577" y="1292" class="net" text-anchor="middle">##[1:$]</text>
+  <rect x="619" y="1283" width="196" height="34" class="comb"/>
+  <text x="717" y="1307" class="bm" text-anchor="middle">$rose(mbist_start)</text>
+  <path d="M815,1300 H1410" class="w" marker-end="url(#arr)"/>
+  <rect x="1410" y="1273" width="280" height="54" rx="10" class="chk"/>
+  <text x="1550" y="1296" class="bm" text-anchor="middle">c_mbist_restart</text>
+  <text x="1550" y="1317" class="small" text-anchor="middle">cover property</text>
+  <text x="200" y="1362" class="code">c_mbist_restart: cover property (mbist_done ##[1:$] !mbist_start ##[1:$] $rose(mbist_start));</text>
+  <rect x="200" y="1423" width="110" height="34" class="comb"/>
+  <text x="255" y="1447" class="bm" text-anchor="middle">test_mode</text>
+  <path d="M310,1440 H390" class="w" marker-end="url(#arr)"/>
+  <text x="348" y="1432" class="net" text-anchor="middle">##1</text>
+  <rect x="390" y="1403" width="177" height="74" class="comb"/>
+  <text x="478" y="1427" class="bm" text-anchor="middle">state ==</text>
+  <text x="478" y="1447" class="bm" text-anchor="middle">TEST_LOGIC_RESET</text>
+  <text x="478" y="1467" class="bm" text-anchor="middle">&amp;&amp; !test_mode</text>
+  <path d="M567,1440 H1410" class="w" marker-end="url(#arr)"/>
+  <rect x="1410" y="1413" width="280" height="54" rx="10" class="chk"/>
+  <text x="1550" y="1436" class="bm" text-anchor="middle">c_tms_reset_from_test_mode</text>
+  <text x="1550" y="1457" class="small" text-anchor="middle">cover property</text>
+  <text x="200" y="1502" class="code">c_tms_reset_from_test_mode: cover property (test_mode ##1 state == TEST_LOGIC_RESET &amp;&amp; !test_mode);</text>
+  <rect x="200" y="1573" width="100" height="54" class="comb"/>
+  <text x="250" y="1597" class="bm" text-anchor="middle">state ==</text>
+  <text x="250" y="1617" class="bm" text-anchor="middle">SHIFT_DR</text>
+  <path d="M300,1600 H380" class="w" marker-end="url(#arr)"/>
+  <text x="338" y="1592" class="net" text-anchor="middle">##1</text>
+  <rect x="380" y="1583" width="91" height="34" class="comb"/>
+  <text x="425" y="1607" class="bm" text-anchor="middle">!trst_n</text>
+  <path d="M471,1600 H1410" class="w" marker-end="url(#arr)"/>
+  <rect x="1410" y="1573" width="280" height="54" rx="10" class="chk"/>
+  <text x="1550" y="1596" class="bm" text-anchor="middle">c_trst_mid_scan</text>
+  <text x="1550" y="1617" class="small" text-anchor="middle">cover property</text>
+  <text x="1550" y="1646" class="net" text-anchor="middle">disable iff (1'b0)</text>
+  <text x="200" y="1662" class="code">c_trst_mid_scan: cover property (disable iff (1'b0) state == SHIFT_DR ##1 !trst_n);</text>
+</svg>

@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1650 1370" width="1650" height="1370" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1650" height="1370" fill="#ffffff"/>
+  <rect x="110" y="30" width="1490" height="1320" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">jtag_driver (2/2): tasks</text>
+<g transform="translate(0,30)">
+  <text x="200" y="60" class="bm">task reset_trst(bit short_pulse);</text>
+  <rect x="200" y="112" width="200" height="36" rx="6" class="comb"/>
+  <text x="213" y="135" class="code">@(negedge vif.tck);</text>
+  <path d="M400,130 H420" class="w" marker-end="url(#arr)"/>
+  <path d="M440,110 H560 L580,130 L560,150 H440 L420,130 Z" class="comb"/>
+  <text x="500" y="135" class="code" text-anchor="middle">short_pulse</text>
+  <path d="M580,130 H620" class="w" marker-end="url(#arr)"/>
+  <text x="600" y="122" class="net" text-anchor="middle">0</text>
+  <rect x="620" y="100" width="304" height="102" class="comb"/>
+  <text x="634" y="126" class="code">vif.tms &lt;= 1'b1;</text>
+  <text x="634" y="148" class="code">vif.trst_n &lt;= 1'b0;</text>
+  <text x="634" y="170" class="code">repeat (2) @(negedge vif.tck);</text>
+  <text x="634" y="192" class="code">vif.trst_n &lt;= 1'b1;</text>
+  <path d="M500,110 V80 H1120 V100" class="w" marker-end="url(#arr)"/>
+  <text x="512" y="98" class="net">1</text>
+  <rect x="1000" y="100" width="469" height="80" class="comb"/>
+  <text x="1014" y="126" class="code">vif.tms &lt;= 1'b0;</text>
+  <text x="1014" y="148" class="code">#(TCK_PERIOD_NS * 0.1 * 1ns) vif.trst_n &lt;= 1'b0;</text>
+  <text x="1014" y="170" class="code">#(TCK_PERIOD_NS * 0.2 * 1ns) vif.trst_n &lt;= 1'b1;</text>
+  <path d="M772,202 V224" class="w"/>
+  <path d="M1234,180 V224 H680" class="w"/>
+  <path d="M680,224 V246" class="w" marker-end="url(#arr)"/>
+  <rect x="620" y="246" width="127" height="36" rx="6" class="comb"/>
+  <text x="633" y="269" class="code">tick(1'b0);</text>
+  <path d="M747,264 H781" class="w" marker-end="url(#arr)"/>
+  <rect x="781" y="246" width="154" height="36" rx="6" class="comb"/>
+  <text x="794" y="269" class="code">at_rti = 1'b1;</text>
+  <text x="200" y="360" class="bm">task reset_tms();</text>
+  <rect x="200" y="382" width="228" height="36" rx="6" class="comb"/>
+  <text x="213" y="405" class="code">repeat (5) tick(1'b1);</text>
+  <path d="M428,400 H462" class="w" marker-end="url(#arr)"/>
+  <rect x="462" y="382" width="127" height="36" rx="6" class="comb"/>
+  <text x="475" y="405" class="code">tick(1'b0);</text>
+  <path d="M589,400 H623" class="w" marker-end="url(#arr)"/>
+  <rect x="623" y="382" width="154" height="36" rx="6" class="comb"/>
+  <text x="636" y="405" class="code">at_rti = 1'b1;</text>
+  <text x="200" y="470" class="bm">task tms_path(const ref bit tms_q[$]);</text>
+  <rect x="200" y="492" width="338" height="36" rx="6" class="comb"/>
+  <text x="213" y="515" class="code">foreach (tms_q[i]) tick(tms_q[i]);</text>
+  <path d="M538,510 H572" class="w" marker-end="url(#arr)"/>
+  <rect x="572" y="492" width="154" height="36" rx="6" class="comb"/>
+  <text x="585" y="515" class="code">at_rti = 1'b0;</text>
+  <path d="M726,510 H760" class="w" marker-end="url(#arr)"/>
+  <rect x="760" y="492" width="154" height="36" rx="6" class="comb"/>
+  <text x="773" y="515" class="code">n_tms_paths++;</text>
+  <text x="200" y="580" class="bm">task tck_stop(int unsigned cycles);</text>
+  <rect x="200" y="602" width="200" height="36" rx="6" class="comb"/>
+  <text x="213" y="625" class="code">@(negedge vif.tck);</text>
+  <path d="M400,620 H434" class="w" marker-end="url(#arr)"/>
+  <rect x="434" y="602" width="90" height="36" rx="6" class="comb"/>
+  <text x="447" y="625" class="code">#(1ns);</text>
+  <path d="M524,620 H558" class="w" marker-end="url(#arr)"/>
+  <rect x="558" y="602" width="200" height="36" rx="6" class="comb"/>
+  <text x="571" y="625" class="code">vif.tck_en &lt;= 1'b0;</text>
+  <path d="M758,620 H792" class="w" marker-end="url(#arr)"/>
+  <rect x="792" y="602" width="320" height="36" rx="6" class="comb"/>
+  <text x="805" y="625" class="code">#(cycles * TCK_PERIOD_NS * 1ns);</text>
+  <path d="M1112,620 H1146" class="w" marker-end="url(#arr)"/>
+  <rect x="1146" y="602" width="200" height="36" rx="6" class="comb"/>
+  <text x="1159" y="625" class="code">vif.tck_en &lt;= 1'b1;</text>
+  <text x="200" y="700" class="bm">task scan(bit is_ir, jtag_seq_item it);    n = it.tdi_q.size();</text>
+  <rect x="200" y="720" width="892" height="58" class="comb"/>
+  <text x="214" y="746" class="code">use_pause  &amp;&amp; !(n &gt;= 2 &amp;&amp; it.pause_at &lt; n - 1)                                   -&gt; `uvm_fatal</text>
+  <text x="214" y="768" class="code">use_pause2 &amp;&amp; !(use_pause &amp;&amp; pause_at2 &gt; pause_at &amp;&amp; pause_at2 &lt; n - 1)   -&gt; `uvm_fatal</text>
+  <rect x="200" y="938" width="160" height="44" rx="10" class="inst"/>
+  <text x="280" y="965" class="bm" text-anchor="middle">RUN_TEST_IDLE</text>
+  <rect x="440" y="938" width="160" height="44" rx="10" class="inst"/>
+  <text x="520" y="965" class="bm" text-anchor="middle">SELECT_DR_SCAN</text>
+  <rect x="680" y="938" width="160" height="44" rx="10" class="inst"/>
+  <text x="760" y="965" class="bm" text-anchor="middle">SELECT_IR_SCAN</text>
+  <rect x="920" y="938" width="160" height="44" rx="10" class="inst"/>
+  <text x="1000" y="965" class="bm" text-anchor="middle">CAPTURE_xR</text>
+  <rect x="1160" y="938" width="160" height="44" rx="10" class="inst"/>
+  <text x="1240" y="965" class="bm" text-anchor="middle">SHIFT_xR</text>
+  <rect x="1400" y="938" width="160" height="44" rx="10" class="inst"/>
+  <text x="1480" y="965" class="bm" text-anchor="middle">EXIT2_xR</text>
+  <rect x="680" y="1178" width="160" height="44" rx="10" class="inst"/>
+  <text x="760" y="1205" class="bm" text-anchor="middle">UPDATE_xR</text>
+  <rect x="1160" y="1178" width="160" height="44" rx="10" class="inst"/>
+  <text x="1240" y="1205" class="bm" text-anchor="middle">EXIT1_xR</text>
+  <rect x="1400" y="1178" width="160" height="44" rx="10" class="inst"/>
+  <text x="1480" y="1205" class="bm" text-anchor="middle">PAUSE_xR</text>
+  <path d="M360,960 H440" class="w" marker-end="url(#arr)"/>
+  <text x="400" y="952" class="net" text-anchor="middle">tick(1)</text>
+  <path d="M600,960 H680" class="w" marker-end="url(#arr)"/>
+  <text x="640" y="952" class="net" text-anchor="middle">is_ir:</text>
+  <text x="640" y="980" class="net" text-anchor="middle">tick(1)</text>
+  <path d="M840,960 H920" class="w" marker-end="url(#arr)"/>
+  <text x="880" y="952" class="net" text-anchor="middle">tick(0)</text>
+  <path d="M520,938 V880 H1000 V938" class="w" marker-end="url(#arr)"/>
+  <text x="760" y="872" class="net" text-anchor="middle">!is_ir: tick(0)</text>
+  <path d="M1080,960 H1160" class="w" marker-end="url(#arr)"/>
+  <text x="1120" y="952" class="net" text-anchor="middle">n &gt; 0:</text>
+  <text x="1120" y="980" class="net" text-anchor="middle">tick(0)</text>
+  <path d="M1290,938 V900 H1210 V938" class="w" marker-end="url(#arr)"/>
+  <text x="1240" y="892" class="net" text-anchor="middle">else: tick(0, tdi_q[i])</text>
+  <path d="M1240,982 V1178" class="w" marker-end="url(#arr)"/>
+  <text x="1250" y="1030" class="net" text-anchor="start">i == n-1 or</text>
+  <text x="1250" y="1052" class="net" text-anchor="start">i == pause_at(2):</text>
+  <text x="1250" y="1074" class="net" text-anchor="start">tick(1, tdi_q[i])</text>
+  <path d="M1320,1200 H1400" class="w" marker-end="url(#arr)"/>
+  <text x="1360" y="1192" class="net" text-anchor="middle">pause:</text>
+  <text x="1360" y="1222" class="net" text-anchor="middle">tick(0)</text>
+  <path d="M1520,1222 V1260 H1440 V1222" class="w" marker-end="url(#arr)"/>
+  <text x="1430" y="1264" class="net" text-anchor="end">repeat (pause_cycles) tick(0)</text>
+  <path d="M1480,1178 V982" class="w" marker-end="url(#arr)"/>
+  <text x="1490" y="1080" class="net" text-anchor="start">tick(1)</text>
+  <path d="M1400,960 H1320" class="w" marker-end="url(#arr)"/>
+  <text x="1360" y="952" class="net" text-anchor="middle">tick(0)</text>
+  <path d="M1000,982 V1188 H1160" class="w" marker-end="url(#arr)"/>
+  <text x="1010" y="1180" class="net" text-anchor="start">n == 0: tick(1)</text>
+  <path d="M1160,1212 H840" class="w" marker-end="url(#arr)"/>
+  <text x="1000" y="1232" class="net" text-anchor="middle">last bit done: tick(1)</text>
+  <path d="M680,1200 H280 V982" class="w" marker-end="url(#arr)"/>
+  <text x="480" y="1192" class="net" text-anchor="middle">tick(0)</text>
+</g>
+</svg>

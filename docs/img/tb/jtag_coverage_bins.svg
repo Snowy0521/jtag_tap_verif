@@ -1,0 +1,307 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 2180" width="1930" height="2180" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="2180" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="2130" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">cov : jtag_coverage (1/3): covergroups and bins</text>
+  <rect x="160" y="70" width="616" height="278" class="comb"/>
+  <text x="174" y="96" class="bm">class jtag_coverage extends uvm_component;</text>
+  <text x="174" y="118" class="code">uvm_analysis_imp_jtag #(jtag_scan_txn, jtag_coverage) jtag_imp;</text>
+  <text x="174" y="140" class="code">uvm_analysis_imp_dft  #(dft_txn,       jtag_coverage) dft_imp;</text>
+  <text x="174" y="162" class="code">uvm_analysis_imp_edge #(jtag_edge_txn, jtag_coverage) edge_imp;</text>
+  <text x="174" y="184" class="code">typedef enum {I_IDCODE, I_BYPASS, I_DFT_CTRL, I_UNUSED} instr_e;</text>
+  <text x="174" y="206" class="code">typedef enum {R_BYPASS, R_IDCODE, R_DFT_CTRL}           reg_e;</text>
+  <text x="174" y="228" class="code">typedef enum {L_ZERO, L_SHORT, L_EXACT, L_LONG}         len_e;</text>
+  <text x="174" y="250" class="code">typedef enum {S_IR, S_DR}                               scan_e;</text>
+  <text x="174" y="272" class="code">typedef enum {P_NONE, P_ONE, P_MULTI}                   pause_e;</text>
+  <text x="174" y="294" class="code">typedef enum {MB_PASS, MB_FAIL, MB_RESTART,</text>
+  <text x="174" y="316" class="code" xml:space="preserve">              MB_REDUNDANT_START}                       mbist_e;</text>
+  <text x="174" y="338" class="code">typedef enum {RST_TMS, RST_TRST}                        rst_e;</text>
+  <rect x="1000" y="70" width="460" height="190" class="comb"/>
+  <text x="1014" y="96" class="code">tap_state_e  arc_state;   bit arc_tms;</text>
+  <text x="1014" y="118" class="code">instr_e      instr_loaded;</text>
+  <text x="1014" y="140" class="code">reg_e        dr_reg;      len_e dr_len;</text>
+  <text x="1014" y="162" class="code">scan_e       scan_kind;   pause_e scan_pauses;</text>
+  <text x="1014" y="184" class="code">bit          tm, se, ms;</text>
+  <text x="1014" y="206" class="code">mbist_e      mbist_evt;</text>
+  <text x="1014" y="228" class="code">rst_e        rst_kind;    tap_state_e rst_from;</text>
+  <text x="1014" y="250" class="code">scan_e       aborted_kind;</text>
+  <rect x="1000" y="290" width="350" height="124" class="comb"/>
+  <text x="1014" y="316" class="code">int unsigned hits[string];</text>
+  <text x="1014" y="338" class="code">string       bins_expected[$];</text>
+  <text x="1014" y="360" class="code">function void hit(string b);</text>
+  <text x="1014" y="382" class="code" xml:space="preserve">  if (!hits.exists(b)) hits[b] = 0;</text>
+  <text x="1014" y="404" class="code" xml:space="preserve">  hits[b]++;</text>
+  <rect x="160" y="460" width="533" height="124" class="comb"/>
+  <text x="174" y="486" class="bm">covergroup cg_arc;</text>
+  <text x="174" y="508" class="code" xml:space="preserve">  cp_state: coverpoint arc_state { option.weight = 0; }</text>
+  <text x="174" y="530" class="code" xml:space="preserve">  cp_tms:   coverpoint arc_tms   { option.weight = 0; }</text>
+  <text x="174" y="552" class="code" xml:space="preserve">  x_arc:    cross cp_state, cp_tms;</text>
+  <text x="174" y="574" class="code">endgroup</text>
+  <text x="1212" y="479" class="small" text-anchor="middle">tms0</text>
+  <text x="1302" y="479" class="small" text-anchor="middle">tms1</text>
+  <text x="1157" y="507" class="small" text-anchor="end">TEST_LOGIC_RESET</text>
+  <rect x="1167" y="488" width="90" height="28" class="inst"/>
+  <rect x="1257" y="488" width="90" height="28" class="inst"/>
+  <text x="1157" y="535" class="small" text-anchor="end">RUN_TEST_IDLE</text>
+  <rect x="1167" y="516" width="90" height="28" class="inst"/>
+  <rect x="1257" y="516" width="90" height="28" class="inst"/>
+  <text x="1157" y="563" class="small" text-anchor="end">SELECT_DR_SCAN</text>
+  <rect x="1167" y="544" width="90" height="28" class="inst"/>
+  <rect x="1257" y="544" width="90" height="28" class="inst"/>
+  <text x="1157" y="591" class="small" text-anchor="end">CAPTURE_DR</text>
+  <rect x="1167" y="572" width="90" height="28" class="inst"/>
+  <rect x="1257" y="572" width="90" height="28" class="inst"/>
+  <text x="1157" y="619" class="small" text-anchor="end">SHIFT_DR</text>
+  <rect x="1167" y="600" width="90" height="28" class="inst"/>
+  <rect x="1257" y="600" width="90" height="28" class="inst"/>
+  <text x="1157" y="647" class="small" text-anchor="end">EXIT1_DR</text>
+  <rect x="1167" y="628" width="90" height="28" class="inst"/>
+  <rect x="1257" y="628" width="90" height="28" class="inst"/>
+  <text x="1157" y="675" class="small" text-anchor="end">PAUSE_DR</text>
+  <rect x="1167" y="656" width="90" height="28" class="inst"/>
+  <rect x="1257" y="656" width="90" height="28" class="inst"/>
+  <text x="1157" y="703" class="small" text-anchor="end">EXIT2_DR</text>
+  <rect x="1167" y="684" width="90" height="28" class="inst"/>
+  <rect x="1257" y="684" width="90" height="28" class="inst"/>
+  <text x="1157" y="731" class="small" text-anchor="end">UPDATE_DR</text>
+  <rect x="1167" y="712" width="90" height="28" class="inst"/>
+  <rect x="1257" y="712" width="90" height="28" class="inst"/>
+  <text x="1157" y="759" class="small" text-anchor="end">SELECT_IR_SCAN</text>
+  <rect x="1167" y="740" width="90" height="28" class="inst"/>
+  <rect x="1257" y="740" width="90" height="28" class="inst"/>
+  <text x="1157" y="787" class="small" text-anchor="end">CAPTURE_IR</text>
+  <rect x="1167" y="768" width="90" height="28" class="inst"/>
+  <rect x="1257" y="768" width="90" height="28" class="inst"/>
+  <text x="1157" y="815" class="small" text-anchor="end">SHIFT_IR</text>
+  <rect x="1167" y="796" width="90" height="28" class="inst"/>
+  <rect x="1257" y="796" width="90" height="28" class="inst"/>
+  <text x="1157" y="843" class="small" text-anchor="end">EXIT1_IR</text>
+  <rect x="1167" y="824" width="90" height="28" class="inst"/>
+  <rect x="1257" y="824" width="90" height="28" class="inst"/>
+  <text x="1157" y="871" class="small" text-anchor="end">PAUSE_IR</text>
+  <rect x="1167" y="852" width="90" height="28" class="inst"/>
+  <rect x="1257" y="852" width="90" height="28" class="inst"/>
+  <text x="1157" y="899" class="small" text-anchor="end">EXIT2_IR</text>
+  <rect x="1167" y="880" width="90" height="28" class="inst"/>
+  <rect x="1257" y="880" width="90" height="28" class="inst"/>
+  <text x="1157" y="927" class="small" text-anchor="end">UPDATE_IR</text>
+  <rect x="1167" y="908" width="90" height="28" class="inst"/>
+  <rect x="1257" y="908" width="90" height="28" class="inst"/>
+  <text x="1000" y="960" class="net">32 bins    "arc:&lt;state&gt;/tms&lt;0|1&gt;"</text>
+  <rect x="160" y="624" width="561" height="168" class="comb"/>
+  <text x="174" y="650" class="bm">covergroup cg_reset;</text>
+  <text x="174" y="672" class="code" xml:space="preserve">  cp_kind: coverpoint rst_kind;</text>
+  <text x="174" y="694" class="code" xml:space="preserve">  cp_from: coverpoint rst_from { option.weight = 0; }</text>
+  <text x="174" y="716" class="code" xml:space="preserve">  x_trst_from: cross cp_kind, cp_from {</text>
+  <text x="174" y="738" class="code" xml:space="preserve">    ignore_bins tms = binsof(cp_kind) intersect {RST_TMS};</text>
+  <text x="174" y="760" class="code" xml:space="preserve">  }</text>
+  <text x="174" y="782" class="code">endgroup</text>
+  <text x="1602" y="479" class="small" text-anchor="middle">RST_TMS</text>
+  <text x="1712" y="479" class="small" text-anchor="middle">RST_TRST</text>
+  <text x="1537" y="507" class="small" text-anchor="end">TEST_LOGIC_RESET</text>
+  <rect x="1547" y="488" width="110" height="28" class="comb"/>
+  <text x="1602" y="507" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="488" width="110" height="28" class="inst"/>
+  <text x="1537" y="535" class="small" text-anchor="end">RUN_TEST_IDLE</text>
+  <rect x="1547" y="516" width="110" height="28" class="comb"/>
+  <text x="1602" y="535" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="516" width="110" height="28" class="inst"/>
+  <text x="1537" y="563" class="small" text-anchor="end">SELECT_DR_SCAN</text>
+  <rect x="1547" y="544" width="110" height="28" class="comb"/>
+  <text x="1602" y="563" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="544" width="110" height="28" class="inst"/>
+  <text x="1537" y="591" class="small" text-anchor="end">CAPTURE_DR</text>
+  <rect x="1547" y="572" width="110" height="28" class="comb"/>
+  <text x="1602" y="591" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="572" width="110" height="28" class="inst"/>
+  <text x="1537" y="619" class="small" text-anchor="end">SHIFT_DR</text>
+  <rect x="1547" y="600" width="110" height="28" class="comb"/>
+  <text x="1602" y="619" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="600" width="110" height="28" class="inst"/>
+  <text x="1537" y="647" class="small" text-anchor="end">EXIT1_DR</text>
+  <rect x="1547" y="628" width="110" height="28" class="comb"/>
+  <text x="1602" y="647" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="628" width="110" height="28" class="inst"/>
+  <text x="1537" y="675" class="small" text-anchor="end">PAUSE_DR</text>
+  <rect x="1547" y="656" width="110" height="28" class="comb"/>
+  <text x="1602" y="675" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="656" width="110" height="28" class="inst"/>
+  <text x="1537" y="703" class="small" text-anchor="end">EXIT2_DR</text>
+  <rect x="1547" y="684" width="110" height="28" class="comb"/>
+  <text x="1602" y="703" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="684" width="110" height="28" class="inst"/>
+  <text x="1537" y="731" class="small" text-anchor="end">UPDATE_DR</text>
+  <rect x="1547" y="712" width="110" height="28" class="comb"/>
+  <text x="1602" y="731" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="712" width="110" height="28" class="inst"/>
+  <text x="1537" y="759" class="small" text-anchor="end">SELECT_IR_SCAN</text>
+  <rect x="1547" y="740" width="110" height="28" class="comb"/>
+  <text x="1602" y="759" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="740" width="110" height="28" class="inst"/>
+  <text x="1537" y="787" class="small" text-anchor="end">CAPTURE_IR</text>
+  <rect x="1547" y="768" width="110" height="28" class="comb"/>
+  <text x="1602" y="787" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="768" width="110" height="28" class="inst"/>
+  <text x="1537" y="815" class="small" text-anchor="end">SHIFT_IR</text>
+  <rect x="1547" y="796" width="110" height="28" class="comb"/>
+  <text x="1602" y="815" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="796" width="110" height="28" class="inst"/>
+  <text x="1537" y="843" class="small" text-anchor="end">EXIT1_IR</text>
+  <rect x="1547" y="824" width="110" height="28" class="comb"/>
+  <text x="1602" y="843" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="824" width="110" height="28" class="inst"/>
+  <text x="1537" y="871" class="small" text-anchor="end">PAUSE_IR</text>
+  <rect x="1547" y="852" width="110" height="28" class="comb"/>
+  <text x="1602" y="871" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="852" width="110" height="28" class="inst"/>
+  <text x="1537" y="899" class="small" text-anchor="end">EXIT2_IR</text>
+  <rect x="1547" y="880" width="110" height="28" class="comb"/>
+  <text x="1602" y="899" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="880" width="110" height="28" class="inst"/>
+  <text x="1537" y="927" class="small" text-anchor="end">UPDATE_IR</text>
+  <rect x="1547" y="908" width="110" height="28" class="comb"/>
+  <text x="1602" y="927" class="small" text-anchor="middle">ignore</text>
+  <rect x="1657" y="908" width="110" height="28" class="inst"/>
+  <text x="1380" y="960" class="net">16 bins    "trst_from:&lt;state&gt;"</text>
+  <text x="1445" y="1015" class="small" text-anchor="middle">RST_TMS</text>
+  <text x="1575" y="1015" class="small" text-anchor="middle">RST_TRST</text>
+  <text x="1370" y="1043" class="small" text-anchor="end"></text>
+  <rect x="1380" y="1024" width="130" height="28" class="inst"/>
+  <rect x="1510" y="1024" width="130" height="28" class="inst"/>
+  <text x="1380" y="1076" class="net">2 bins    "reset:&lt;rst_e&gt;"</text>
+  <rect x="160" y="1122" width="359" height="80" class="comb"/>
+  <text x="174" y="1148" class="bm">covergroup cg_instr;</text>
+  <text x="174" y="1170" class="code" xml:space="preserve">  cp_instr: coverpoint instr_loaded;</text>
+  <text x="174" y="1192" class="code">endgroup</text>
+  <text x="1070" y="1141" class="small" text-anchor="middle">I_IDCODE</text>
+  <text x="1210" y="1141" class="small" text-anchor="middle">I_BYPASS</text>
+  <text x="1350" y="1141" class="small" text-anchor="middle">I_DFT_CTRL</text>
+  <text x="1490" y="1141" class="small" text-anchor="middle">I_UNUSED</text>
+  <text x="990" y="1169" class="small" text-anchor="end"></text>
+  <rect x="1000" y="1150" width="140" height="28" class="inst"/>
+  <rect x="1140" y="1150" width="140" height="28" class="inst"/>
+  <rect x="1280" y="1150" width="140" height="28" class="inst"/>
+  <rect x="1420" y="1150" width="140" height="28" class="inst"/>
+  <text x="1000" y="1202" class="net">4 bins    "instr:&lt;instr_e&gt;"</text>
+  <rect x="160" y="1248" width="662" height="190" class="comb"/>
+  <text x="174" y="1274" class="bm">covergroup cg_dr_len;</text>
+  <text x="174" y="1296" class="code" xml:space="preserve">  cp_reg: coverpoint dr_reg { option.weight = 0; }</text>
+  <text x="174" y="1318" class="code" xml:space="preserve">  cp_len: coverpoint dr_len { option.weight = 0; }</text>
+  <text x="174" y="1340" class="code" xml:space="preserve">  x_reg_len: cross cp_reg, cp_len {</text>
+  <text x="174" y="1362" class="code" xml:space="preserve">    ignore_bins bypass_short = binsof(cp_reg) intersect {R_BYPASS} &amp;&amp;</text>
+  <text x="174" y="1384" class="code" xml:space="preserve">                               binsof(cp_len) intersect {L_SHORT};</text>
+  <text x="174" y="1406" class="code" xml:space="preserve">  }</text>
+  <text x="174" y="1428" class="code">endgroup</text>
+  <text x="1167" y="1267" class="small" text-anchor="middle">L_ZERO</text>
+  <text x="1277" y="1267" class="small" text-anchor="middle">L_SHORT</text>
+  <text x="1387" y="1267" class="small" text-anchor="middle">L_EXACT</text>
+  <text x="1497" y="1267" class="small" text-anchor="middle">L_LONG</text>
+  <text x="1102" y="1295" class="small" text-anchor="end">R_BYPASS</text>
+  <rect x="1112" y="1276" width="110" height="28" class="inst"/>
+  <rect x="1222" y="1276" width="110" height="28" class="comb"/>
+  <text x="1277" y="1295" class="small" text-anchor="middle">ignore</text>
+  <rect x="1332" y="1276" width="110" height="28" class="inst"/>
+  <rect x="1442" y="1276" width="110" height="28" class="inst"/>
+  <text x="1102" y="1323" class="small" text-anchor="end">R_IDCODE</text>
+  <rect x="1112" y="1304" width="110" height="28" class="inst"/>
+  <rect x="1222" y="1304" width="110" height="28" class="inst"/>
+  <rect x="1332" y="1304" width="110" height="28" class="inst"/>
+  <rect x="1442" y="1304" width="110" height="28" class="inst"/>
+  <text x="1102" y="1351" class="small" text-anchor="end">R_DFT_CTRL</text>
+  <rect x="1112" y="1332" width="110" height="28" class="inst"/>
+  <rect x="1222" y="1332" width="110" height="28" class="inst"/>
+  <rect x="1332" y="1332" width="110" height="28" class="inst"/>
+  <rect x="1442" y="1332" width="110" height="28" class="inst"/>
+  <text x="1000" y="1384" class="net">11 bins    "dr_len:&lt;reg_e&gt;/&lt;len_e&gt;"</text>
+  <rect x="160" y="1478" width="552" height="124" class="comb"/>
+  <text x="174" y="1504" class="bm">covergroup cg_pause;</text>
+  <text x="174" y="1526" class="code" xml:space="preserve">  cp_scan:  coverpoint scan_kind   { option.weight = 0; }</text>
+  <text x="174" y="1548" class="code" xml:space="preserve">  cp_pause: coverpoint scan_pauses { option.weight = 0; }</text>
+  <text x="174" y="1570" class="code" xml:space="preserve">  x_scan_pause: cross cp_scan, cp_pause;</text>
+  <text x="174" y="1592" class="code">endgroup</text>
+  <text x="1111" y="1497" class="small" text-anchor="middle">P_NONE</text>
+  <text x="1221" y="1497" class="small" text-anchor="middle">P_ONE</text>
+  <text x="1331" y="1497" class="small" text-anchor="middle">P_MULTI</text>
+  <text x="1046" y="1525" class="small" text-anchor="end">S_IR</text>
+  <rect x="1056" y="1506" width="110" height="28" class="inst"/>
+  <rect x="1166" y="1506" width="110" height="28" class="inst"/>
+  <rect x="1276" y="1506" width="110" height="28" class="inst"/>
+  <text x="1046" y="1553" class="small" text-anchor="end">S_DR</text>
+  <rect x="1056" y="1534" width="110" height="28" class="inst"/>
+  <rect x="1166" y="1534" width="110" height="28" class="inst"/>
+  <rect x="1276" y="1534" width="110" height="28" class="inst"/>
+  <text x="1000" y="1586" class="net">6 bins    "pause:&lt;scan_e&gt;/&lt;pause_e&gt;"</text>
+  <rect x="160" y="1642" width="607" height="212" class="comb"/>
+  <text x="174" y="1668" class="bm">covergroup cg_dft;</text>
+  <text x="174" y="1690" class="code" xml:space="preserve">  cp_tm: coverpoint tm { option.weight = 0; }</text>
+  <text x="174" y="1712" class="code" xml:space="preserve">  cp_se: coverpoint se { option.weight = 0; }</text>
+  <text x="174" y="1734" class="code" xml:space="preserve">  cp_ms: coverpoint ms { option.weight = 0; }</text>
+  <text x="174" y="1756" class="code" xml:space="preserve">  x_dft: cross cp_tm, cp_se, cp_ms {</text>
+  <text x="174" y="1778" class="code" xml:space="preserve">    illegal_bins se_without_tm = binsof(cp_se) intersect {1} &amp;&amp;</text>
+  <text x="174" y="1800" class="code" xml:space="preserve">                                 binsof(cp_tm) intersect {0};</text>
+  <text x="174" y="1822" class="code" xml:space="preserve">  }</text>
+  <text x="174" y="1844" class="code">endgroup</text>
+  <text x="1139" y="1661" class="small" text-anchor="middle">ms0</text>
+  <text x="1249" y="1661" class="small" text-anchor="middle">ms1</text>
+  <text x="1074" y="1689" class="small" text-anchor="end">tm0 se0</text>
+  <rect x="1084" y="1670" width="110" height="28" class="inst"/>
+  <rect x="1194" y="1670" width="110" height="28" class="inst"/>
+  <text x="1074" y="1717" class="small" text-anchor="end">tm0 se1</text>
+  <rect x="1084" y="1698" width="110" height="28" class="comb"/>
+  <text x="1139" y="1717" class="small" text-anchor="middle">illegal</text>
+  <rect x="1194" y="1698" width="110" height="28" class="comb"/>
+  <text x="1249" y="1717" class="small" text-anchor="middle">illegal</text>
+  <text x="1074" y="1745" class="small" text-anchor="end">tm1 se0</text>
+  <rect x="1084" y="1726" width="110" height="28" class="inst"/>
+  <rect x="1194" y="1726" width="110" height="28" class="inst"/>
+  <text x="1074" y="1773" class="small" text-anchor="end">tm1 se1</text>
+  <rect x="1084" y="1754" width="110" height="28" class="inst"/>
+  <rect x="1194" y="1754" width="110" height="28" class="inst"/>
+  <text x="1000" y="1806" class="net">6 bins    "dft:tm&lt;0|1&gt;_se&lt;0|1&gt;_ms&lt;0|1&gt;"</text>
+  <rect x="160" y="1894" width="313" height="80" class="comb"/>
+  <text x="174" y="1920" class="bm">covergroup cg_mbist;</text>
+  <text x="174" y="1942" class="code" xml:space="preserve">  cp_evt: coverpoint mbist_evt;</text>
+  <text x="174" y="1964" class="code">endgroup</text>
+  <text x="1095" y="1913" class="small" text-anchor="middle">MB_PASS</text>
+  <text x="1285" y="1913" class="small" text-anchor="middle">MB_FAIL</text>
+  <text x="1475" y="1913" class="small" text-anchor="middle">MB_RESTART</text>
+  <text x="1665" y="1913" class="small" text-anchor="middle">MB_REDUNDANT_START</text>
+  <text x="990" y="1941" class="small" text-anchor="end"></text>
+  <rect x="1000" y="1922" width="190" height="28" class="inst"/>
+  <rect x="1190" y="1922" width="190" height="28" class="inst"/>
+  <rect x="1380" y="1922" width="190" height="28" class="inst"/>
+  <rect x="1570" y="1922" width="190" height="28" class="inst"/>
+  <text x="1000" y="1974" class="net">4 bins    "mbist:&lt;mbist_e&gt;"</text>
+  <rect x="160" y="2020" width="350" height="80" class="comb"/>
+  <text x="174" y="2046" class="bm">covergroup cg_abort;</text>
+  <text x="174" y="2068" class="code" xml:space="preserve">  cp_kind: coverpoint aborted_kind;</text>
+  <text x="174" y="2090" class="code">endgroup</text>
+  <text x="1055" y="2039" class="small" text-anchor="middle">S_IR</text>
+  <text x="1165" y="2039" class="small" text-anchor="middle">S_DR</text>
+  <text x="990" y="2067" class="small" text-anchor="end"></text>
+  <rect x="1000" y="2048" width="110" height="28" class="inst"/>
+  <rect x="1110" y="2048" width="110" height="28" class="inst"/>
+  <text x="1000" y="2100" class="net">2 bins    "abort:&lt;scan_e&gt;"</text>
+</svg>

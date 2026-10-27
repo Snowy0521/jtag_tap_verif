@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1420" width="1930" height="1420" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1420" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1370" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">jtag_base_seq</text>
+  <rect x="160" y="70" width="561" height="102" class="comb"/>
+  <text x="174" y="96" class="bm">class jtag_base_seq extends uvm_sequence #(jtag_seq_item);</text>
+  <text x="174" y="118" class="code">protected task send(jtag_seq_item it);</text>
+  <text x="174" y="140" class="code" xml:space="preserve">  start_item(it);</text>
+  <text x="174" y="162" class="code" xml:space="preserve">  finish_item(it);</text>
+  <rect x="880" y="70" width="160" height="40" class="inst"/>
+  <text x="960" y="95" class="bm" text-anchor="middle">seq</text>
+  <path d="M960,110 V560" stroke="#9ca3af" stroke-width="1.4" stroke-dasharray="6 4" fill="none"/>
+  <rect x="1200" y="70" width="160" height="40" class="inst"/>
+  <text x="1280" y="95" class="bm" text-anchor="middle">sqr</text>
+  <path d="M1280,110 V560" stroke="#9ca3af" stroke-width="1.4" stroke-dasharray="6 4" fill="none"/>
+  <rect x="1520" y="70" width="160" height="40" class="inst"/>
+  <text x="1600" y="95" class="bm" text-anchor="middle">drv</text>
+  <path d="M1600,110 V560" stroke="#9ca3af" stroke-width="1.4" stroke-dasharray="6 4" fill="none"/>
+  <path d="M1600,150 H1288" class="w" marker-end="url(#arr)"/>
+  <text x="1440" y="142" class="code" text-anchor="middle">get_next_item(req)</text>
+  <path d="M960,200 H1272" class="w" marker-end="url(#arr)"/>
+  <text x="1120" y="192" class="code" text-anchor="middle">start_item(it)</text>
+  <path d="M1280,250 H968" class="w" marker-end="url(#arr)"/>
+  <text x="1120" y="242" class="code" text-anchor="middle">grant</text>
+  <path d="M960,300 H1272" class="w" marker-end="url(#arr)"/>
+  <text x="1120" y="292" class="code" text-anchor="middle">finish_item(it)</text>
+  <path d="M1280,350 H1592" class="w" marker-end="url(#arr)"/>
+  <text x="1440" y="342" class="code" text-anchor="middle">req = it</text>
+  <rect x="1490" y="380" width="220" height="60" class="comb"/>
+  <text x="1600" y="406" class="small" text-anchor="middle">case (req.kind)</text>
+  <text x="1600" y="424" class="small" text-anchor="middle">tick() ...</text>
+  <path d="M1600,480 H1288" class="w" marker-end="url(#arr)"/>
+  <text x="1440" y="472" class="code" text-anchor="middle">item_done()</text>
+  <path d="M1280,530 H968" class="w" marker-end="url(#arr)"/>
+  <text x="1120" y="522" class="code" text-anchor="middle">finish_item returns</text>
+  <rect x="160" y="610" width="561" height="124" class="comb"/>
+  <text x="174" y="636" class="bm">task do_reset_trst(bit short_pulse = 1'b0);</text>
+  <text x="174" y="658" class="code" xml:space="preserve">  jtag_seq_item it = jtag_seq_item::type_id::create("it");</text>
+  <text x="174" y="680" class="code" xml:space="preserve">  it.kind       = jtag_seq_item::RESET_TRST;</text>
+  <text x="174" y="702" class="code" xml:space="preserve">  it.trst_short = short_pulse;</text>
+  <text x="174" y="724" class="code" xml:space="preserve">  send(it);</text>
+  <rect x="160" y="758" width="561" height="102" class="comb"/>
+  <text x="174" y="784" class="bm">task do_reset_tms();</text>
+  <text x="174" y="806" class="code" xml:space="preserve">  jtag_seq_item it = jtag_seq_item::type_id::create("it");</text>
+  <text x="174" y="828" class="code" xml:space="preserve">  it.kind = jtag_seq_item::RESET_TMS;</text>
+  <text x="174" y="850" class="code" xml:space="preserve">  send(it);</text>
+  <rect x="160" y="884" width="561" height="124" class="comb"/>
+  <text x="174" y="910" class="bm">task do_idle(int unsigned cycles);</text>
+  <text x="174" y="932" class="code" xml:space="preserve">  jtag_seq_item it = jtag_seq_item::type_id::create("it");</text>
+  <text x="174" y="954" class="code" xml:space="preserve">  it.kind        = jtag_seq_item::IDLE;</text>
+  <text x="174" y="976" class="code" xml:space="preserve">  it.idle_cycles = cycles;</text>
+  <text x="174" y="998" class="code" xml:space="preserve">  send(it);</text>
+  <rect x="160" y="1032" width="561" height="124" class="comb"/>
+  <text x="174" y="1058" class="bm">task tms_path(bit tms_q[$]);</text>
+  <text x="174" y="1080" class="code" xml:space="preserve">  jtag_seq_item it = jtag_seq_item::type_id::create("it");</text>
+  <text x="174" y="1102" class="code" xml:space="preserve">  it.kind  = jtag_seq_item::TMS_PATH;</text>
+  <text x="174" y="1124" class="code" xml:space="preserve">  it.tms_q = tms_q;</text>
+  <text x="174" y="1146" class="code" xml:space="preserve">  send(it);</text>
+  <rect x="940" y="610" width="570" height="124" class="comb"/>
+  <text x="954" y="636" class="bm">task ir_scan(logic [IR_W-1:0] op);</text>
+  <text x="954" y="658" class="code" xml:space="preserve">  jtag_seq_item it = jtag_seq_item::type_id::create("it");</text>
+  <text x="954" y="680" class="code" xml:space="preserve">  it.kind = jtag_seq_item::IR_SCAN;</text>
+  <text x="954" y="702" class="code" xml:space="preserve">  for (int i = 0; i &lt; IR_W; i++) it.tdi_q.push_back(op[i]);</text>
+  <text x="954" y="724" class="code" xml:space="preserve">  send(it);</text>
+  <rect x="940" y="758" width="515" height="102" class="comb"/>
+  <text x="954" y="784" class="bm">task dr_scan(int unsigned n, logic [63:0] data = '0);</text>
+  <text x="954" y="806" class="code" xml:space="preserve">  bit q[$];</text>
+  <text x="954" y="828" class="code" xml:space="preserve">  for (int i = 0; i &lt; n; i++) q.push_back(data[i]);</text>
+  <text x="954" y="850" class="code" xml:space="preserve">  dr_scan_q(q);</text>
+  <rect x="940" y="884" width="561" height="124" class="comb"/>
+  <text x="954" y="910" class="bm">task dr_scan_q(bit q[$]);</text>
+  <text x="954" y="932" class="code" xml:space="preserve">  jtag_seq_item it = jtag_seq_item::type_id::create("it");</text>
+  <text x="954" y="954" class="code" xml:space="preserve">  it.kind  = jtag_seq_item::DR_SCAN;</text>
+  <text x="954" y="976" class="code" xml:space="preserve">  it.tdi_q = q;</text>
+  <text x="954" y="998" class="code" xml:space="preserve">  send(it);</text>
+  <rect x="940" y="1032" width="386" height="102" class="comb"/>
+  <text x="954" y="1058" class="bm">task dr_scan_rand(int unsigned n);</text>
+  <text x="954" y="1080" class="code" xml:space="preserve">  bit q[$];</text>
+  <text x="954" y="1102" class="code" xml:space="preserve">  repeat (n) q.push_back(1'($urandom));</text>
+  <text x="954" y="1124" class="code" xml:space="preserve">  dr_scan_q(q);</text>
+  <rect x="940" y="1158" width="874" height="190" class="comb"/>
+  <text x="954" y="1184" class="bm">task scan_with_pause(bit is_ir, bit q[$], int unsigned pause_at, int unsigned pause_cycles);</text>
+  <text x="954" y="1206" class="code" xml:space="preserve">  jtag_seq_item it = jtag_seq_item::type_id::create("it");</text>
+  <text x="954" y="1228" class="code" xml:space="preserve">  it.kind         = is_ir ? jtag_seq_item::IR_SCAN : jtag_seq_item::DR_SCAN;</text>
+  <text x="954" y="1250" class="code" xml:space="preserve">  it.tdi_q        = q;</text>
+  <text x="954" y="1272" class="code" xml:space="preserve">  it.use_pause    = 1'b1;</text>
+  <text x="954" y="1294" class="code" xml:space="preserve">  it.pause_at     = pause_at;</text>
+  <text x="954" y="1316" class="code" xml:space="preserve">  it.pause_cycles = pause_cycles;</text>
+  <text x="954" y="1338" class="code" xml:space="preserve">  send(it);</text>
+</svg>

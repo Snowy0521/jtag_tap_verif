@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1210 790" width="1210" height="790" font-family="Helvetica, Arial, sans-serif" font-size="15">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:14px; font-family:Menlo, Consolas, monospace; }
+      .t    { fill:#111827; }
+      .b    { fill:#111827; font-weight:bold; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .s    { fill:#4b5563; font-size:13px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:13px; }
+      .sig  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:15px; font-weight:bold; }
+    </style>
+  </defs>
+
+  <rect x="-30" width="1210" height="790" fill="#ffffff"/>
+
+  <!-- ===================== notes + legend ===================== -->
+  <text x="15" y="28" class="pin">tck</text>
+  <text x="15" y="48" class="pin">trst_n</text>
+  <text x="75" y="40" class="sig">→ all instances (not drawn)</text>
+
+
+  <!-- ===================== jtag_tap_top boundary ===================== -->
+  <rect x="105" y="110" width="960" height="640" rx="8" class="mod"/>
+  <text x="113" y="126" class="modl">jtag_tap_top #(MBIST_CYCLES = 16)</text>
+
+  <!-- ===================== u_fsm ===================== -->
+  <rect x="150" y="140" width="220" height="90" rx="4" class="inst"/>
+  <text x="160" y="160" class="bm">u_fsm : jtag_tap_fsm</text>
+  <text x="156" y="216" class="port">tms</text>
+  <text x="300" y="224" class="port" text-anchor="middle">state</text>
+
+  <text x="-15" y="216" class="pin">tms</text>
+  <path d="M55,212 H150" class="w" marker-end="url(#arr)"/>
+
+  <!-- state bus: to u_ir, u_dr and the TDO stage -->
+  <path d="M300,230 V250" class="bus"/>
+  <path d="M250,250 H960" class="bus"/>
+  <path d="M250,250 V290" class="bus" marker-end="url(#arrb)"/>
+  <path d="M780,250 V290" class="bus" marker-end="url(#arrb)"/>
+  <path d="M960,250 V290" class="bus" marker-end="url(#arrb)"/>
+  <circle cx="300" cy="250" r="4" fill="#374151"/>
+  <circle cx="780" cy="250" r="4" fill="#374151"/>
+  <text x="420" y="243" class="sig">state [3:0]</text>
+
+  <!-- ===================== u_ir ===================== -->
+  <rect x="150" y="290" width="200" height="140" rx="4" class="inst"/>
+  <text x="160" y="308" class="bm">u_ir : jtag_ir</text>
+  <text x="250" y="334" class="port" text-anchor="middle">state</text>
+  <text x="156" y="404" class="port">tdi</text>
+  <text x="344" y="404" class="port" text-anchor="end">ir_sr</text>
+  <text x="344" y="422" class="port" text-anchor="end">ir</text>
+
+  <!-- tdi: to u_ir and u_dr -->
+  <text x="-15" y="404" class="pin">tdi</text>
+  <path d="M55,400 H150" class="w" marker-end="url(#arr)"/>
+  <circle cx="125" cy="400" r="3.5" fill="#374151"/>
+  <path d="M125,400 V470 H600" class="w" marker-end="url(#arr)"/>
+
+  <!-- ir_sr[0] to the TDO stage (hops over the state drop to u_dr) -->
+  <path d="M350,400 H375 V272 H774 a6,6 0 0 1 12,0 H870 V315 H900" class="w" marker-end="url(#arr)"/>
+  <text x="560" y="266" class="sig">ir_sr[0]</text>
+
+  <!-- ===================== decode_ir() ===================== -->
+  <rect x="395" y="398" width="120" height="42" class="comb"/>
+  <text x="455" y="424" class="b" text-anchor="middle">decode_ir()</text>
+  <path d="M350,418 H395" class="w" marker-end="url(#arr)"/>
+  <path d="M515,418 H600" class="w" marker-end="url(#arr)"/>
+  <text x="530" y="411" class="sig">dr_sel</text>
+
+  <!-- ===================== u_dr ===================== -->
+  <rect x="600" y="290" width="250" height="250" rx="4" class="inst"/>
+  <text x="610" y="308" class="bm">u_dr : jtag_dr</text>
+  <text x="780" y="324" class="port" text-anchor="middle">state</text>
+  <text x="844" y="349" class="port" text-anchor="end">dr_tdo</text>
+  <text x="606" y="422" class="port">dr_sel</text>
+  <text x="606" y="474" class="port">tdi</text>
+  <text x="844" y="434" class="port" text-anchor="end">test_mode</text>
+  <text x="844" y="459" class="port" text-anchor="end">scan_en</text>
+  <text x="640" y="533" class="port" text-anchor="middle">mbist_pass</text>
+  <text x="725" y="533" class="port" text-anchor="middle">mbist_done</text>
+  <text x="810" y="533" class="port" text-anchor="middle">mbist_start</text>
+
+  <!-- dr_tdo to the TDO stage -->
+  <path d="M850,345 H900" class="w" marker-end="url(#arr)"/>
+
+  <!-- DFT outputs -->
+  <path d="M850,430 H1065" class="w" marker-end="url(#arr)"/>
+  <path d="M850,455 H1065" class="w" marker-end="url(#arr)"/>
+  <text x="1075" y="434" class="pin">test_mode</text>
+  <text x="1075" y="459" class="pin">scan_en</text>
+
+  <!-- ===================== u_dr ⇄ u_mbist ===================== -->
+  <!-- mbist_start: u_dr → u_mbist, and out to the pin -->
+  <path d="M810,540 V620" class="w" marker-end="url(#arr)"/>
+  <circle cx="810" cy="562" r="3.5" fill="#374151"/>
+  <path d="M810,562 H1065" class="w" marker-end="url(#arr)"/>
+  <!-- mbist_done: u_mbist → u_dr, and out to the pin -->
+  <path d="M725,620 V540" class="w" marker-end="url(#arr)"/>
+  <circle cx="725" cy="580" r="3.5" fill="#374151"/>
+  <path d="M725,580 H804 a6,6 0 0 1 12,0 H1065" class="w" marker-end="url(#arr)"/>
+  <!-- mbist_pass: u_mbist → u_dr, and out to the pin -->
+  <path d="M640,620 V540" class="w" marker-end="url(#arr)"/>
+  <circle cx="640" cy="598" r="3.5" fill="#374151"/>
+  <path d="M640,598 H719 a6,6 0 0 1 12,0 H804 a6,6 0 0 1 12,0 H1065" class="w" marker-end="url(#arr)"/>
+  <text x="1075" y="566" class="pin">mbist_start</text>
+  <text x="1075" y="584" class="pin">mbist_done</text>
+  <text x="1075" y="602" class="pin">mbist_pass</text>
+
+  <!-- ===================== u_mbist ===================== -->
+  <rect x="600" y="620" width="250" height="110" rx="4" class="inst"/>
+  <text x="640" y="634" class="port" text-anchor="middle">mbist_pass</text>
+  <text x="725" y="634" class="port" text-anchor="middle">mbist_done</text>
+  <text x="810" y="634" class="port" text-anchor="middle">mbist_start</text>
+  <text x="610" y="654" class="bm">u_mbist : mbist_stub</text>
+  <text x="606" y="722" class="port">mbist_fail_i</text>
+
+  <text x="-15" y="722" class="pin">mbist_fail_i</text>
+  <path d="M118,718 H600" class="w" marker-end="url(#arr)"/>
+
+  <!-- ===================== TDO stage (logic in jtag_tap_top) ===================== -->
+  <rect x="900" y="290" width="140" height="95" rx="4" class="inst"/>
+  <text x="970" y="342" class="b" text-anchor="middle">TDO stage</text>
+  <path d="M1040,315 H1065" class="w" marker-end="url(#arr)"/>
+  <path d="M1040,350 H1065" class="w" marker-end="url(#arr)"/>
+  <text x="1075" y="319" class="pin">tdo</text>
+  <text x="1075" y="354" class="pin">tdo_en</text>
+</svg>

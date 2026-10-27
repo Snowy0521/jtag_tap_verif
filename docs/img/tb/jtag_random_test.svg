@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1930 1560" width="1930" height="1560" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1930" height="1560" fill="#ffffff"/>
+  <rect x="110" y="30" width="1770" height="1510" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">jtag_random_test</text>
+  <rect x="160" y="70" width="432" height="80" class="comb"/>
+  <text x="174" y="96" class="bm">class jtag_random_seq extends jtag_base_seq;</text>
+  <text x="174" y="118" class="code">int unsigned n_items      = 400;</text>
+  <text x="174" y="140" class="code">int unsigned mbist_cycles = 16;</text>
+  <rect x="293" y="200" width="175" height="40" rx="6" class="comb"/>
+  <text x="307" y="225" class="code">do_reset_trst();</text>
+  <path d="M380,240 V290" class="w" marker-end="url(#arr)"/>
+  <rect x="247" y="290" width="267" height="40" rx="6" class="comb"/>
+  <text x="261" y="315" class="code">pick = $urandom_range(99);</text>
+  <path d="M380,330 V380 H550" class="w"/>
+  <text x="560" y="352" class="small" text-anchor="middle">0</text>
+  <text x="785" y="352" class="small" text-anchor="middle">25</text>
+  <text x="1100" y="352" class="small" text-anchor="middle">60</text>
+  <text x="1163" y="352" class="small" text-anchor="middle">67</text>
+  <text x="1235" y="352" class="small" text-anchor="middle">75</text>
+  <text x="1280" y="352" class="small" text-anchor="middle">80</text>
+  <text x="1325" y="352" class="small" text-anchor="middle">85</text>
+  <text x="1370" y="352" class="small" text-anchor="middle">90</text>
+  <text x="1460" y="352" class="small" text-anchor="middle">100</text>
+  <rect x="560" y="360" width="225" height="30" class="inst"/>
+  <text x="799" y="381" class="code">random_ir();</text>
+  <path d="M550,375 H560" class="w"/>
+  <rect x="785" y="400" width="315" height="30" class="inst"/>
+  <text x="1114" y="421" class="code">random_dr();</text>
+  <path d="M550,415 H785" class="w"/>
+  <rect x="1100" y="440" width="63" height="30" class="inst"/>
+  <text x="1177" y="461" class="code">dft_write();</text>
+  <path d="M550,455 H1100" class="w"/>
+  <rect x="1163" y="480" width="72" height="30" class="inst"/>
+  <text x="1249" y="501" class="code">do_idle($urandom_range(1, mbist_cycles + 4));</text>
+  <path d="M550,495 H1163" class="w"/>
+  <rect x="1235" y="520" width="45" height="30" class="inst"/>
+  <text x="1294" y="541" class="code">tck_stop();</text>
+  <path d="M550,535 H1235" class="w"/>
+  <rect x="1280" y="560" width="45" height="30" class="inst"/>
+  <text x="1339" y="581" class="code">do_reset_tms();</text>
+  <path d="M550,575 H1280" class="w"/>
+  <rect x="1325" y="600" width="45" height="30" class="inst"/>
+  <text x="1384" y="621" class="code">do_reset_trst($urandom_range(1));</text>
+  <path d="M550,615 H1325" class="w"/>
+  <rect x="1370" y="640" width="90" height="30" class="inst"/>
+  <text x="1474" y="661" class="code">walk_then_reset();</text>
+  <path d="M550,655 H1370" class="w"/>
+  <path d="M550,375 V655" class="w"/>
+  <rect x="180" y="260" width="1600" height="430" rx="6" class="mod"/>
+  <text x="188" y="278" class="modl"></text>
+  <text x="394" y="278" class="modl">repeat (n_items)</text>
+  <rect x="160" y="730" width="570" height="256" class="comb"/>
+  <text x="174" y="756" class="bm">task random_ir();</text>
+  <text x="174" y="778" class="code" xml:space="preserve">  case ($urandom_range(9))</text>
+  <text x="174" y="800" class="code" xml:space="preserve">    0, 1, 2: op = OP_DFT_CTRL;</text>
+  <text x="174" y="822" class="code" xml:space="preserve">    3, 4:    op = OP_IDCODE;</text>
+  <text x="174" y="844" class="code" xml:space="preserve">    5, 6:    op = OP_BYPASS;</text>
+  <text x="174" y="866" class="code" xml:space="preserve">    default: op = IR_W'($urandom);</text>
+  <text x="174" y="888" class="code" xml:space="preserve">  endcase</text>
+  <text x="174" y="910" class="code" xml:space="preserve">  for (int i = 0; i &lt; IR_W; i++) it.tdi_q.push_back(op[i]);</text>
+  <text x="174" y="932" class="code" xml:space="preserve">  start_item(it);</text>
+  <text x="174" y="954" class="code" xml:space="preserve">  it.randomize() with { kind == jtag_seq_item::IR_SCAN; }</text>
+  <text x="174" y="976" class="code" xml:space="preserve">  finish_item(it);</text>
+  <rect x="160" y="1020" width="552" height="102" class="comb"/>
+  <text x="174" y="1046" class="bm">task random_dr();</text>
+  <text x="174" y="1068" class="code" xml:space="preserve">  start_item(it);</text>
+  <text x="174" y="1090" class="code" xml:space="preserve">  it.randomize() with { kind == jtag_seq_item::DR_SCAN; }</text>
+  <text x="174" y="1112" class="code" xml:space="preserve">  finish_item(it);</text>
+  <rect x="820" y="1020" width="561" height="102" class="comb"/>
+  <text x="834" y="1046" class="bm">task tck_stop();</text>
+  <text x="834" y="1068" class="code" xml:space="preserve">  start_item(it);</text>
+  <text x="834" y="1090" class="code" xml:space="preserve">  it.randomize() with { kind == jtag_seq_item::TCK_STOP; }</text>
+  <text x="834" y="1112" class="code" xml:space="preserve">  finish_item(it);</text>
+  <rect x="1440" y="1020" width="386" height="80" class="comb"/>
+  <text x="1454" y="1046" class="bm">task dft_write();</text>
+  <text x="1454" y="1068" class="code" xml:space="preserve">  ir_scan(OP_DFT_CTRL);</text>
+  <text x="1454" y="1090" class="code" xml:space="preserve">  dr_scan(8, 64'($urandom_range(255)));</text>
+  <rect x="840" y="730" width="570" height="190" class="comb"/>
+  <text x="854" y="756" class="bm">task walk_then_reset();</text>
+  <text x="854" y="778" class="code" xml:space="preserve">  repeat ($urandom_range(1, 12)) q.push_back(1'($urandom));</text>
+  <text x="854" y="800" class="code" xml:space="preserve">  tms_path(q);</text>
+  <text x="854" y="822" class="code" xml:space="preserve">  case ($urandom_range(3))</text>
+  <text x="854" y="844" class="code" xml:space="preserve">    0, 1: do_reset_tms();</text>
+  <text x="854" y="866" class="code" xml:space="preserve">    2:    do_reset_trst();</text>
+  <text x="854" y="888" class="code" xml:space="preserve">    3:    do_reset_trst(1'b1);</text>
+  <text x="854" y="910" class="code" xml:space="preserve">  endcase</text>
+  <text x="160" y="1180" class="bm">task run_stimulus();   (jtag_random_test)</text>
+  <rect x="160" y="1200" width="524" height="60" rx="6" class="comb"/>
+  <text x="174" y="1225" class="code">seq.mbist_cycles = env.sb.mbist_cycles;</text>
+  <text x="174" y="1245" class="code">if ($value$plusargs("n_items=%d", n)) seq.n_items = n;</text>
+  <path d="M684,1230 H714" class="w" marker-end="url(#arr)"/>
+  <rect x="714" y="1200" width="257" height="40" rx="6" class="comb"/>
+  <text x="728" y="1225" class="code">dvif.mbist_fail_i = 1'b0;</text>
+  <path d="M971,1230 H1001" class="w" marker-end="url(#arr)"/>
+  <path d="M1001,1190 V1370" class="bus"/>
+  <text x="995" y="1184" class="bm" text-anchor="middle">fork</text>
+  <rect x="1041" y="1190" width="257" height="40" rx="6" class="comb"/>
+  <text x="1055" y="1215" class="code">seq.start(env.agent.sqr);</text>
+  <path d="M1001,1210 H1041" class="w" marker-end="url(#arr)"/>
+  <rect x="1041" y="1260" width="515" height="100" rx="6" class="comb"/>
+  <text x="1055" y="1285" class="code">forever begin</text>
+  <text x="1055" y="1305" class="code" xml:space="preserve">  repeat ($urandom_range(5, 60)) @(negedge dvif.tck);</text>
+  <text x="1055" y="1325" class="code" xml:space="preserve">  dvif.mbist_fail_i = ~dvif.mbist_fail_i;</text>
+  <text x="1055" y="1345" class="code">end</text>
+  <path d="M1001,1310 H1041" class="w" marker-end="url(#arr)"/>
+  <text x="995" y="1395" class="bm">join_any;  disable fork;</text>
+</svg>

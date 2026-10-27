@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1570 1480" width="1570" height="1480" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1570" height="1480" fill="#ffffff"/>
+  <rect x="110" y="30" width="1410" height="1430" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">jtag_dft_props (2/2): MBIST stub</text>
+  <text x="-15" y="81" class="pin">tck</text>
+  <path d="M110,76 H130" class="w"/>
+  <text x="136" y="81" class="net">tck</text>
+  <text x="-15" y="102" class="pin">trst_n</text>
+  <path d="M110,97 H130" class="w"/>
+  <text x="136" y="102" class="net">trst_n</text>
+  <text x="-15" y="123" class="pin">mbist_start</text>
+  <path d="M110,118 H130" class="w"/>
+  <text x="136" y="123" class="net">mbist_start</text>
+  <text x="-15" y="144" class="pin">mbist_done</text>
+  <path d="M110,139 H130" class="w"/>
+  <text x="136" y="144" class="net">mbist_done</text>
+  <text x="-15" y="165" class="pin">mbist_pass</text>
+  <path d="M110,160 H130" class="w"/>
+  <text x="136" y="165" class="net">mbist_pass</text>
+  <text x="-15" y="186" class="pin">mbist_fail_i</text>
+  <path d="M110,181 H130" class="w"/>
+  <text x="136" y="186" class="net">mbist_fail_i</text>
+  <rect x="420" y="70" width="478" height="58" class="comb"/>
+  <text x="434" y="96" class="code">parameter  int MBIST_CYCLES = 16</text>
+  <text x="434" y="118" class="code">localparam int MCNT_W = $clog2(MBIST_CYCLES + 1);</text>
+  <rect x="150" y="200" width="1350" height="290" rx="6" class="mod"/>
+  <text x="158" y="218" class="modl">checker counter (R20)</text>
+  <path d="M760,270 L790,282 L790,358 L760,370 Z" class="comb"/>
+  <text x="766" y="300" class="port">0</text>
+  <text x="766" y="345" class="port">1</text>
+  <path d="M775,380 V364" class="w" marker-end="url(#arr)"/>
+  <text x="775" y="397" class="net" text-anchor="middle">mcnt !=</text>
+  <text x="775" y="415" class="net" text-anchor="middle">MCNT_W'(MBIST_CYCLES)</text>
+  <path d="M700,340 H760" class="bus" marker-end="url(#arrb)"/>
+  <text x="696" y="345" class="code" text-anchor="end">mcnt + 1'b1</text>
+  <path d="M1060,295 L1090,307 L1090,383 L1060,395 Z" class="comb"/>
+  <text x="1066" y="325" class="port">0</text>
+  <text x="1066" y="370" class="port">1</text>
+  <path d="M1075,405 V389" class="w" marker-end="url(#arr)"/>
+  <text x="1075" y="422" class="net" text-anchor="middle">!mbist_start</text>
+  <path d="M790,320 H1060" class="bus" marker-end="url(#arrb)"/>
+  <path d="M1000,365 H1060" class="bus" marker-end="url(#arrb)"/>
+  <text x="996" y="370" class="code" text-anchor="end">'0</text>
+  <rect x="1140" y="279" width="200" height="124" class="inst"/>
+  <text x="1240" y="303" class="bm" text-anchor="middle">mcnt [MCNT_W-1:0]</text>
+  <text x="1240" y="325" class="code" text-anchor="middle">posedge tck</text>
+  <text x="1240" y="393" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="1146" y="350" class="port">D</text>
+  <text x="1334" y="350" class="port" text-anchor="end">Q</text>
+  <path d="M1140,359 L1152,366 L1140,373" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M1118,366 H1140" class="w"/>
+  <text x="1115" y="371" class="net" text-anchor="end">tck</text>
+  <circle cx="1240" cy="408" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M1240,413 V421" class="w"/>
+  <text x="1240" y="437" class="net" text-anchor="middle">trst_n</text>
+  <text x="1254" y="423" class="code">reset '0</text>
+  <path d="M1090,345 H1140" class="bus" marker-end="url(#arrb)"/>
+  <path d="M1340,345 H1400" class="bus"/>
+  <text x="1406" y="350" class="net">mcnt</text>
+  <circle cx="1360" cy="345" r="4" fill="#374151"/>
+  <path d="M1360,345 V240 H730 V295 H760" class="bus" marker-end="url(#arrb)"/>
+  <rect x="150" y="510" width="1350" height="950" rx="6" class="mod"/>
+  <text x="158" y="528" class="modl">MBIST stub (R19, R20, R21)</text>
+  <rect x="200" y="560" width="330" height="30" class="comb"/>
+  <text x="365" y="580" class="bm" text-anchor="middle">mcnt == MCNT_W'(MBIST_CYCLES)</text>
+  <path d="M530,575 H780" class="w" marker-end="url(#arr)"/>
+  <rect x="780" y="550" width="60" height="50" class="comb"/>
+  <text x="810" y="580" class="bm" text-anchor="middle">==</text>
+  <path d="M755,589 H780" class="w" marker-end="url(#arr)"/>
+  <text x="751" y="594" class="net" text-anchor="end">mbist_done</text>
+  <path d="M840,575 H1210" class="w" marker-end="url(#arr)"/>
+  <rect x="1210" y="548" width="270" height="54" rx="10" class="chk"/>
+  <text x="1345" y="571" class="bm" text-anchor="middle">a_mbist_done_exact</text>
+  <text x="1345" y="592" class="small" text-anchor="middle">assert property</text>
+  <text x="200" y="640" class="code">a_mbist_done_exact: assert property (mbist_done == (mcnt == MCNT_W'(MBIST_CYCLES)));</text>
+  <rect x="200" y="690" width="138" height="30" class="comb"/>
+  <text x="269" y="710" class="bm" text-anchor="middle">!mbist_start</text>
+  <rect x="620" y="665" width="150" height="70" class="inst"/>
+  <text x="695" y="685" class="bm" text-anchor="middle">$past(A)</text>
+  <text x="625" y="710" class="port">D</text>
+  <text x="765" y="710" class="port" text-anchor="end">Q</text>
+  <path d="M620,713 L630,720 L620,727" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M606,720 H620" class="w"/>
+  <text x="604" y="725" class="net" text-anchor="end">tck</text>
+  <path d="M338,705 H620" class="w" marker-end="url(#arr)"/>
+  <rect x="200" y="734" width="267" height="30" class="comb"/>
+  <text x="333" y="754" class="bm" text-anchor="middle">!mbist_done &amp;&amp; !mbist_pass</text>
+  <path d="M467,749 H900" class="w" marker-end="url(#arr)"/>
+  <path d="M770,705 H900" class="w" marker-end="url(#arr)"/>
+  <rect x="900" y="687" width="90" height="80" class="comb"/>
+  <text x="950" y="733" class="small" text-anchor="middle">!A || B</text>
+  <text x="905" y="710" class="port">A</text>
+  <text x="905" y="754" class="port">B</text>
+  <path d="M990,727 H1210" class="w" marker-end="url(#arr)"/>
+  <rect x="1210" y="700" width="270" height="54" rx="10" class="chk"/>
+  <text x="1345" y="723" class="bm" text-anchor="middle">a_mbist_clear</text>
+  <text x="1345" y="744" class="small" text-anchor="middle">assert property</text>
+  <text x="200" y="794" class="code">a_mbist_clear: assert property (!mbist_start |=&gt; !mbist_done &amp;&amp; !mbist_pass);</text>
+  <rect x="200" y="830" width="257" height="30" class="comb"/>
+  <text x="328" y="850" class="bm" text-anchor="middle">mbist_done &amp;&amp; mbist_start</text>
+  <rect x="620" y="805" width="150" height="70" class="inst"/>
+  <text x="695" y="825" class="bm" text-anchor="middle">$past(A)</text>
+  <text x="625" y="850" class="port">D</text>
+  <text x="765" y="850" class="port" text-anchor="end">Q</text>
+  <path d="M620,853 L630,860 L620,867" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M606,860 H620" class="w"/>
+  <text x="604" y="865" class="net" text-anchor="end">tck</text>
+  <path d="M457,845 H620" class="w" marker-end="url(#arr)"/>
+  <rect x="560" y="910" width="150" height="70" class="inst"/>
+  <text x="635" y="930" class="bm" text-anchor="middle">$past(x)</text>
+  <text x="565" y="955" class="port">D</text>
+  <text x="705" y="955" class="port" text-anchor="end">Q</text>
+  <path d="M560,958 L570,965 L560,972" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M546,965 H560" class="w"/>
+  <text x="544" y="970" class="net" text-anchor="end">tck</text>
+  <path d="M200,950 H560" class="w" marker-end="url(#arr)"/>
+  <text x="200" y="940" class="net">x = {mbist_done, mbist_pass}</text>
+  <circle cx="545" cy="950" r="4" fill="#374151"/>
+  <path d="M545,950 V995 H760 V960 H780" class="w" marker-end="url(#arr)"/>
+  <path d="M710,950 H740 V940 H780" class="w" marker-end="url(#arr)"/>
+  <rect x="780" y="930" width="60" height="40" class="comb"/>
+  <text x="810" y="955" class="bm" text-anchor="middle">==</text>
+  <text x="810" y="922" class="net" text-anchor="middle">$stable(x)</text>
+  <path d="M840,950 H900" class="w" marker-end="url(#arr)"/>
+  <path d="M770,845 H860 V906 H900" class="w" marker-end="url(#arr)"/>
+  <rect x="900" y="888" width="90" height="80" class="comb"/>
+  <text x="950" y="934" class="small" text-anchor="middle">!A || B</text>
+  <text x="905" y="911" class="port">A</text>
+  <text x="905" y="955" class="port">B</text>
+  <path d="M990,928 H1210" class="w" marker-end="url(#arr)"/>
+  <rect x="1210" y="901" width="270" height="54" rx="10" class="chk"/>
+  <text x="1345" y="924" class="bm" text-anchor="middle">a_mbist_hold</text>
+  <text x="1345" y="945" class="small" text-anchor="middle">assert property</text>
+  <text x="200" y="1030" class="code">a_mbist_hold: assert property (mbist_done &amp;&amp; mbist_start |=&gt; $stable({mbist_done, mbist_pass}));</text>
+  <rect x="300" y="1065" width="190" height="70" class="inst"/>
+  <text x="395" y="1085" class="bm" text-anchor="middle">$past(mbist_done)</text>
+  <text x="305" y="1110" class="port">D</text>
+  <text x="485" y="1110" class="port" text-anchor="end">Q</text>
+  <path d="M300,1113 L310,1120 L300,1127" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M286,1120 H300" class="w"/>
+  <text x="284" y="1125" class="net" text-anchor="end">tck</text>
+  <path d="M275,1105 H300" class="w" marker-end="url(#arr)"/>
+  <text x="271" y="1110" class="net" text-anchor="end">mbist_done</text>
+  <path d="M490,1105 H600 V1117 H650" class="w" marker-end="url(#arr)"/>
+  <circle cx="655" cy="1117" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M635,1093 H660" class="w" marker-end="url(#arr)"/>
+  <text x="631" y="1098" class="net" text-anchor="end">mbist_done</text>
+  <path d="M660,1080 H685 A25.0,25.0 0 0 1 685,1130 H660 Z" class="comb"/>
+  <text x="718.0" y="1097.0" class="net">$rose(mbist_done)</text>
+  <rect x="300" y="1180" width="190" height="70" class="inst"/>
+  <text x="395" y="1200" class="bm" text-anchor="middle">$past(mbist_fail_i)</text>
+  <text x="305" y="1225" class="port">D</text>
+  <text x="485" y="1225" class="port" text-anchor="end">Q</text>
+  <path d="M300,1228 L310,1235 L300,1242" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M286,1235 H300" class="w"/>
+  <text x="284" y="1240" class="net" text-anchor="end">tck</text>
+  <path d="M275,1220 H300" class="w" marker-end="url(#arr)"/>
+  <text x="271" y="1225" class="net" text-anchor="end">mbist_fail_i</text>
+  <path d="M490,1220 H600 V1212 H650" class="w" marker-end="url(#arr)"/>
+  <circle cx="655" cy="1212" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <rect x="660" y="1200" width="60" height="40" class="comb"/>
+  <text x="690" y="1225" class="bm" text-anchor="middle">==</text>
+  <path d="M635,1232 H660" class="w" marker-end="url(#arr)"/>
+  <text x="631" y="1237" class="net" text-anchor="end">mbist_pass</text>
+  <path d="M720,1220 H900" class="w" marker-end="url(#arr)"/>
+  <path d="M710.0,1105.0 H860 V1176 H900" class="w" marker-end="url(#arr)"/>
+  <rect x="900" y="1158" width="90" height="80" class="comb"/>
+  <text x="950" y="1204" class="small" text-anchor="middle">!A || B</text>
+  <text x="905" y="1181" class="port">A</text>
+  <text x="905" y="1225" class="port">B</text>
+  <path d="M990,1198 H1210" class="w" marker-end="url(#arr)"/>
+  <rect x="1210" y="1171" width="270" height="54" rx="10" class="chk"/>
+  <text x="1345" y="1194" class="bm" text-anchor="middle">a_mbist_pass_value</text>
+  <text x="1345" y="1215" class="small" text-anchor="middle">assert property</text>
+  <text x="200" y="1290" class="code">a_mbist_pass_value: assert property ($rose(mbist_done) |-&gt; mbist_pass == !$past(mbist_fail_i));</text>
+  <rect x="200" y="1340" width="120" height="30" class="comb"/>
+  <text x="260" y="1360" class="bm" text-anchor="middle">mbist_pass</text>
+  <rect x="200" y="1384" width="120" height="30" class="comb"/>
+  <text x="260" y="1404" class="bm" text-anchor="middle">mbist_done</text>
+  <path d="M320,1399 H900" class="w" marker-end="url(#arr)"/>
+  <path d="M320,1355 H900" class="w" marker-end="url(#arr)"/>
+  <rect x="900" y="1337" width="90" height="80" class="comb"/>
+  <text x="950" y="1383" class="small" text-anchor="middle">!A || B</text>
+  <text x="905" y="1360" class="port">A</text>
+  <text x="905" y="1404" class="port">B</text>
+  <path d="M990,1377 H1210" class="w" marker-end="url(#arr)"/>
+  <rect x="1210" y="1350" width="270" height="54" rx="10" class="chk"/>
+  <text x="1345" y="1373" class="bm" text-anchor="middle">a_mbist_pass_needs_done</text>
+  <text x="1345" y="1394" class="small" text-anchor="middle">assert property</text>
+  <text x="200" y="1444" class="code">a_mbist_pass_needs_done: assert property (mbist_pass |-&gt; mbist_done);</text>
+</svg>

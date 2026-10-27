@@ -1,0 +1,230 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 0 1570 1840" width="1570" height="1840" font-family="Helvetica, Arial, sans-serif" font-size="17">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="3.5" markerHeight="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#374151"/>
+    </marker>
+    <style>
+      .w    { stroke:#374151; stroke-width:1.6; fill:none; }
+      .bus  { stroke:#374151; stroke-width:3;   fill:none; }
+      .inst { fill:#f8fafc; stroke:#334155; stroke-width:1.8; }
+      .chk  { fill:#ffffff; stroke:#334155; stroke-width:2.2; }
+      .comb { fill:#f3f4f6; stroke:#6b7280; stroke-width:1.6; }
+      .mod  { fill:none; stroke:#9ca3af; stroke-width:1.4; stroke-dasharray:6 4; }
+      .modl { fill:#6b7280; font-size:16px; font-family:Menlo, Consolas, monospace; }
+      .bm   { fill:#111827; font-weight:bold; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .code { fill:#374151; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .small{ fill:#374151; font-family:Menlo, Consolas, monospace; font-size:14px; }
+      .net  { fill:#7c2d12; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .port { fill:#1e3a8a; font-family:Menlo, Consolas, monospace; font-size:15px; }
+      .pin  { fill:#111827; font-family:Menlo, Consolas, monospace; font-size:17px; font-weight:bold; }
+    </style>
+  </defs>
+  <rect x="-30" width="1570" height="1840" fill="#ffffff"/>
+  <rect x="110" y="30" width="1410" height="1790" rx="8" class="mod"/>
+  <text x="118" y="48" class="modl">jtag_dft_props (1/2): DFT control</text>
+  <text x="-15" y="81" class="pin">tck</text>
+  <path d="M110,76 H130" class="w"/>
+  <text x="136" y="81" class="net">tck</text>
+  <text x="-15" y="102" class="pin">trst_n</text>
+  <path d="M110,97 H130" class="w"/>
+  <text x="136" y="102" class="net">trst_n</text>
+  <text x="-15" y="123" class="pin">tdi</text>
+  <path d="M110,118 H130" class="w"/>
+  <text x="136" y="123" class="net">tdi</text>
+  <text x="-15" y="144" class="pin">state</text>
+  <path d="M110,139 H130" class="w"/>
+  <text x="136" y="144" class="net">state [3:0]</text>
+  <text x="-15" y="165" class="pin">ir</text>
+  <path d="M110,160 H130" class="w"/>
+  <text x="136" y="165" class="net">ir [3:0]</text>
+  <text x="-15" y="186" class="pin">test_mode</text>
+  <path d="M110,181 H130" class="w"/>
+  <text x="136" y="186" class="net">test_mode</text>
+  <text x="-15" y="207" class="pin">scan_en</text>
+  <path d="M110,202 H130" class="w"/>
+  <text x="136" y="207" class="net">scan_en</text>
+  <text x="-15" y="228" class="pin">mbist_start</text>
+  <path d="M110,223 H130" class="w"/>
+  <text x="136" y="228" class="net">mbist_start</text>
+  <text x="-15" y="249" class="pin">mbist_done</text>
+  <path d="M110,244 H130" class="w"/>
+  <text x="136" y="249" class="net">mbist_done</text>
+  <text x="-15" y="270" class="pin">mbist_pass</text>
+  <path d="M110,265 H130" class="w"/>
+  <text x="136" y="270" class="net">mbist_pass</text>
+  <rect x="420" y="70" width="359" height="34" class="comb"/>
+  <text x="599" y="92" class="bm" text-anchor="middle">`include "jtag_checker_defaults.svh"</text>
+  <rect x="420" y="130" width="184" height="34" class="comb"/>
+  <text x="512" y="152" class="bm" text-anchor="middle">ir == OP_DFT_CTRL</text>
+  <path d="M395,147 H420" class="bus" marker-end="url(#arrb)"/>
+  <text x="391" y="152" class="net" text-anchor="end">ir</text>
+  <path d="M604,147 H664" class="w"/>
+  <text x="670" y="152" class="net">dft_sel</text>
+  <text x="420" y="200" class="code">wire dft_sel = (ir == OP_DFT_CTRL);</text>
+  <rect x="150" y="290" width="1350" height="290" rx="6" class="mod"/>
+  <text x="158" y="308" class="modl">DFT_CTRL model (R11, R17)</text>
+  <path d="M560,360 L590,372 L590,448 L560,460 Z" class="comb"/>
+  <text x="566" y="390" class="port">0</text>
+  <text x="566" y="435" class="port">1</text>
+  <path d="M575,470 V454" class="w" marker-end="url(#arr)"/>
+  <text x="575" y="487" class="net" text-anchor="middle">state == SHIFT_DR</text>
+  <text x="575" y="505" class="net" text-anchor="middle">&amp;&amp; dft_sel</text>
+  <path d="M500,430 H560" class="bus" marker-end="url(#arrb)"/>
+  <text x="496" y="435" class="code" text-anchor="end">{tdi, dsr[7:1]}</text>
+  <path d="M1080,385 L1110,397 L1110,473 L1080,485 Z" class="comb"/>
+  <text x="1086" y="415" class="port">0</text>
+  <text x="1086" y="460" class="port">1</text>
+  <path d="M1095,495 V479" class="w" marker-end="url(#arr)"/>
+  <text x="1095" y="512" class="net" text-anchor="middle">state == CAPTURE_DR</text>
+  <text x="1095" y="530" class="net" text-anchor="middle">&amp;&amp; dft_sel</text>
+  <path d="M590,410 H1080" class="bus" marker-end="url(#arrb)"/>
+  <rect x="700" y="425" width="257" height="80" class="comb"/>
+  <text x="714" y="451" class="code">{3'b000, mbist_pass,</text>
+  <text x="714" y="473" class="code" xml:space="preserve"> mbist_done, mbist_start,</text>
+  <text x="714" y="495" class="code" xml:space="preserve"> scan_en, test_mode}</text>
+  <path d="M957,455 H1080" class="bus" marker-end="url(#arrb)"/>
+  <rect x="1160" y="369" width="170" height="124" class="inst"/>
+  <text x="1245" y="393" class="bm" text-anchor="middle">dsr [7:0]</text>
+  <text x="1245" y="415" class="code" text-anchor="middle">posedge tck</text>
+  <text x="1245" y="483" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="1166" y="440" class="port">D</text>
+  <text x="1324" y="440" class="port" text-anchor="end">Q</text>
+  <path d="M1160,449 L1172,456 L1160,463" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M1138,456 H1160" class="w"/>
+  <text x="1135" y="461" class="net" text-anchor="end">tck</text>
+  <circle cx="1245" cy="498" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M1245,503 V511" class="w"/>
+  <text x="1245" y="527" class="net" text-anchor="middle">trst_n</text>
+  <text x="1259" y="513" class="code">reset '0</text>
+  <path d="M1110,435 H1160" class="bus" marker-end="url(#arrb)"/>
+  <path d="M1330,435 H1390" class="bus"/>
+  <text x="1396" y="440" class="net">dsr</text>
+  <circle cx="1350" cy="435" r="4" fill="#374151"/>
+  <path d="M1350,435 V330 H530 V385 H560" class="bus" marker-end="url(#arrb)"/>
+  <rect x="150" y="600" width="1350" height="920" rx="6" class="mod"/>
+  <text x="158" y="618" class="modl">DFT outputs (R14, R15, R16)</text>
+  <rect x="560" y="655" width="150" height="70" class="inst"/>
+  <text x="635" y="675" class="bm" text-anchor="middle">$past(x)</text>
+  <text x="565" y="700" class="port">D</text>
+  <text x="705" y="700" class="port" text-anchor="end">Q</text>
+  <path d="M560,703 L570,710 L560,717" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M546,710 H560" class="w"/>
+  <text x="544" y="715" class="net" text-anchor="end">tck</text>
+  <path d="M200,695 H560" class="bus" marker-end="url(#arrb)"/>
+  <text x="200" y="685" class="net">x = {test_mode, scan_en, mbist_start}</text>
+  <circle cx="545" cy="695" r="4" fill="#374151"/>
+  <path d="M545,695 V635 H760 V685 H780" class="bus" marker-end="url(#arrb)"/>
+  <path d="M710,695 H740 V705 H780" class="bus" marker-end="url(#arrb)"/>
+  <rect x="780" y="675" width="60" height="40" class="comb"/>
+  <text x="810" y="700" class="bm" text-anchor="middle">!=</text>
+  <text x="810" y="668" class="net" text-anchor="middle">$changed(x)</text>
+  <rect x="200" y="730" width="580" height="30" class="comb"/>
+  <text x="490" y="750" class="bm" text-anchor="middle">(state == UPDATE_DR &amp;&amp; dft_sel) || state == TEST_LOGIC_RESET</text>
+  <path d="M780,745 H900" class="w" marker-end="url(#arr)"/>
+  <path d="M840,695 H860 V701 H900" class="w" marker-end="url(#arr)"/>
+  <rect x="900" y="683" width="90" height="80" class="comb"/>
+  <text x="950" y="729" class="small" text-anchor="middle">!A || B</text>
+  <text x="905" y="706" class="port">A</text>
+  <text x="905" y="750" class="port">B</text>
+  <path d="M990,723 H1210" class="w" marker-end="url(#arr)"/>
+  <rect x="1210" y="696" width="270" height="54" rx="10" class="chk"/>
+  <text x="1345" y="719" class="bm" text-anchor="middle">a_dft_update_only</text>
+  <text x="1345" y="740" class="small" text-anchor="middle">assert property</text>
+  <text x="200" y="790" class="code">a_dft_update_only: assert property ($changed({test_mode, scan_en, mbist_start}) |-&gt;</text>
+  <text x="200" y="810" class="code" xml:space="preserve">  (state == UPDATE_DR &amp;&amp; dft_sel) || state == TEST_LOGIC_RESET);</text>
+  <rect x="200" y="870" width="294" height="30" class="comb"/>
+  <text x="347" y="890" class="bm" text-anchor="middle">state == UPDATE_DR &amp;&amp; dft_sel</text>
+  <path d="M595,926 H620" class="w" marker-end="url(#arr)"/>
+  <text x="591" y="931" class="net" text-anchor="end">test_mode == dsr[0]</text>
+  <path d="M595,948 H620" class="w" marker-end="url(#arr)"/>
+  <text x="591" y="953" class="net" text-anchor="end">scan_en == (dsr[1] &amp;&amp; dsr[0])</text>
+  <path d="M595,970 H620" class="w" marker-end="url(#arr)"/>
+  <text x="591" y="975" class="net" text-anchor="end">mbist_start == dsr[2]</text>
+  <path d="M620,914 H645 A35.0,35.0 0 0 1 645,984 H620 Z" class="comb"/>
+  <path d="M680.0,949.0 H900" class="w" marker-end="url(#arr)"/>
+  <path d="M494,885 H860 V905.0 H900" class="w" marker-end="url(#arr)"/>
+  <rect x="900" y="887.0" width="90" height="80" class="comb"/>
+  <text x="950" y="933.0" class="small" text-anchor="middle">!A || B</text>
+  <text x="905" y="910.0" class="port">A</text>
+  <text x="905" y="954.0" class="port">B</text>
+  <path d="M990,927.0 H1210" class="w" marker-end="url(#arr)"/>
+  <rect x="1210" y="900.0" width="270" height="54" rx="10" class="chk"/>
+  <text x="1345" y="923.0" class="bm" text-anchor="middle">a_dft_write</text>
+  <text x="1345" y="944.0" class="small" text-anchor="middle">assert property</text>
+  <text x="200" y="1020" class="code">a_dft_write: assert property (state == UPDATE_DR &amp;&amp; dft_sel |-&gt;</text>
+  <text x="200" y="1040" class="code" xml:space="preserve">  test_mode == dsr[0] &amp;&amp; scan_en == (dsr[1] &amp;&amp; dsr[0]) &amp;&amp; mbist_start == dsr[2]);</text>
+  <rect x="200" y="1090" width="257" height="30" class="comb"/>
+  <text x="328" y="1110" class="bm" text-anchor="middle">state == TEST_LOGIC_RESET</text>
+  <rect x="200" y="1134" width="377" height="30" class="comb"/>
+  <text x="388" y="1154" class="bm" text-anchor="middle">!test_mode &amp;&amp; !scan_en &amp;&amp; !mbist_start</text>
+  <path d="M577,1149 H900" class="w" marker-end="url(#arr)"/>
+  <path d="M457,1105 H900" class="w" marker-end="url(#arr)"/>
+  <rect x="900" y="1087" width="90" height="80" class="comb"/>
+  <text x="950" y="1133" class="small" text-anchor="middle">!A || B</text>
+  <text x="905" y="1110" class="port">A</text>
+  <text x="905" y="1154" class="port">B</text>
+  <path d="M990,1127 H1210" class="w" marker-end="url(#arr)"/>
+  <rect x="1210" y="1100" width="270" height="54" rx="10" class="chk"/>
+  <text x="1345" y="1123" class="bm" text-anchor="middle">a_dft_reset_functional</text>
+  <text x="1345" y="1144" class="small" text-anchor="middle">assert property</text>
+  <text x="200" y="1194" class="code">a_dft_reset_functional: assert property (state == TEST_LOGIC_RESET |-&gt;</text>
+  <text x="200" y="1214" class="code" xml:space="preserve">  !test_mode &amp;&amp; !scan_en &amp;&amp; !mbist_start);</text>
+  <rect x="200" y="1250" width="166" height="30" class="comb"/>
+  <text x="283" y="1270" class="bm" text-anchor="middle">trst_n !== 1'b0</text>
+  <path d="M366,1265 H900" class="w" marker-end="url(#arr)"/>
+  <rect x="200" y="1294" width="377" height="30" class="comb"/>
+  <text x="388" y="1314" class="bm" text-anchor="middle">!test_mode &amp;&amp; !scan_en &amp;&amp; !mbist_start</text>
+  <path d="M577,1309 H900" class="w" marker-end="url(#arr)"/>
+  <path d="M900,1247 Q940,1247 965,1287.0 Q940,1327 900,1327 Q914,1287.0 900,1247 Z" class="comb"/>
+  <path d="M965,1287.0 H1210" class="w" marker-end="url(#arr)"/>
+  <rect x="1210" y="1260.0" width="270" height="54" rx="10" class="chk"/>
+  <text x="1345" y="1283.0" class="bm" text-anchor="middle">a_trst_dft</text>
+  <text x="1345" y="1304.0" class="small" text-anchor="middle">assert final</text>
+  <text x="200" y="1354" class="code">`ASSERT_TRST(a_trst_dft, !test_mode &amp;&amp; !scan_en &amp;&amp; !mbist_start)</text>
+  <rect x="200" y="1390" width="92" height="30" class="comb"/>
+  <text x="246" y="1410" class="bm" text-anchor="middle">scan_en</text>
+  <rect x="200" y="1434" width="110" height="30" class="comb"/>
+  <text x="255" y="1454" class="bm" text-anchor="middle">test_mode</text>
+  <path d="M310,1449 H900" class="w" marker-end="url(#arr)"/>
+  <path d="M292,1405 H900" class="w" marker-end="url(#arr)"/>
+  <rect x="900" y="1387" width="90" height="80" class="comb"/>
+  <text x="950" y="1433" class="small" text-anchor="middle">!A || B</text>
+  <text x="905" y="1410" class="port">A</text>
+  <text x="905" y="1454" class="port">B</text>
+  <path d="M990,1427 H1210" class="w" marker-end="url(#arr)"/>
+  <rect x="1210" y="1400" width="270" height="54" rx="10" class="chk"/>
+  <text x="1345" y="1423" class="bm" text-anchor="middle">a_scan_en_safe</text>
+  <text x="1345" y="1444" class="small" text-anchor="middle">assert property</text>
+  <text x="200" y="1494" class="code">a_scan_en_safe: assert property (scan_en |-&gt; test_mode);</text>
+  <rect x="150" y="1540" width="1350" height="280" rx="6" class="mod"/>
+  <text x="158" y="1558" class="modl">edge check (R14)</text>
+  <rect x="560" y="1580" width="200" height="124" class="inst"/>
+  <text x="660" y="1604" class="bm" text-anchor="middle">dft_at_rise [2:0]</text>
+  <text x="660" y="1626" class="code" text-anchor="middle">posedge tck</text>
+  <text x="660" y="1694" class="code" text-anchor="middle">negedge trst_n</text>
+  <text x="566" y="1651" class="port">D</text>
+  <text x="754" y="1651" class="port" text-anchor="end">Q</text>
+  <path d="M560,1660 L572,1667 L560,1674" fill="none" stroke="#334155" stroke-width="1.6"/>
+  <path d="M538,1667 H560" class="w"/>
+  <text x="535" y="1672" class="net" text-anchor="end">tck</text>
+  <circle cx="660" cy="1709" r="5" fill="#ffffff" stroke="#374151" stroke-width="1.6"/>
+  <path d="M660,1714 V1722" class="w"/>
+  <text x="660" y="1738" class="net" text-anchor="middle">trst_n</text>
+  <text x="674" y="1724" class="code">reset 3'b000</text>
+  <path d="M200,1646 H560" class="bus" marker-end="url(#arrb)"/>
+  <text x="550" y="1636" class="code" text-anchor="end">$sampled({test_mode, scan_en, mbist_start})</text>
+  <path d="M760,1646 H1130" class="bus" marker-end="url(#arrb)"/>
+  <rect x="1130" y="1621" width="60" height="50" class="comb"/>
+  <text x="1160" y="1651" class="bm" text-anchor="middle">==</text>
+  <path d="M1105,1660 H1130" class="bus" marker-end="url(#arrb)"/>
+  <text x="1101" y="1665" class="net" text-anchor="end">{test_mode, scan_en, mbist_start}</text>
+  <path d="M1190,1646 H1210" class="w" marker-end="url(#arr)"/>
+  <rect x="1210" y="1619" width="270" height="54" rx="10" class="chk"/>
+  <text x="1345" y="1642" class="bm" text-anchor="middle">a_dft_no_rise_change</text>
+  <text x="1345" y="1663" class="small" text-anchor="middle">assert property</text>
+  <text x="1345" y="1691" class="net" text-anchor="middle">@(negedge tck)</text>
+  <text x="200" y="1795" class="code">a_dft_no_rise_change: assert property (@(negedge tck) {test_mode, scan_en, mbist_start} == dft_at_rise);</text>
+</svg>
