@@ -31,19 +31,30 @@ class jtag_random_seq extends jtag_base_seq;
     end
   endtask
 
-  // IR scan: mostly the defined instructions, sometimes an unused opcode
+  // IR scan: mostly the defined instructions, sometimes an unused opcode.
+  // Mostly IR_W bits; sometimes longer (random bits first: they pass through to
+  // TDO, R8, and the last IR_W bits are still op), shorter or empty (part of the
+  // capture value 0001 stays in the IR, R7).
   task random_ir();
     jtag_seq_item it = jtag_seq_item::type_id::create("it");
     logic [IR_W-1:0] op;
+    int unsigned     n;
     case ($urandom_range(9))
       0, 1, 2: op = OP_DFT_CTRL;
       3, 4:    op = OP_IDCODE;
       5, 6:    op = OP_BYPASS;
       default: op = IR_W'($urandom);              // any opcode, incl. unused ones
     endcase
-    for (int i = 0; i < IR_W; i++) it.tdi_q.push_back(op[i]);
+    case ($urandom_range(9))
+      0:       n = $urandom_range(IR_W - 1);       // short or empty
+      1, 2:    n = IR_W + $urandom_range(1, 64);   // long: covers every j of a_scan_delay
+      default: n = IR_W;
+    endcase
+    repeat (n > IR_W ? n - IR_W : 0) it.tdi_q.push_back(1'($urandom));
+    for (int i = 0; i < IR_W && i < n; i++) it.tdi_q.push_back(op[i]);
     start_item(it);
-    if (!it.randomize() with { kind == jtag_seq_item::IR_SCAN; })
+    // An empty tdi_q means "random length" to the item, so n == 0 is a constraint
+    if (!it.randomize() with { kind == jtag_seq_item::IR_SCAN; n == 0 -> len == 0; })
       `uvm_fatal("RAND", "IR item randomization failed")
     finish_item(it);
   endtask

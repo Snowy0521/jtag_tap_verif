@@ -62,8 +62,9 @@ def first_error(text):
 
 
 def counters(text):
-    """TB coverage counters printed with +cov_dump: {bin: count}."""
-    return {m.group(1): int(m.group(2)) for m in re.finditer(r"^COV (\S+) (\d+)$", text, re.M)}
+    """TB coverage counters printed with +cov_dump: {bin: count}. QuestaSim
+    prefixes every transcript line with "# "."""
+    return {m.group(1): int(m.group(2)) for m in re.finditer(r"^(?:# )?COV (\S+) (\d+)$", text, re.M)}
 
 
 def stats(text):
@@ -131,7 +132,10 @@ def vcover_merge(ucdbs):
                        log=os.path.join(OUT, "coverage_summary.txt"))
     if code != 0:
         return False, ["vcover report failed, see %s/coverage_summary.txt" % OUT]
-    keep = re.compile(r"(Covergroups|Coverpoints|Cross|Statements|Branches|Conditions|Expressions|"
+    # Every bin, directive and code item with its count, for finding the holes
+    sh(["vcover", "report", "-details", "build/cov/merged.ucdb"],
+       log=os.path.join(OUT, "coverage_details.txt"))
+    keep = re.compile(r"(Covergroups|Covergroup Bins|Coverpoints|Cross|Statements|Branches|Conditions|Expressions|"
                       r"FSM|Toggles|Assertions|Directives|Total)", re.I)
     lines = [l.rstrip() for l in out.splitlines() if keep.search(l)]
     # Unrecognised lines are a formatting question, not a failed merge
@@ -193,9 +197,12 @@ def main():
     # The seeds must really differ. Direct: no two passing seeds with the same
     # scan count, TDO bit count and coverage counts. Indirect: their merge beats
     # the best single seed (says nothing once one seed hits every bin).
+    # No counters at all means the dump was not found, not that coverage is
+    # complete: 0 of 0 bins must fail, never pass as "every bin hit".
     seed_checked = random_passed >= 2
     identical = [s for s in random_sigs.values() if len(s) > 1]
-    seed_ok = not seed_checked or (not identical and (rnd_hit > best_random or rnd_hit == n_bins))
+    seed_ok = not seed_checked or (n_bins > 0 and not identical and
+                                   (rnd_hit > best_random or rnd_hit == n_bins))
 
     md = ["# Regression summary", "",
           "%s, %s; %d directed tests + %s on seeds 1..%d" % (

@@ -32,6 +32,7 @@ class jtag_coverage extends uvm_component;
   tap_state_e  arc_state;   bit arc_tms;
   instr_e      instr_loaded;
   reg_e        dr_reg;      len_e dr_len;
+  len_e        ir_len;
   scan_e       scan_kind;   pause_e scan_pauses;
   bit          tm, se, ms;
   mbist_e      mbist_evt;
@@ -49,6 +50,10 @@ class jtag_coverage extends uvm_component;
 
   covergroup cg_instr;                  // instruction loaded by a completed IR scan
     cp_instr: coverpoint instr_loaded;
+  endgroup
+
+  covergroup cg_ir_len;                 // IR scan length vs. IR_W (longer: TDI passes through, R8)
+    cp_len: coverpoint ir_len;
   endgroup
 
   covergroup cg_dr_len;                 // DR scan length vs. the selected register
@@ -110,6 +115,7 @@ class jtag_coverage extends uvm_component;
     edge_imp = new("edge_imp", this);
     cg_arc   = new();
     cg_instr = new();
+    cg_ir_len = new();
     cg_dr_len = new();
     cg_pause = new();
     cg_dft   = new();
@@ -131,6 +137,10 @@ class jtag_coverage extends uvm_component;
     for (instr_e i = i.first(); 1; i = i.next()) begin
       bins_expected.push_back({"instr:", i.name()});
       if (i == i.last()) break;
+    end
+    for (len_e l = l.first(); 1; l = l.next()) begin
+      bins_expected.push_back({"ir_len:", l.name()});
+      if (l == l.last()) break;
     end
     for (reg_e r = r.first(); 1; r = r.next()) begin
       for (len_e l = l.first(); 1; l = l.next()) begin
@@ -201,6 +211,9 @@ class jtag_coverage extends uvm_component;
       instr_loaded = classify(instr);
       cg_instr.sample();
       hit({"instr:", instr_loaded.name()});
+      ir_len = len_class(t.tdi_q.size(), IR_W);
+      cg_ir_len.sample();
+      hit({"ir_len:", ir_len.name()});
     end else begin
       dr_reg = (instr == OP_IDCODE) ? R_IDCODE : (instr == OP_DFT_CTRL) ? R_DFT_CTRL : R_BYPASS;
       dr_len = len_class(t.tdi_q.size(), (dr_reg == R_IDCODE) ? 32 : (dr_reg == R_DFT_CTRL) ? 8 : 1);

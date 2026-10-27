@@ -31,18 +31,19 @@ class jtag_env extends uvm_env;
   endfunction
 
   // Every scan the driver drove must have been observed (completed or aborted).
-  // A raw TMS path followed by a reset can add at most one scan of its own (e.g.
-  // five TMS = 1 from Capture-xR passes Update-xR), so the observed count may
-  // exceed the driven count by up to the number of paths, never fall below it.
+  // Raw TMS paths can start scans of their own (a path of n steps at most
+  // 1 + (n - 2) / 4, see jtag_driver::tms_path), so the observed count may exceed
+  // the driven count by up to that bound, never fall below it.
   // Only counts cross over from the driver; the data checked comes from the monitors.
   function void check_phase(uvm_phase phase);
     int unsigned driven, observed;
     if (agent.get_is_active() != UVM_ACTIVE) return;
     driven   = agent.drv.n_scans;
     observed = agent.mon.n_scans + agent.mon.n_aborted;
-    if (observed < driven || observed > driven + agent.drv.n_tms_paths)
-      `uvm_error("ENV", $sformatf("%0d scans driven (+ up to %0d from raw TMS paths), %0d observed (%0d completed + %0d aborted)",
-                 driven, agent.drv.n_tms_paths, observed, agent.mon.n_scans, agent.mon.n_aborted))
+    if (observed < driven || observed > driven + agent.drv.n_path_scans_max)
+      `uvm_error("ENV", $sformatf("%0d scans driven (+ up to %0d from %0d raw TMS paths), %0d observed (%0d completed + %0d aborted)",
+                 driven, agent.drv.n_path_scans_max, agent.drv.n_tms_paths, observed,
+                 agent.mon.n_scans, agent.mon.n_aborted))
   endfunction
 
 endclass

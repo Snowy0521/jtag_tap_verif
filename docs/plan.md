@@ -170,12 +170,13 @@ endclass
 
 ### 3.4 Functional coverage
 
-In `tb/jtag_coverage.sv`, fed by the monitors only. Every event is first classified into small enums, and each bin is one enum value or combination, so the bins are defined in one place. 83 bins:
+In `tb/jtag_coverage.sv`, fed by the monitors only. Every event is first classified into small enums, and each bin is one enum value or combination, so the bins are defined in one place. 87 bins:
 
 | Group | Bins |
 |---|---|
 | Arcs | TAP state × TMS: all 32 transitions (from the monitor's per-edge port) |
 | Instruction | instruction loaded by a completed IR scan: IDCODE, BYPASS, DFT_CTRL, unused (4) |
+| IR length | completed IR scan × length class vs. `IR_W` (zero / shorter / exact / longer) (4) |
 | DR length | selected register × length class (zero / shorter / exact / longer); BYPASS has no "shorter" (11) |
 | Pauses | IR / DR scan × none / one / several pauses (6) |
 | DFT | the 6 legal `test_mode` × `scan_en` × `mbist_start` combinations. `scan_en && !test_mode` is an `illegal_bins`: it duplicates `a_scan_en_safe`, so it counts as a **check**, not as a coverage goal |
@@ -183,14 +184,16 @@ In `tb/jtag_coverage.sv`, fed by the monitors only. Every event is first classif
 | Reset | by TMS, by `trst_n`; `trst_n` × the state it hit (2 + 16) |
 | Aborted scans | IR / DR scan aborted by `trst_n` (2) |
 
-Two views of the same classification: **covergroups** (the sign-off numbers, in the QuestaSim UCDB, merged with `vcover`; coverpoints that only build a cross have `option.weight = 0`, so the percentage means the same 83 bins), and **TB counters** that count the same combinations and list the holes. Verilator parses covergroups but does not count them, so the counters are the local view; `+cov_dump` prints one line per bin so runs can be added up. The random stimulus weights scan lengths towards the register boundaries (0, 1, 8, 32 and neighbours) and can pause twice in one scan: both were added because coverage showed the holes.
+Two views of the same classification: **covergroups** (the sign-off numbers, in the QuestaSim UCDB, merged with `vcover`; coverpoints that only build a cross have `option.weight = 0`, so the percentage means the same 87 bins), and **TB counters** that count the same combinations and list the holes. Verilator parses covergroups but does not count them, so the counters are the local view; `+cov_dump` prints one line per bin so runs can be added up. The random stimulus weights scan lengths towards the register boundaries (0, 1, 8, 32 and neighbours) and can pause twice in one scan: both were added because coverage showed the holes. IR scans are mostly `IR_W` bits but also shorter, empty or up to 64 bits longer: the first regression showed `c_scan_delay_ir` (the formal cover for TDI passing through the IR) never hit in simulation, because every IR scan was exactly 4 bits.
 
 ### 3.5 Regression
 
 - `scripts/regress.py` (`make regress` / `make regress-questa`): 20 seeds × `jtag_random_test`, plus every directed test once, one build. Sign off on **merged** coverage (same rule as the AXI project): `vcover merge` of all UCDBs on Questa; the TB counters are merged under both simulators.
 - A run passes only with a complete UVM summary, no UVM error and no simulator error (a failing bound property is not a UVM error). Coverage is merged from **passing runs only**.
 - Seed check: the random seeds merged must hit more bins than the best single seed (evaluated with at least two passing seeds). The AXI project found the "seed not applied" bug the hard way.
-- Collect DUT code coverage (statements, branches, conditions, FSM states/transitions). Treat any gap as a hole in the verification plan, and close unreachable terms with formal covers. Known exclusion: the FSM `default` branch in `jtag_tap_fsm.sv` is unreachable by R4 (all 16 codes are states) and is wrapped in `// coverage off` / `// coverage on`; every exclusion is listed here with its reason.
+- Collect DUT code coverage (statements, branches, conditions, expressions; `+cover=bcesf`). Treat any gap as a hole in the verification plan, and close unreachable terms with formal covers. Every exclusion is listed here with its reason:
+  - The FSM `default` branch in `jtag_tap_fsm.sv` is unreachable by R4 (all 16 codes are states) and is wrapped in `// coverage off` / `// coverage on`.
+  - **No FSM code coverage.** Questa's FSM recognition needs the state register assigned directly in the `case`; `jtag_tap_fsm.sv` takes each next state from the function `arc(tms, on1, on0)` (kept because iverilog drops the enum type through `?:`), so no FSM is extracted and the report has no FSM line. Not rewritten, because the FSM metric would add nothing: all 16 states and 32 transitions are already covered three ways, by the `cg_arc` covergroup (simulation, 100 %), the formal covers `c_state_*` / `c_arc_*` (all reached) and the per-arc assertions `a_arc_*` (all proven).
 
 ---
 

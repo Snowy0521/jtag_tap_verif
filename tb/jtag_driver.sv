@@ -12,7 +12,8 @@ class jtag_driver extends uvm_driver #(jtag_seq_item);
 
   virtual jtag_if vif;
   int unsigned    n_scans;     // IR / DR scans driven: the env compares this with the monitor
-  int unsigned    n_tms_paths; // raw TMS paths: each may add one scan the driver did not plan
+  int unsigned    n_tms_paths; // raw TMS paths
+  int unsigned    n_path_scans_max; // most scans the raw TMS paths can have started (see tms_path)
   bit             at_rti;      // the TAP is known to be in Run-Test/Idle
 
   function new(string name, uvm_component parent);
@@ -83,11 +84,16 @@ class jtag_driver extends uvm_driver #(jtag_seq_item);
     at_rti = 1'b1;
   endtask
 
-  // Raw TMS steps from Run-Test/Idle (TDI = 0); the end state is up to the caller
+  // Raw TMS steps from Run-Test/Idle (TDI = 0); the end state is up to the caller.
+  // The path may start scans the driver did not plan: from Run-Test/Idle the
+  // first Capture-xR is 2 steps away (Select-DR, Capture-DR), and each further
+  // one at least 4 (Exit1, Update, Select-DR, Capture), so n steps start at most
+  // 1 + (n - 2) / 4 scans. The reset that follows starts none.
   task tms_path(const ref bit tms_q[$]);
     foreach (tms_q[i]) tick(tms_q[i]);
     at_rti = 1'b0;
     n_tms_paths++;
+    if (tms_q.size() >= 2) n_path_scans_max += 1 + (tms_q.size() - 2) / 4;
   endtask
 
   // Stop TCK while it is low (glitch-free), then restart it. The gate drops
