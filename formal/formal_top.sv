@@ -23,6 +23,10 @@ module formal_top (
 
   // Checkers, bound into jtag_tap_top so they can see internal signals. The
   // binds sit inside the harness module to keep it in one compilation unit.
+  // JTAG_NO_CHECKERS leaves them out (the mutation flow's behaviour signature
+  // measures the DUT alone).
+`ifndef JTAG_NO_CHECKERS
   `include "jtag_binds.svh"
+`endif
 
 endmodule

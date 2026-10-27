@@ -150,6 +150,8 @@ def main():
     ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4,
                     help="parallel runs (Verilator only; Questa runs one at a time)")
     args = ap.parse_args()
+    # Every path below is repo-root-relative: work from there, wherever we were started
+    os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
     os.makedirs(OUT, exist_ok=True)
     if args.sim == "questa":

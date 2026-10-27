@@ -22,7 +22,7 @@ Work in progress.
 | Directed smoke test (iverilog) | passing |
 | Formal properties and proofs (`formal/`) | done |
 | UVM environment and regression (`tb/`) | done |
-| Mutation testing (`mutations/`) | planned |
+| Mutation testing (`mutations/`) | in progress |
 
 ## Design
 
@@ -55,10 +55,11 @@ All targets run from the repository root; outputs go to `build/`. Run `make chec
 | `make sim TEST=<test> SEED=<n>` | QuestaSim + UVM 1.2 | Run a UVM test with functional and DUT code coverage (`build/cov/<test>_<seed>.ucdb`) |
 | `make sim-directed` | QuestaSim + UVM 1.2 | Run every directed test once (one build) |
 | `make regress SEEDS=<n>` | Verilator | Every directed test + the random test on seeds 1..n: pass / fail table, merged functional coverage (TB counters), seed check (`build/regress/summary.md`) |
+| `make mutate [ONLY=M05,M16]` | Verilator (+ Questa Formal if available) | Mutation testing: each bug in `mutations/` in a throwaway copy, equivalence check, scored by black-box UVM and by formal (`build/mutation/summary.md`) |
 | `make regress-questa SEEDS=<n>` | QuestaSim | The same, plus `vcover merge` of all runs: covergroup and RTL code coverage (sign-off) |
 | `make clean` | | Remove `build/` |
 
-The UVM bench runs unchanged on UVM 1.2 (QuestaSim) and UVM 1800.2-2020 (Verilator), and both simulation flows also run the formal checkers, bound into the DUT. A mutation target (`mutate`) will follow. The open-source tools cannot run the formal proofs, and Verilator's functional coverage support is limited, so coverage sign-off runs on Questa.
+The UVM bench runs unchanged on UVM 1.2 (QuestaSim) and UVM 1800.2-2020 (Verilator), and both simulation flows also run the formal checkers, bound into the DUT.  The open-source tools cannot run the formal proofs, and Verilator's functional coverage support is limited, so coverage sign-off runs on Questa.
 
 ## Results
 
@@ -82,7 +83,9 @@ To be filled in as each flow is completed.
 
 | Mutations | Caught by formal | Caught by simulation | Caught by both | Missed |
 |---|---|---|---|---|
-| 21 | – | – | – | – |
+| 21 | 21 / 21 (local proxy: the formal properties in a random simulation; Questa run pending) | 20 / 21 | 20 | 0 |
+
+All 21 mutants change behaviour (none is equivalent). Simulation is scored black-box (UVM without the formal checkers bound in). The one bug only formal catches is M5 (the instruction also updates during Shift-IR): every exit from Shift-IR passes Update-IR, which loads the same final value, so nothing at the pins differs; the white-box property `a_ir_stable` sees it. Per-mutant details: `make mutate` → `build/mutation/summary.md`.
 
 ## Repository layout
 
@@ -104,12 +107,13 @@ jtag_tap_verif/
 │   ├── mbist_stub.sv        MBIST stand-in
 │   └── jtag_tap_top.sv      top level, TDO stage
 ├── formal/                  formal harness, checkers, Questa run script
+├── mutations/               one patch per injected bug (M01–M21)
 ├── scripts/
-│   └── gen_fsm_props.py     spec state table → per-arc checks
+│   ├── gen_fsm_props.py     spec state table → per-arc checks
+│   ├── regress.py           regression: directed + random seeds, merged coverage
+│   └── run_mutations.py     mutation testing
 └── tb/                      UVM testbench (agent, monitor, sequences, tests), tb_smoke.sv directed smoke test
 ```
-
-Planned: `mutations/`, named in [docs/plan.md](docs/plan.md) where it is introduced.
 
 ## References
 

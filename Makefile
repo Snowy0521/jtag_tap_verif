@@ -15,6 +15,7 @@
 #   make sim-directed  every directed test once under QuestaSim (one build)
 #   make regress    directed tests + random test on SEEDS seeds, Verilator, merged TB coverage
 #   make regress-questa  the same on QuestaSim, plus vcover merge (sign-off)
+#   make mutate     mutation testing (mutations/*.patch): make mutate [ONLY=M05,M16] [MUT_SEEDS=5]
 #   make clean
 #
 # Every Questa target starts with `mkdir -p build`; run_formal.tcl stops if
@@ -72,11 +73,18 @@ FORMAL_SRCS := $(shell grep -v '^+' $(FORMAL_F)) formal/jtag_fsm_arcs.svh formal
 # The checker modules alone (formal.f without the formal harness), bound into
 # the UVM DUT by tb_top.sv when JTAG_SIM_CHECKERS is defined
 CHECKER_SRCS := $(filter-out formal/formal_top.sv,$(shell grep -v '^+' $(FORMAL_F)))
+# UVM_CHECKERS=no builds the UVM bench without them: black-box simulation only
+# (the mutation flow scores simulation that way, and formal separately)
+UVM_CHECKERS ?= yes
+ifeq ($(UVM_CHECKERS),yes)
 CHECKERS     := +incdir+formal +define+JTAG_SIM_CHECKERS $(CHECKER_SRCS)
+else
+CHECKERS     :=
+endif
 
 export MODELSIM := $(CURDIR)/$(BUILD)/modelsim.ini
 
-.PHONY: check lint lint-verilator lint-slang smoke gen gen-check props-sim formal uvm uvm-build sim-build sim sim-run sim-directed regress regress-questa clean
+.PHONY: check lint lint-verilator lint-slang smoke gen gen-check props-sim formal uvm uvm-build sim-build sim sim-run sim-directed regress regress-questa mutate clean
 
 # Pre-commit check: every local flow, stops at the first failure
 check:
@@ -187,6 +195,12 @@ regress: gen-check
 
 regress-questa:
 	$(PYTHON) scripts/regress.py --sim questa --seeds $(SEEDS)
+
+# Mutation testing: every patch in mutations/ in a throwaway copy, scored by
+# black-box simulation and by formal (Questa) or the props-sim proxy
+MUT_SEEDS ?= 5
+mutate: gen-check
+	$(PYTHON) scripts/run_mutations.py --seeds $(MUT_SEEDS) $(if $(ONLY),--only $(ONLY))
 
 clean:
 	rm -rf $(BUILD) obj_dir

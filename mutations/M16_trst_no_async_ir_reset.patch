@@ -1,0 +1,15 @@
+# M16: trst_n does not reset the IR asynchronously
+diff --git a/rtl/jtag_ir.sv b/rtl/jtag_ir.sv
+--- a/rtl/jtag_ir.sv
++++ b/rtl/jtag_ir.sv
+@@ -22,8 +22,8 @@
+ 
+   // R9: update on the falling edge in Update-IR; synchronous clear on the
+   // falling edge in Test-Logic-Reset; asynchronous clear only via trst_n.
+-  always_ff @(negedge tck or negedge trst_n) begin
+-    if (!trst_n)                       ir <= OP_IDCODE;
++  always_ff @(negedge tck) begin
++    if (1'b0)                          ir <= OP_IDCODE;
+     else if (state == TEST_LOGIC_RESET) ir <= OP_IDCODE;
+     else if (state == UPDATE_IR)        ir <= ir_sr;
+   end

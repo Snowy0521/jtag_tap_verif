@@ -88,9 +88,12 @@ class jtag_monitor extends uvm_monitor;
       // while TCK is stopped (trst_n clears excepted)
       forever begin
         @(vif.tdo or vif.tdo_en);
-        if ((vif.tck === 1'b1 || vif.tck_en === 1'b0) && vif.trst_n === 1'b1)
+        if ((vif.tck === 1'b1 || vif.tck_en === 1'b0) && vif.trst_n === 1'b1) begin
+          string why = "high";
+          if (vif.tck_en === 1'b0) why = "stopped";
           `uvm_error("MON_EDGE", $sformatf("tdo/tdo_en changed while TCK is %s: tdo=%b tdo_en=%b",
-                     vif.tck_en === 1'b0 ? "stopped" : "high", vif.tdo, vif.tdo_en))
+                     why, vif.tdo, vif.tdo_en))
+        end
       end
     join
   endtask

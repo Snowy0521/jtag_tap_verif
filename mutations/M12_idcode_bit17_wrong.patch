@@ -1,0 +1,13 @@
+# M12: One wrong IDCODE bit (bit 17)
+diff --git a/rtl/jtag_dr.sv b/rtl/jtag_dr.sv
+--- a/rtl/jtag_dr.sv
++++ b/rtl/jtag_dr.sv
+@@ -39,7 +39,7 @@
+   // R13: IDCODE captures the fixed value, LSB out first
+   always_ff @(posedge tck or negedge trst_n) begin
+     if (!trst_n)                                idcode_sr <= IDCODE_VAL;
+-    else if (dr_sel == DR_IDCODE && capture)    idcode_sr <= IDCODE_VAL;
++    else if (dr_sel == DR_IDCODE && capture)    idcode_sr <= IDCODE_VAL ^ 32'h0002_0000;
+     else if (dr_sel == DR_IDCODE && shift)      idcode_sr <= {tdi, idcode_sr[IDCODE_W-1:1]};
+   end
+ 

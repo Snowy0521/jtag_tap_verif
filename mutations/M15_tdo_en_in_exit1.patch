@@ -1,0 +1,13 @@
+# M15: tdo_en also high in Exit1-xR
+diff --git a/rtl/jtag_tap_top.sv b/rtl/jtag_tap_top.sv
+--- a/rtl/jtag_tap_top.sv
++++ b/rtl/jtag_tap_top.sv
+@@ -77,7 +77,7 @@
+       tdo    <= 1'b0;
+       tdo_en <= 1'b0;
+     end else begin
+-      tdo_en <= (state == SHIFT_IR) || (state == SHIFT_DR);
++      tdo_en <= (state == SHIFT_IR) || (state == SHIFT_DR) || (state == EXIT1_IR) || (state == EXIT1_DR);
+       tdo    <= (state == SHIFT_IR) ? ir_sr[0] :
+                 (state == SHIFT_DR) ? dr_tdo   : 1'b0;
+     end

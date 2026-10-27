@@ -1,0 +1,13 @@
+# M09: DFT outputs not cleared in Test-Logic-Reset
+diff --git a/rtl/jtag_dr.sv b/rtl/jtag_dr.sv
+--- a/rtl/jtag_dr.sv
++++ b/rtl/jtag_dr.sv
+@@ -65,7 +65,7 @@
+       test_mode   <= 1'b0;
+       scan_en     <= 1'b0;
+       mbist_start <= 1'b0;
+-    end else if (state == TEST_LOGIC_RESET) begin
++    end else if (1'b0) begin
+       test_mode   <= 1'b0;
+       scan_en     <= 1'b0;
+       mbist_start <= 1'b0;

@@ -1,0 +1,22 @@
+# M10: IDCODE register shifted MSB first
+diff --git a/rtl/jtag_dr.sv b/rtl/jtag_dr.sv
+--- a/rtl/jtag_dr.sv
++++ b/rtl/jtag_dr.sv
+@@ -40,7 +40,7 @@
+   always_ff @(posedge tck or negedge trst_n) begin
+     if (!trst_n)                                idcode_sr <= IDCODE_VAL;
+     else if (dr_sel == DR_IDCODE && capture)    idcode_sr <= IDCODE_VAL;
+-    else if (dr_sel == DR_IDCODE && shift)      idcode_sr <= {tdi, idcode_sr[IDCODE_W-1:1]};
++    else if (dr_sel == DR_IDCODE && shift)      idcode_sr <= {idcode_sr[IDCODE_W-2:0], tdi};
+   end
+ 
+   // R17: capture update registers (2:0), MBIST status (4:3), reserved 0 (7:5)
+@@ -53,7 +53,7 @@
+       dft_sr <= {tdi, dft_sr[DFT_W-1:1]};
+   end
+ 
+-  assign dr_tdo = (dr_sel == DR_IDCODE)   ? idcode_sr[0] :
++  assign dr_tdo = (dr_sel == DR_IDCODE)   ? idcode_sr[IDCODE_W-1] :
+                   (dr_sel == DR_DFT_CTRL) ? dft_sr[0]    : bypass_sr;
+ 
+   // ---------------- DFT_CTRL update registers (falling edge) ----------------

@@ -1,0 +1,13 @@
+# M04: TDO / tdo_en updated on the rising edge
+diff --git a/rtl/jtag_tap_top.sv b/rtl/jtag_tap_top.sv
+--- a/rtl/jtag_tap_top.sv
++++ b/rtl/jtag_tap_top.sv
+@@ -72,7 +72,7 @@
+ 
+   // R5/R6: TDO stage on the falling edge; R18: async clear by trst_n.
+   // Outside Shift-xR tdo is driven to 0 (the pad is high-Z via tdo_en).
+-  always_ff @(negedge tck or negedge trst_n) begin
++  always_ff @(posedge tck or negedge trst_n) begin
+     if (!trst_n) begin
+       tdo    <= 1'b0;
+       tdo_en <= 1'b0;

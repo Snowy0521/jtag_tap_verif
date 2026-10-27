@@ -1,0 +1,13 @@
+# M03: Capture-IR loads 0000 instead of 0001
+diff --git a/rtl/jtag_ir.sv b/rtl/jtag_ir.sv
+--- a/rtl/jtag_ir.sv
++++ b/rtl/jtag_ir.sv
+@@ -16,7 +16,7 @@
+   // R7 capture, R8 shift (LSB out first). Reset value only for determinism.
+   always_ff @(posedge tck or negedge trst_n) begin
+     if (!trst_n)                 ir_sr <= IR_CAPTURE;
+-    else if (state == CAPTURE_IR) ir_sr <= IR_CAPTURE;
++    else if (state == CAPTURE_IR) ir_sr <= '0;
+     else if (state == SHIFT_IR)   ir_sr <= {tdi, ir_sr[IR_W-1:1]};
+   end
+ 
