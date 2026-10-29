@@ -53,8 +53,9 @@ class jtag_random_seq extends jtag_base_seq;
     repeat (n > IR_W ? n - IR_W : 0) it.tdi_q.push_back(1'($urandom));
     for (int i = 0; i < IR_W && i < n; i++) it.tdi_q.push_back(op[i]);
     start_item(it);
-    // An empty tdi_q means "random length" to the item, so n == 0 is a constraint
-    if (!it.randomize() with { kind == jtag_seq_item::IR_SCAN; n == 0 -> len == 0; })
+    // The length is n even when n == 0 (an empty tdi_q otherwise means "random")
+    it.len_fixed = 1'b1;
+    if (!it.randomize() with { kind == jtag_seq_item::IR_SCAN; })
       `uvm_fatal("RAND", "IR item randomization failed")
     finish_item(it);
   endtask

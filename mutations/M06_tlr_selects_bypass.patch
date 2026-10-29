@@ -1,0 +1,13 @@
+# M06: Test-Logic-Reset selects BYPASS instead of IDCODE
+diff --git a/rtl/jtag_ir.sv b/rtl/jtag_ir.sv
+--- a/rtl/jtag_ir.sv
++++ b/rtl/jtag_ir.sv
+@@ -24,7 +24,7 @@
+   // falling edge in Test-Logic-Reset; asynchronous clear only via trst_n.
+   always_ff @(negedge tck or negedge trst_n) begin
+     if (!trst_n)                       ir <= OP_IDCODE;
+-    else if (state == TEST_LOGIC_RESET) ir <= OP_IDCODE;
++    else if (state == TEST_LOGIC_RESET) ir <= OP_BYPASS;
+     else if (state == UPDATE_IR)        ir <= ir_sr;
+   end
+ 

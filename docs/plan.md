@@ -223,11 +223,18 @@ One patch per bug in `mutations/`. Run each against formal and UVM, then record 
 | M18 | `mbist_done` one edge early (`MBIST_CYCLES - 2` in the compare) | `a_mbist_done_exact`; exact-count check in dft test / smoke |
 | M19 | `mbist_done` is a pulse, not held while `mbist_start` = 1 | `a_mbist_hold`; dft test |
 | M20 | `mbist_pass` re-sampled from `mbist_fail_i` after done | `a_mbist_hold`; dft test |
-| M21 | TDO returns to zero while TCK is high (combinational; correct at every rising-edge sample) | `a_tdo_no_rise_change`; JTAG monitor edge check. No data check can see it |
+| M21 | TDO returns to zero while TCK is high (combinational; correct at every rising-edge sample) | JTAG monitor edge check. No data check can see it. `a_tdo_no_rise_change` catches it only in simulation (props-sim, checkers bound in): PropCheck models TCK as an ideal clock, not as data, so the proof passes on the mutant |
 
 M1–M9 are mostly control / FSM bugs; M10–M17 and M21 cover the data path and the edge timing; M18–M20 cover the MBIST stub. The goal is a table in README.md showing which flow caught each of the **21 mutations**. M16 needs a specific stimulus in simulation (a short `trst_n` pulse followed directly by TMS = 0); a result worth reporting either way. Any other miss points to a missing check, so add it.
 
-**Mutant sanity check (`run_mutations.py`):** before scoring, confirm that each mutant applies cleanly, compiles, and actually changes behaviour (e.g. a short directed run whose trace differs from the clean RTL, or at least one formal assertion that differs). An equivalent mutant would otherwise show up as falsely "missed". Patches are applied and reverted with `git apply` / `git apply -R`.
+**Flow (`scripts/run_mutations.py`, `make mutate`):**
+
+- Each patch (`mutations/Mnn_*.patch`, first line = description) is applied with `patch -p1` to a throwaway copy in `build/mutation/<id>/`, never to the repo, so an interrupted run cannot leave a bug in the real RTL. The result is checked (a file must really change): inside the repo's work tree, `git apply` skips paths outside the current directory and still exits 0.
+- **Sanity check:** the mutant must compile and change behaviour. `props_sim` built without the checkers (`JTAG_NO_CHECKERS`) prints a signature, a hash of every DUT output and internal register over 200k random cycles; a signature equal to the clean design's is reported as "no difference in 200k random cycles", not as "missed": a heuristic, so such a mutant is confirmed with formal and by reading the patch before it is called equivalent. The clean design must pass every flow first.
+- **Simulation** is scored black-box: `make regress UVM_CHECKERS=no` (scoreboard, monitors, coverage checks; the formal checkers are not bound in), so a catch credited to simulation really comes from the UVM bench.
+- **Formal** is `make formal` on Questa; without Questa, props-sim (the same properties in a random simulation) is used as a local proxy and labelled "not a proof". On Questa, the clean design's report must show exactly the expected number of proven assertions (counted from `formal/`: every `assert property` and `ASSERT_TRST`, 63 today) and none failed, before any mutant is scored. That checks both that the parser reads the right table and that the reference run has nothing inconclusive; the verdict uses the report's counts, the assertion names are only the detail.
+- A simulation catch needs a failing run in the regression summary; a non-zero exit without one (a failed seed check, a crash) is reported as an error.
+- Each cell of `build/mutation/summary.md` names the check that caught the mutant (first failing test and message, or the failing property).
 
 ---
 

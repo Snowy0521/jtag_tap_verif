@@ -1,0 +1,25 @@
+# M21: TDO returns to zero while TCK is high (combinational, correct at every rising-edge sample)
+diff --git a/rtl/jtag_tap_top.sv b/rtl/jtag_tap_top.sv
+--- a/rtl/jtag_tap_top.sv
++++ b/rtl/jtag_tap_top.sv
+@@ -70,15 +70,18 @@
+     .mbist_pass   (mbist_pass)
+   );
+ 
++  logic tdo_q;
++  assign tdo = tck ? 1'b0 : tdo_q;
++
+   // R5/R6: TDO stage on the falling edge; R18: async clear by trst_n.
+   // Outside Shift-xR tdo is driven to 0 (the pad is high-Z via tdo_en).
+   always_ff @(negedge tck or negedge trst_n) begin
+     if (!trst_n) begin
+-      tdo    <= 1'b0;
++      tdo_q  <= 1'b0;
+       tdo_en <= 1'b0;
+     end else begin
+       tdo_en <= (state == SHIFT_IR) || (state == SHIFT_DR);
+-      tdo    <= (state == SHIFT_IR) ? ir_sr[0] :
++      tdo_q  <= (state == SHIFT_IR) ? ir_sr[0] :
+                 (state == SHIFT_DR) ? dr_tdo   : 1'b0;
+     end
+   end

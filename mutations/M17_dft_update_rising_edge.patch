@@ -1,0 +1,13 @@
+# M17: DFT update registers clocked on the rising edge
+diff --git a/rtl/jtag_dr.sv b/rtl/jtag_dr.sv
+--- a/rtl/jtag_dr.sv
++++ b/rtl/jtag_dr.sv
+@@ -60,7 +60,7 @@
+   // R14: change only in Update-DR with DFT_CTRL active; cleared on the falling
+   //      edge in Test-Logic-Reset and asynchronously by trst_n.
+   // R15/R16: scan_en gated by test_mode at write time.
+-  always_ff @(negedge tck or negedge trst_n) begin
++  always_ff @(posedge tck or negedge trst_n) begin
+     if (!trst_n) begin
+       test_mode   <= 1'b0;
+       scan_en     <= 1'b0;

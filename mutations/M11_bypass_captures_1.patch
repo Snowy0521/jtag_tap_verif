@@ -1,0 +1,13 @@
+# M11: BYPASS captures 1
+diff --git a/rtl/jtag_dr.sv b/rtl/jtag_dr.sv
+--- a/rtl/jtag_dr.sv
++++ b/rtl/jtag_dr.sv
+@@ -32,7 +32,7 @@
+   // R12: BYPASS captures 0
+   always_ff @(posedge tck or negedge trst_n) begin
+     if (!trst_n)                                bypass_sr <= 1'b0;
+-    else if (dr_sel == DR_BYPASS && capture)    bypass_sr <= 1'b0;
++    else if (dr_sel == DR_BYPASS && capture)    bypass_sr <= 1'b1;
+     else if (dr_sel == DR_BYPASS && shift)      bypass_sr <= tdi;
+   end
+ 

@@ -1,0 +1,15 @@
+# M19: mbist_done is a pulse, not held while mbist_start = 1
+diff --git a/rtl/mbist_stub.sv b/rtl/mbist_stub.sv
+--- a/rtl/mbist_stub.sv
++++ b/rtl/mbist_stub.sv
+@@ -28,7 +28,9 @@
+       cnt        <= '0;
+       mbist_done <= 1'b0;
+       mbist_pass <= 1'b0;
+-    end else if (!mbist_done) begin
++    end else if (mbist_done) begin
++      mbist_done <= 1'b0;
++    end else begin
+       // R20: done on the MBIST_CYCLES-th edge that samples mbist_start = 1.
+       // R21: once done, nothing changes until mbist_start drops.
+       if (cnt == CNT_W'(MBIST_CYCLES - 1)) begin

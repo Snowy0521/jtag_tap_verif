@@ -1,0 +1,13 @@
+# M18: mbist_done one edge early
+diff --git a/rtl/mbist_stub.sv b/rtl/mbist_stub.sv
+--- a/rtl/mbist_stub.sv
++++ b/rtl/mbist_stub.sv
+@@ -31,7 +31,7 @@
+     end else if (!mbist_done) begin
+       // R20: done on the MBIST_CYCLES-th edge that samples mbist_start = 1.
+       // R21: once done, nothing changes until mbist_start drops.
+-      if (cnt == CNT_W'(MBIST_CYCLES - 1)) begin
++      if (cnt == CNT_W'(MBIST_CYCLES - 2)) begin
+         mbist_done <= 1'b1;
+         mbist_pass <= !mbist_fail_i;
+       end else begin

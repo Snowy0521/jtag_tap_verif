@@ -1,0 +1,13 @@
+# M08: scan_en not gated by test_mode
+diff --git a/rtl/jtag_dr.sv b/rtl/jtag_dr.sv
+--- a/rtl/jtag_dr.sv
++++ b/rtl/jtag_dr.sv
+@@ -71,7 +71,7 @@
+       mbist_start <= 1'b0;
+     end else if (state == UPDATE_DR && dr_sel == DR_DFT_CTRL) begin
+       test_mode   <= dft_sr[0];
+-      scan_en     <= dft_sr[1] & dft_sr[0];
++      scan_en     <= dft_sr[1];
+       mbist_start <= dft_sr[2];
+     end
+   end

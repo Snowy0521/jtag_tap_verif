@@ -1,0 +1,13 @@
+# M13: DFT update fires with any instruction active
+diff --git a/rtl/jtag_dr.sv b/rtl/jtag_dr.sv
+--- a/rtl/jtag_dr.sv
++++ b/rtl/jtag_dr.sv
+@@ -69,7 +69,7 @@
+       test_mode   <= 1'b0;
+       scan_en     <= 1'b0;
+       mbist_start <= 1'b0;
+-    end else if (state == UPDATE_DR && dr_sel == DR_DFT_CTRL) begin
++    end else if (state == UPDATE_DR) begin
+       test_mode   <= dft_sr[0];
+       scan_en     <= dft_sr[1] & dft_sr[0];
+       mbist_start <= dft_sr[2];

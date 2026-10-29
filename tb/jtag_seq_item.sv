@@ -15,7 +15,8 @@ class jtag_seq_item extends uvm_sequence_item;
   rand int unsigned pause_at2;     // second pause after this bit
   rand int unsigned pause_cycles;  // extra cycles in Pause-xR
   rand int unsigned idle_cycles;   // IDLE: cycles in Run-Test/Idle; TCK_STOP: stopped cycles
-  int unsigned      fixed_len;     // not rand: size of a pre-filled tdi_q (0: none)
+  bit               len_fixed;     // not rand: tdi_q holds the data, its size is the length (even 0)
+  int unsigned      fixed_len;     // not rand: that size
   bit               tms_q[$];      // TMS_PATH: raw TMS values from Run-Test/Idle; must be followed by a reset
   bit               trst_short;    // RESET_TRST: pulse that starts and ends between two TCK edges
 
@@ -24,8 +25,8 @@ class jtag_seq_item extends uvm_sequence_item;
   // 32 and their neighbours): a uniform 0..80 almost never hits them. Only for
   // a free length: Verilator's solver fails a dist that a fixed length
   // contradicts instead of solving both, and the weights mean nothing then.
-  constraint c_len    { len inside {[0:80]}; fixed_len != 0 -> len == fixed_len;
-                        if (fixed_len == 0) len dist { 0 := 4, 1 := 4, [2:6] :/ 6, 7 := 2, 8 := 4, 9 := 2, [10:30] :/ 10,
+  constraint c_len    { len inside {[0:80]}; len_fixed -> len == fixed_len;
+                        if (!len_fixed) len dist { 0 := 4, 1 := 4, [2:6] :/ 6, 7 := 2, 8 := 4, 9 := 2, [10:30] :/ 10,
                                    31 := 2, 32 := 4, 33 := 2, [34:80] :/ 10 }; }
   constraint c_pause  { use_pause -> (len >= 2 && pause_at < len - 1); pause_cycles inside {[0:5]};
                         use_pause2 -> (use_pause && pause_at2 > pause_at && pause_at2 < len - 1); }
@@ -37,7 +38,10 @@ class jtag_seq_item extends uvm_sequence_item;
     super.new(name);
   endfunction
 
+  // A pre-filled tdi_q fixes the length. An empty scan is fixed by setting
+  // len_fixed before randomize() (an empty tdi_q otherwise means "random").
   function void pre_randomize();
+    if (tdi_q.size() != 0) len_fixed = 1'b1;
     fixed_len = tdi_q.size();
   endfunction
 

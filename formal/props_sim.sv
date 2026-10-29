@@ -18,6 +18,21 @@ module props_sim;
 
   always #5 tck = ~tck;
 
+  // Behaviour signature: a hash of every DUT output and internal register,
+  // taken 1 ns after each TCK edge. The mutation flow compares it with the
+  // clean design's to tell a changed mutant from an equivalent one (run
+  // without --assert, so a failing property cannot stop the run early).
+  // 2-state: on a 4-state simulator (QuestaSim) one X would otherwise turn
+  // the whole hash to X for good; X and Z count as 0.
+  bit [63:0] signature = 64'h0;
+  always @(tck) begin
+    #1;
+    signature = {signature[62:0], signature[63]} ^ 64'({
+      u_top.dut.state, u_top.dut.ir, u_top.dut.ir_sr,
+      u_top.dut.u_dr.bypass_sr, u_top.dut.u_dr.idcode_sr, u_top.dut.u_dr.dft_sr,
+      u_top.dut.u_mbist.cnt, tdo, tdo_en, test_mode, scan_en, mbist_start, mbist_done, mbist_pass});
+  end
+
   initial begin
     tms = 1'b1; tdi = 1'b0; mbist_fail_i = 1'b0;
     // A real falling edge on trst_n: an initial value of 0 at time 0 is not
@@ -49,6 +64,7 @@ module props_sim;
       if (trst_n && $urandom_range(299) == 0)
         fork begin #6 trst_n = 1'b0; #2 trst_n = 1'b1; end join_none
     end
+    $display("PROPS SIM SIGNATURE: %016h", signature);
     $display("PROPS SIM DONE: %0d cycles", CYCLES);
     $finish;
   end

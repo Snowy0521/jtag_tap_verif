@@ -1,0 +1,12 @@
+# M07: Unused opcode 0101 selects IDCODE
+diff --git a/rtl/jtag_pkg.sv b/rtl/jtag_pkg.sv
+--- a/rtl/jtag_pkg.sv
++++ b/rtl/jtag_pkg.sv
+@@ -58,6 +58,7 @@
+     case (ir)
+       OP_IDCODE:   return DR_IDCODE;
+       OP_DFT_CTRL: return DR_DFT_CTRL;
++      4'b0101:     return DR_IDCODE;
+       default:     return DR_BYPASS;      // BYPASS and every unused opcode (R10)
+     endcase
+   endfunction

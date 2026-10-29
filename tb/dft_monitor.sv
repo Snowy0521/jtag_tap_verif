@@ -37,9 +37,11 @@ class dft_monitor extends uvm_monitor;
       // nothing changes while TCK is stopped (trst_n clears excepted)
       forever begin
         @(vif.test_mode or vif.scan_en or vif.mbist_start);
-        if ((jvif.tck === 1'b1 || jvif.tck_en === 1'b0) && jvif.trst_n === 1'b1)
-          `uvm_error("DFT_EDGE", $sformatf("DFT output changed while TCK is %s: %s",
-                     jvif.tck_en === 1'b0 ? "stopped" : "high", pins()))
+        if ((jvif.tck === 1'b1 || jvif.tck_en === 1'b0) && jvif.trst_n === 1'b1) begin
+          string why = "high";
+          if (jvif.tck_en === 1'b0) why = "stopped";
+          `uvm_error("DFT_EDGE", $sformatf("DFT output changed while TCK is %s: %s", why, pins()))
+        end
       end
       // The MBIST status changes on rising edges, so only "stopped" is wrong
       forever begin

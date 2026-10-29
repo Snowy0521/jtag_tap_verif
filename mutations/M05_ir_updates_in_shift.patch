@@ -1,0 +1,13 @@
+# M05: The instruction also updates during Shift-IR
+diff --git a/rtl/jtag_ir.sv b/rtl/jtag_ir.sv
+--- a/rtl/jtag_ir.sv
++++ b/rtl/jtag_ir.sv
+@@ -25,7 +25,7 @@
+   always_ff @(negedge tck or negedge trst_n) begin
+     if (!trst_n)                       ir <= OP_IDCODE;
+     else if (state == TEST_LOGIC_RESET) ir <= OP_IDCODE;
+-    else if (state == UPDATE_IR)        ir <= ir_sr;
++    else if (state == UPDATE_IR || state == SHIFT_IR) ir <= ir_sr;
+   end
+ 
+ endmodule

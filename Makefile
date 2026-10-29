@@ -2,6 +2,9 @@
 # Makefile -- run every target from the repo root (docs/plan.md §4.5): the .f file
 # lists hold repo-root-relative paths, and all outputs go to build/.
 #
+#   make check      BEFORE EVERY COMMIT: lint, smoke, gen-check, props-sim and
+#                   regress SEEDS=5, all local (about a minute). A change that
+#                   was only run on one simulator must not be committed.
 #   make lint       verilator --lint-only + slang over rtl/rtl.f
 #   make smoke      iverilog directed smoke test (tb/tb_smoke.sv)
 #   make gen        regenerate formal/jtag_fsm_arcs.svh from docs/design_spec.md
@@ -12,6 +15,8 @@
 #   make sim-directed  every directed test once under QuestaSim (one build)
 #   make regress    directed tests + random test on SEEDS seeds, Verilator, merged TB coverage
 #   make regress-questa  the same on QuestaSim, plus vcover merge (sign-off)
+#   make mutate     mutation testing (mutations/*.patch): make mutate [ONLY=M05,M16] [MUT_SEEDS=5]
+#                   (Verilator if on PATH, else QuestaSim; Questa Formal if qverify is on PATH)
 #   make clean
 #
 # Every Questa target starts with `mkdir -p build`; run_formal.tcl stops if
@@ -69,11 +74,27 @@ FORMAL_SRCS := $(shell grep -v '^+' $(FORMAL_F)) formal/jtag_fsm_arcs.svh formal
 # The checker modules alone (formal.f without the formal harness), bound into
 # the UVM DUT by tb_top.sv when JTAG_SIM_CHECKERS is defined
 CHECKER_SRCS := $(filter-out formal/formal_top.sv,$(shell grep -v '^+' $(FORMAL_F)))
+# UVM_CHECKERS=no builds the UVM bench without them: black-box simulation only
+# (the mutation flow scores simulation that way, and formal separately)
+UVM_CHECKERS ?= yes
+ifeq ($(UVM_CHECKERS),yes)
 CHECKERS     := +incdir+formal +define+JTAG_SIM_CHECKERS $(CHECKER_SRCS)
+else
+CHECKERS     :=
+endif
 
 export MODELSIM := $(CURDIR)/$(BUILD)/modelsim.ini
 
-.PHONY: lint lint-verilator lint-slang smoke gen gen-check props-sim formal uvm uvm-build sim-build sim sim-run sim-directed regress regress-questa clean
+.PHONY: check lint lint-verilator lint-slang smoke gen gen-check props-sim formal uvm uvm-build sim-build sim sim-run sim-directed regress regress-questa mutate clean
+
+# Pre-commit check: every local flow, stops at the first failure
+check:
+	$(MAKE) lint
+	$(MAKE) smoke
+	$(MAKE) gen-check
+	$(MAKE) props-sim
+	$(MAKE) regress SEEDS=5
+	@echo "CHECK PASSED: lint, smoke, gen-check, props-sim, regress (5 seeds)"
 
 lint: lint-verilator lint-slang
 
@@ -175,6 +196,12 @@ regress: gen-check
 
 regress-questa:
 	$(PYTHON) scripts/regress.py --sim questa --seeds $(SEEDS)
+
+# Mutation testing: every patch in mutations/ in a throwaway copy, scored by
+# black-box simulation and by formal (Questa) or the props-sim proxy
+MUT_SEEDS ?= 5
+mutate: gen-check
+	$(PYTHON) scripts/run_mutations.py --seeds $(MUT_SEEDS) $(if $(ONLY),--only $(ONLY))
 
 clean:
 	rm -rf $(BUILD) obj_dir

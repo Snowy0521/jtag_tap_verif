@@ -1,0 +1,13 @@
+# M14: Reserved bits 7:5 read back what was written
+diff --git a/rtl/jtag_dr.sv b/rtl/jtag_dr.sv
+--- a/rtl/jtag_dr.sv
++++ b/rtl/jtag_dr.sv
+@@ -48,7 +48,7 @@
+     if (!trst_n)
+       dft_sr <= '0;
+     else if (dr_sel == DR_DFT_CTRL && capture)
+-      dft_sr <= {3'b000, mbist_pass, mbist_done, mbist_start, scan_en, test_mode};
++      dft_sr <= {dft_sr[7:5], mbist_pass, mbist_done, mbist_start, scan_en, test_mode};
+     else if (dr_sel == DR_DFT_CTRL && shift)
+       dft_sr <= {tdi, dft_sr[DFT_W-1:1]};
+   end
