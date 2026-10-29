@@ -8,7 +8,8 @@ so an interrupted run cannot leave a bug in the real RTL):
      internal register over 200k random cycles) differs from the clean
      design's. Same signature = equivalent mutant, reported as such, not as missed.
   2. simulation: `make regress UVM_CHECKERS=no` (black-box UVM: scoreboard,
-     monitors, coverage checks; the formal checkers are not bound in).
+     monitors, coverage checks; the formal checkers are not bound in), or
+     `make regress-questa UVM_CHECKERS=no` with --sim questa.
   3. formal: `make formal` (Questa PropCheck) if qverify is on PATH, else
      props-sim (the same properties in a random simulation) as a local proxy,
      labelled as such: it is not a proof.
@@ -17,6 +18,10 @@ missed by every flow that ran, or the clean design fails.
 
   python3 scripts/run_mutations.py                   (or: make mutate)
   python3 scripts/run_mutations.py --only M05,M16 --seeds 3
+  python3 scripts/run_mutations.py --sim questa      (no Verilator: QuestaSim for 1. and 2.)
+
+--sim auto (the default) takes Verilator if it is on PATH, else QuestaSim. The
+signature is only compared within one simulator (their random sequences differ).
 
 Runs from the repo root. Python 3.6 compatible (the Questa machine).
 """
@@ -33,12 +38,12 @@ OUT = "build/mutation"
 COPY = ["rtl", "tb", "formal", "scripts", "docs", "Makefile"]
 
 
-def sh(cmd, cwd, log):
+def sh(cmd, cwd, log, env=None):
     """Run a command in cwd, write its output to log; (exit code, output).
     A missing tool is exit code 127, not a crash."""
     try:
         p = subprocess.run(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                           universal_newlines=True)
+                           universal_newlines=True, env=env)
         code, out = p.returncode, p.stdout
     except OSError as e:
         code, out = 127, "run_mutations: cannot run %s: %s\n" % (cmd[0], e)
@@ -76,10 +81,12 @@ def prepare(mid, patch):
     return d, code == 0 and changed
 
 
-def signature(d):
+def signature(d, sim):
     """Build props_sim with no checkers bound (JTAG_NO_CHECKERS: Verilator
     evaluates concurrent assertions even without --assert, and one firing would
     stop the run) and return (compiled, signature or None)."""
+    if sim == "questa":
+        return signature_questa(d)
     code, _ = sh(["verilator", "--binary", "--timing", "--timescale", "1ns/1ps", "-Wno-fatal", "-Wno-lint",
                   "-Wno-style", "+define+JTAG_NO_CHECKERS", "--top-module", "props_sim", "-Mdir", "build/sig",
                   "-f", "rtl/rtl.f", "-f", "formal/formal.f", "formal/props_sim.sv"],
@@ -87,6 +94,28 @@ def signature(d):
     if code != 0:
         return False, None
     _, out = sh(["build/sig/Vprops_sim"], d, os.path.join(d, "sig_run.log"))
+    m = re.search(r"PROPS SIM SIGNATURE: ([0-9a-f]+)", out)
+    return True, m.group(1) if m else None
+
+
+def signature_questa(d):
+    """The same signature run on QuestaSim, in its own library and modelsim.ini
+    (build/sig_work, build/sig_modelsim.ini), so it never touches the UVM or
+    formal libraries of the same copy. MODELSIM is set here: the one exported
+    by `make mutate` points to the repo's build/, not the copy's."""
+    env = dict(os.environ, MODELSIM=os.path.abspath(os.path.join(d, "build/sig_modelsim.ini")))
+    work = os.path.abspath(os.path.join(d, "build/sig_work"))
+    log = os.path.join(d, "sig_build.log")
+    with open(log, "w") as f:
+        for cmd in (["vlib", work], ["vmap", "work", work],
+                    ["vlog", "-sv", "-timescale", "1ns/1ps", "+define+JTAG_NO_CHECKERS",
+                     "-f", "rtl/rtl.f", "-f", "formal/formal.f", "formal/props_sim.sv"]):
+            code, out = sh(cmd, d, os.path.join(d, "sig_step.log"), env)
+            f.write(out)
+            if code != 0 and cmd[0] != "vlib":       # vlib warns before modelsim.ini exists
+                return False, None
+    _, out = sh(["vsim", "-c", "-voptargs=+acc", "props_sim", "-do", "run -all; quit -f"],
+                d, os.path.join(d, "sig_run.log"), env)
     m = re.search(r"PROPS SIM SIGNATURE: ([0-9a-f]+)", out)
     return True, m.group(1) if m else None
 
@@ -114,8 +143,9 @@ def sim_verdict(code, out, summary):
     return False, ""
 
 
-def score_sim(d, seeds):
-    code, out = sh(["make", "regress", "SEEDS=%d" % seeds, "UVM_CHECKERS=no"], d, os.path.join(d, "sim.log"))
+def score_sim(d, seeds, sim):
+    target = "regress" if sim == "verilator" else "regress-questa"
+    code, out = sh(["make", target, "SEEDS=%d" % seeds, "UVM_CHECKERS=no"], d, os.path.join(d, "sim.log"))
     path = os.path.join(d, "build/regress/summary.md")
     summary = open(path).read() if os.path.exists(path) else ""
     return sim_verdict(code, out, summary)
@@ -164,7 +194,11 @@ def expected_assertions():
 
 
 def formal_names(text):
-    """Names of failing assertions, for the detail column only."""
+    """Names of failing assertions, for the detail column only. Questa lists
+    them one per line under "Targets Fired (n)", between dashed rules."""
+    m = re.search(r"^Targets Fired \(\d+\)\s*\n-+\n(.*?)^-+$", text, re.M | re.S)
+    if m:
+        return sorted(set(re.findall(r"\b(a_\w+)\b", m.group(1))))
     names = re.findall(r"\b(a_\w+)\b[^\n]*\b%s\b" % FAIL_WORDS, text, re.I)
     names += re.findall(r"\b%s\b[^\n]*\b(a_\w+)\b" % FAIL_WORDS, text, re.I)
     return sorted(set(names))
@@ -201,6 +235,9 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--only", help="comma-separated mutant IDs, e.g. M05,M16")
     ap.add_argument("--seeds", type=int, default=5, help="random-test seeds in the simulation regression")
+    ap.add_argument("--sim", choices=["auto", "verilator", "questa"], default="auto",
+                    help="simulator for the signature and the UVM regression; "
+                         "auto: Verilator if it is on PATH, else QuestaSim")
     ap.add_argument("--formal", choices=["auto", "questa", "proxy"], default="auto",
                     help="auto: Questa if qverify is on PATH, else the props-sim proxy")
     args = ap.parse_args()
@@ -211,6 +248,9 @@ def main():
     if args.only:
         wanted = set(args.only.split(","))
         patches = [p for p in patches if os.path.basename(p).split("_")[0] in wanted]
+    sim_tool = args.sim
+    if sim_tool == "auto":
+        sim_tool = "verilator" if shutil.which("verilator") else "questa"
     use_questa = args.formal == "questa" or (args.formal == "auto" and shutil.which("qverify"))
     formal_name = "Formal (Questa PropCheck)" if use_questa else "Formal proxy (props-sim, not a proof)"
     os.makedirs(OUT, exist_ok=True)
@@ -218,8 +258,8 @@ def main():
     # The clean design must pass everything; its signature is the reference
     print("clean design ...", flush=True)
     d, _ = prepare("clean", None)
-    _, clean_sig = signature(d)
-    sim, _ = score_sim(d, args.seeds)
+    _, clean_sig = signature(d, sim_tool)
+    sim, _ = score_sim(d, args.seeds, sim_tool)
     expected = expected_assertions()
     if use_questa and expected == 0:
         sys.exit("run_mutations: no assertions found in formal/ (run from the repo root)")
@@ -240,7 +280,7 @@ def main():
             rows.append((mid, describe(patch), "patch does not apply", "", ""))
             n_err += 1
             continue
-        compiled, sig = signature(d)
+        compiled, sig = signature(d, sim_tool)
         if sig is None:
             rows.append((mid, describe(patch), "does not compile" if not compiled else
                          "signature run did not finish (see sig_run.log)", "", ""))
@@ -252,7 +292,7 @@ def main():
             rows.append((mid, describe(patch), "**no difference** in 200k random cycles (equivalent?)", "", ""))
             n_eq += 1
             continue
-        sim, sim_detail = score_sim(d, args.seeds)
+        sim, sim_detail = score_sim(d, args.seeds, sim_tool)
         frm, frm_detail = score_formal(d) if use_questa else score_props(d)
         n_err += sim is None or frm is None
         n_sim += bool(sim)
@@ -263,8 +303,9 @@ def main():
 
     n = len(rows)
     md = ["# Mutation summary", "",
-          "%s; simulation: `make regress SEEDS=%d UVM_CHECKERS=no` (black-box UVM); formal: %s" % (
-              datetime.date.today().isoformat(), args.seeds, formal_name), "",
+          "%s; simulation: `make %s SEEDS=%d UVM_CHECKERS=no` (black-box UVM, %s); formal: %s" % (
+              datetime.date.today().isoformat(), "regress" if sim_tool == "verilator" else "regress-questa",
+              args.seeds, "Verilator" if sim_tool == "verilator" else "QuestaSim", formal_name), "",
           "| ID | Mutation | Behaviour changed | Simulation (UVM) | %s |" % formal_name,
           "|---|---|---|---|---|"]
     md += ["| %s | %s | %s | %s | %s |" % r for r in rows]

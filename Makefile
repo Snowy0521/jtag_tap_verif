@@ -16,6 +16,7 @@
 #   make regress    directed tests + random test on SEEDS seeds, Verilator, merged TB coverage
 #   make regress-questa  the same on QuestaSim, plus vcover merge (sign-off)
 #   make mutate     mutation testing (mutations/*.patch): make mutate [ONLY=M05,M16] [MUT_SEEDS=5]
+#                   (Verilator if on PATH, else QuestaSim; Questa Formal if qverify is on PATH)
 #   make clean
 #
 # Every Questa target starts with `mkdir -p build`; run_formal.tcl stops if

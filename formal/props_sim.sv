@@ -22,7 +22,9 @@ module props_sim;
   // taken 1 ns after each TCK edge. The mutation flow compares it with the
   // clean design's to tell a changed mutant from an equivalent one (run
   // without --assert, so a failing property cannot stop the run early).
-  logic [63:0] signature = 64'h0;
+  // 2-state: on a 4-state simulator (QuestaSim) one X would otherwise turn
+  // the whole hash to X for good; X and Z count as 0.
+  bit [63:0] signature = 64'h0;
   always @(tck) begin
     #1;
     signature = {signature[62:0], signature[63]} ^ 64'({

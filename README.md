@@ -55,7 +55,7 @@ All targets run from the repository root; outputs go to `build/`. Run `make chec
 | `make sim TEST=<test> SEED=<n>` | QuestaSim + UVM 1.2 | Run a UVM test with functional and DUT code coverage (`build/cov/<test>_<seed>.ucdb`) |
 | `make sim-directed` | QuestaSim + UVM 1.2 | Run every directed test once (one build) |
 | `make regress SEEDS=<n>` | Verilator | Every directed test + the random test on seeds 1..n: pass / fail table, merged functional coverage (TB counters), seed check (`build/regress/summary.md`) |
-| `make mutate [ONLY=M05,M16]` | Verilator (+ Questa Formal if available) | Mutation testing: each bug in `mutations/` in a throwaway copy, equivalence check, scored by black-box UVM and by formal (`build/mutation/summary.md`) |
+| `make mutate [ONLY=M05,M16]` | Verilator, or QuestaSim if there is no Verilator (+ Questa Formal if available) | Mutation testing: each bug in `mutations/` in a throwaway copy, equivalence check, scored by black-box UVM and by formal (`build/mutation/summary.md`) |
 | `make regress-questa SEEDS=<n>` | QuestaSim | The same, plus `vcover merge` of all runs: covergroup and RTL code coverage (sign-off) |
 | `make clean` | | Remove `build/` |
 
