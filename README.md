@@ -4,15 +4,13 @@ An IEEE 1149.1 test access port (TAP) with a private DFT control register, writt
 
 1. **Formal (Questa PropCheck), done:** full (unbounded) proofs of the TAP state machine, the IR / DR protocol, the DFT register and the MBIST timing, with covers for every state and transition. No assumptions: every input is free, and `trst_n` can assert at any cycle. 63/63 assertions proven, 67/67 covers reached.
 2. **UVM (QuestaSim), done:** a JTAG agent whose monitor rebuilds the TAP state from the pins on its own and feeds a reference-model scoreboard, so a driver bug cannot hide a DUT bug. Directed tests plus a random test with TCK stops and mid-scan `trst_n`, signed off on merged coverage over 20 seeds: 26/26 runs pass, 100 % functional coverage (87/87 bins), 100 % DUT code coverage.
-3. **Mutation testing, planned:** 21 injected bugs, each to be recorded as caught by formal, by simulation, or both.
+3. **Mutation testing, done:** 21 injected bugs, each scored by Questa PropCheck and by black-box UVM. Every mutant is caught by at least one flow; each flow misses exactly one bug the other catches.
 
 The full plan is in [docs/plan.md](docs/plan.md), the design rules in [docs/design_spec.md](docs/design_spec.md).
 
 Same toolchain and flow as [axi4lite_uvm_questa](https://github.com/Snowy0521/axi4lite_uvm_questa).
 
 ## Status
-
-Work in progress.
 
 | Part | State |
 |---|---|
@@ -22,7 +20,7 @@ Work in progress.
 | Directed smoke test (iverilog) | passing |
 | Formal properties and proofs (`formal/`) | done |
 | UVM environment and regression (`tb/`) | done |
-| Mutation testing (`mutations/`) | in progress |
+| Mutation testing (`mutations/`) | done |
 
 ## Design
 
@@ -63,8 +61,6 @@ The UVM bench runs unchanged on UVM 1.2 (QuestaSim) and UVM 1800.2-2020 (Verilat
 
 ## Results
 
-To be filled in as each flow is completed.
-
 **Formal (Questa PropCheck)**
 
 | Assertions proven | Covers reached | Proof depth | Run time |
@@ -83,9 +79,14 @@ To be filled in as each flow is completed.
 
 | Mutations | Caught by formal | Caught by simulation | Caught by both | Missed |
 |---|---|---|---|---|
-| 21 | 21 / 21 (local proxy: the formal properties in a random simulation; Questa run pending) | 20 / 21 | 20 | 0 |
+| 21 | 20 / 21 | 20 / 21 | 19 | 0 |
 
-All 21 mutants change behaviour (none is equivalent). Simulation is scored black-box (UVM without the formal checkers bound in). The one bug only formal catches is M5 (the instruction also updates during Shift-IR): every exit from Shift-IR passes Update-IR, which loads the same final value, so nothing at the pins differs; the white-box property `a_ir_stable` sees it. Per-mutant details: `make mutate` → `build/mutation/summary.md`.
+`make mutate` with Questa 2024.3: PropCheck and `make regress-questa SEEDS=5`. All 21 mutants change behaviour (none is equivalent). Simulation is scored black-box (UVM without the formal checkers bound in). Each flow misses one bug:
+
+- **M5, only formal** (the instruction also updates during Shift-IR): every exit from Shift-IR passes Update-IR, which loads the same final value, so nothing at the pins differs; the white-box property `a_ir_stable` sees it.
+- **M21, only simulation** (TDO returns to zero while TCK is high, `tdo = tck ? 0 : tdo_q`): the bug is a change inside one clock phase, with TCK used as data. PropCheck models `tck` as an ideal clock that is only sampled at its edges, so `a_tdo_no_rise_change` is proven on the mutant (without a warning); the UVM monitor's edge check sees the change in the event-driven simulation. Formal results only hold for logic in which the clock reaches clock pins only.
+
+Per-mutant details (first failing test, fired assertions): `make mutate` → `build/mutation/summary.md`.
 
 ## Repository layout
 
@@ -93,7 +94,7 @@ All 21 mutants change behaviour (none is equivalent). Simulation is scored black
 jtag_tap_verif/
 ├── README.md
 ├── LICENSE                  MIT
-├── Makefile                 lint / smoke (Questa targets to follow)
+├── Makefile                 every flow (see How to run)
 ├── docs/
 │   ├── design_spec.md       rules R1–R23, traceability to checks and mutations
 │   ├── plan.md              verification plan

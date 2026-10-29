@@ -223,7 +223,7 @@ One patch per bug in `mutations/`. Run each against formal and UVM, then record 
 | M18 | `mbist_done` one edge early (`MBIST_CYCLES - 2` in the compare) | `a_mbist_done_exact`; exact-count check in dft test / smoke |
 | M19 | `mbist_done` is a pulse, not held while `mbist_start` = 1 | `a_mbist_hold`; dft test |
 | M20 | `mbist_pass` re-sampled from `mbist_fail_i` after done | `a_mbist_hold`; dft test |
-| M21 | TDO returns to zero while TCK is high (combinational; correct at every rising-edge sample) | `a_tdo_no_rise_change`; JTAG monitor edge check. No data check can see it |
+| M21 | TDO returns to zero while TCK is high (combinational; correct at every rising-edge sample) | JTAG monitor edge check. No data check can see it. `a_tdo_no_rise_change` catches it only in simulation (props-sim, checkers bound in): PropCheck models TCK as an ideal clock, not as data, so the proof passes on the mutant |
 
 M1–M9 are mostly control / FSM bugs; M10–M17 and M21 cover the data path and the edge timing; M18–M20 cover the MBIST stub. The goal is a table in README.md showing which flow caught each of the **21 mutations**. M16 needs a specific stimulus in simulation (a short `trst_n` pulse followed directly by TMS = 0); a result worth reporting either way. Any other miss points to a missing check, so add it.
 

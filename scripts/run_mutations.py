@@ -202,10 +202,12 @@ def expected_assertions():
 
 def formal_names(text):
     """Names of failing assertions, for the detail column only. Questa lists
-    them one per line under "Targets Fired (n)", between dashed rules."""
-    m = re.search(r"^Targets Fired \(\d+\)\s*\n-+\n(.*?)^-+$", text, re.M | re.S)
-    if m:
-        return sorted(set(re.findall(r"\b(a_\w+)\b", m.group(1))))
+    them one per line under "Targets Fired (n)" and "Targets Fired with
+    Warnings (n)" (a trace that starts from the free j / k), between dashed rules."""
+    sections = re.findall(r"^Targets Fired(?: with Warnings?)? \(\d+\)\s*\n-+\n(.*?)^-+$",
+                          text, re.M | re.S)
+    if sections:
+        return sorted(set(re.findall(r"\b(a_\w+)\b", "".join(sections))))
     names = re.findall(r"\b(a_\w+)\b[^\n]*\b%s\b" % FAIL_WORDS, text, re.I)
     names += re.findall(r"\b%s\b[^\n]*\b(a_\w+)\b" % FAIL_WORDS, text, re.I)
     return sorted(set(names))
