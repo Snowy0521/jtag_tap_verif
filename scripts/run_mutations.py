@@ -26,6 +26,7 @@ signature is only compared within one simulator (their random sequences differ).
 Runs from the repo root. Python 3.6 compatible (the Questa machine).
 """
 import argparse
+import atexit
 import datetime
 import glob
 import os
@@ -61,7 +62,13 @@ def prepare(mid, patch):
     """Fresh copy of the sources in build/mutation/<mid>/, patch applied."""
     d = os.path.join(OUT, mid)
     if os.path.isdir(d):
-        shutil.rmtree(d)
+        # Moved aside first, then removed as far as possible: on NFS a file a
+        # dead tool still holds open stays as .nfs*, and its directory cannot
+        # be removed until that process exits (build/mutation/old/ keeps it)
+        old = os.path.join(OUT, "old", "%s.%d" % (mid, os.getpid()))
+        os.makedirs(os.path.dirname(old), exist_ok=True)
+        os.rename(d, old)
+        shutil.rmtree(old, ignore_errors=True)
     os.makedirs(os.path.join(d, "build"))      # Verilator does not create the parent of -Mdir
     for item in COPY:
         if os.path.isdir(item):
@@ -231,6 +238,25 @@ def cell(result, detail):
     return ("**caught**: " + detail) if result else "missed"
 
 
+def lock():
+    """One run per work tree: a second run would delete the copies the first
+    one is working in. build/mutation/run.pid holds the running PID; a stale
+    one (that process is gone) is taken over. Released at exit."""
+    path = os.path.join(OUT, "run.pid")
+    if os.path.exists(path):
+        try:
+            pid = int(open(path).read().strip())
+            os.kill(pid, 0)
+        except (ValueError, OSError):
+            pid = None
+        if pid:
+            sys.exit("run_mutations: another run is active in this work tree (PID %d); "
+                     "wait for it or kill it first" % pid)
+    with open(path, "w") as f:
+        f.write("%d\n" % os.getpid())
+    atexit.register(lambda: os.path.exists(path) and os.remove(path))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--only", help="comma-separated mutant IDs, e.g. M05,M16")
@@ -251,9 +277,10 @@ def main():
     sim_tool = args.sim
     if sim_tool == "auto":
         sim_tool = "verilator" if shutil.which("verilator") else "questa"
+    os.makedirs(OUT, exist_ok=True)
+    lock()
     use_questa = args.formal == "questa" or (args.formal == "auto" and shutil.which("qverify"))
     formal_name = "Formal (Questa PropCheck)" if use_questa else "Formal proxy (props-sim, not a proof)"
-    os.makedirs(OUT, exist_ok=True)
 
     # The clean design must pass everything; its signature is the reference
     print("clean design ...", flush=True)
